@@ -1,0 +1,190 @@
+# Goink Porting Status
+
+Reference source: `../ink`
+
+This repository is the active Go port workspace for the TypeScript Ink project.
+
+## Current Baseline
+
+The codebase was imported from the local Ink reference workspace under `../ink` on 2026-04-18.
+
+Verified after import:
+
+- `go test ./...` passes
+- local reference source under `../ink` is readable
+
+## Ported Surface
+
+### Components
+
+- `Text`
+- `Box`
+- `Newline`
+- `Static`
+- `Spacer` (basic Ink-compatible form via `flexGrow`)
+- `Transform` (basic text-output transform support)
+
+### Hooks / State
+
+- `UseState`
+- `UseInput`
+- `UseFocus`
+- `UseEffect`
+- `UseMemo`
+- `UseCallback`
+- `UseRef`
+- `UseApp`
+- `UseStdin`
+- `UseStdout`
+- `UseStderr`
+- `UseFocusManager`
+- `UseCursor`
+- `UseIsScreenReaderEnabled`
+- `MeasureElement`
+- `DOMElement` (current minimal Go-level ref handle)
+
+### Runtime / Infra
+
+- virtual DOM
+- reconciler scaffolding
+- simple renderer
+- flex layout engine
+- input handling
+- focus manager
+- render loop
+
+## Compatibility Notes
+
+The port is not a drop-in replacement for TypeScript Ink yet.
+
+Implemented recently:
+
+- text-like nodes now occupy layout width correctly
+- `Spacer` now works in row/column layouts through `flexGrow`
+- `Transform` can modify rendered text output in the renderer
+- upstream parity harness compares this port against goldens generated from `../ink`
+- upstream parity coverage is now 706 cases total, including 412 `Box` cases, 145 `Text` cases, 45 `Transform` cases, 37 `Static` cases, 33 `Newline` cases, and 34 `Spacer` cases
+- component helpers now expose richer Ink-like builders for nested `Text`, repeated `Newline`, and item-rendered `Static`
+- `Box` parity now also covers `margin`, `alignItems`, and `justifyContent="space-evenly"`
+- `Box` parity now also covers `display="none"`, `row-reverse` / `column-reverse`, `justifyContent="space-around"`, and multi-text `alignSelf` row cases
+- `Box` parity now also covers `gap`, row/column `flexWrap="wrap"`, row/column `flexWrap="wrap-reverse"`, and the upstream non-wrap overflow behavior for column flex containers
+- `Box` parity now also supports axis-specific `rowGap` / `columnGap`, including distinct main-axis and wrapped-line spacing
+- `Box` parity now also covers fixed and percentage `width` / `height`, percentage `minWidth`, numeric `minWidth` / `minHeight`, and height-based text clipping from upstream `width-height.tsx`
+- plain buffer rendering now tracks wide-rune continuation cells, so fixed-width boxes no longer insert extra spaces before adjacent siblings when rendering emoji or other double-width glyphs
+- plain and ANSI renderers now also preserve zero-width variation selectors and combining marks on the previous visible cell, which fixes fit-content border layout for emoji sequences such as `🌡️⚠️✅`
+- upstream golden parity now also covers screen-reader mode for `aria-label`, `aria-hidden`, `aria-role`, accessibility state narration, nested row/column structure, and listbox/listitem option output
+- upstream golden parity now also covers ANSI debug output for background inheritance, background override and clear transitions, full-area background fill, border color and dim props, and the child-style-preserving `borderDimColor` regression from upstream `borders.tsx`
+- upstream golden parity now also covers more cases from `components.tsx`, including inline count text, ignored empty sibling text in column layout, transform squashing with split text children, and static output followed by margin-separated dynamic content
+- upstream golden parity now also covers the remaining static `text.tsx` style formats, including ANSI standard/hex/rgb/ansi256 foreground and background colors, `dimColor + bold`, dimmed colored text, and inverse text rendering
+- the Go parity harness now combines rendered static and dynamic sections when comparing against upstream debug output, which matches upstream `Static` behavior more closely than comparing only the plain layout render
+- `Box` parity now also covers baseline `alignSelf` and `flexBasis` behavior, including percentage `flexBasis` in both row and column containers
+- `Box` parity now also covers baseline `flexShrink`, including upstream `dont shrink` and `shrink equally` row behavior
+- `Box` parity now also covers baseline no-border `overflowX`, `overflowY`, and `overflow="hidden"` clipping for row, multiline text, and negative-margin intersection cases
+- `Box` parity now also covers baseline `borderStyle="round"` rendering for fit-content, fixed-width, padding, and wrapped-text cases
+- `Box` parity now also covers baseline hidden border sides and `overflowX` / `overflowY` clipping when the overflow container itself has a round border
+- `Box` parity now also covers full-width root border boxes and custom object `borderStyle` glyph sets
+- `Box` parity now also covers baseline background-driven geometry for fixed-size, bordered, padded, centered, and column-layout boxes in non-color debug rendering
+- `Box` parity now also covers more overflow-with-border cases, including child bordered overflow, bordered overflow containers with multiple rows, top-edge intersection, and clipped overflow blocks with preserved trailing rows
+- `Box` parity now also covers more overflow-with-border cases from upstream `overflow.tsx`, including horizontal multi-box clipping, empty bordered viewports when content is fully above or below the clip window, bottom-edge vertical intersections, and bordered mixed-box overflow containers with preserved trailing padding
+- `Box` parity now also covers the matching plain overflow edge cases, including content fully before or after the horizontal clip window, right-edge intersections, and the vertical above/below/bottom-intersection cases without borders
+- `Box` parity now also covers plain `overflow="hidden"` corner intersections on all four edges plus nested overflow containers
+- `Box` parity now also covers the upstream out-of-bounds border write safety case when the rendered box exceeds the available terminal width
+- `Box` parity now also covers more default `flexShrink` combinations, including text-text rows, mixed text-box rows, bordered mixed rows, and the cases where Yoga-style rounded overlap changes the final rendered columns
+- `Box` parity now also covers more three-item default `flexShrink` rows, including text-text-text, box-text-box, text-box-box, box-box-text, spaced text triples, and mixed rows with a wider middle child
+- `Text` nodes now use the upstream-like default `flexShrink` baseline, with width-aware remeasurement after flex shrink and parity coverage for clipped multi-text bordered overflow rows
+- `Box` nodes now also use the upstream default `flexShrink` baseline, with parity coverage for default-shrinking sibling boxes in both plain and bordered rows
+- basic app/runtime hooks are now available through `AppOptions`, `UseApp`, `UseStdin`, `UseStdout`, `UseStderr`, `UseCursor`, and `UseIsScreenReaderEnabled`
+- `UseFocusManager` is now available with app-scoped `enable`, `disable`, `focus`, `focusNext`, and `focusPrevious` controls
+- render boundaries now clear runtime hook context correctly, and cursor state no longer leaks across renders when `UseCursor` stops being used
+- `UseEffect` now runs after the render pass instead of during component evaluation, which allows effect code to read ref-backed layout data from the current frame
+- mounted sessions now perform a follow-up rerender when an effect updates state after commit, which closes the main gap needed for `measureElement`-driven state updates
+- mounted sessions now also dispatch `UseInput` callbacks through `HandleInput` and compatible `stdin.SubscribeInput(...)` streams, with state updates and focus-tab navigation triggering rerenders
+- `UseInput` now accepts both the legacy `(input, keys)` callback form and an Ink-like `(input string, key InputKey)` form with boolean key flags
+- `UseInput` now also supports the upstream-style `isActive` option, raw-mode refcounting across multiple active hooks, and fuller modifier parsing for pasted input, `meta`, `ctrl`, `shift-tab`, `meta+arrow`, `ctrl+arrow`, and option-return sequences
+- `UseFocus` now supports inactive focus targets that stay in registration order, skip correctly during `tab` / `shift-tab` navigation, enable raw mode only for active hooks, and start `focusPrevious()` from the last active target when nothing is focused
+- mounted focus runtime now also mirrors upstream `Esc` behavior by blurring the currently focused component and rerendering the live tree when focus management is enabled
+- mounted focus runtime tests now also cover `shift-tab` wraparound, and focus-manager tests now lock the upstream unregister semantics where re-registering an already mounted component does not reapply `autoFocus`
+- a session-based runtime API now exists through `Mount` and `MountWithOptions`, with `Rerender`, `Clear`, `Unmount`, and `WaitUntilExit`
+- standard render output now tracks cursor-only updates, restores the terminal cursor on unmount, and preserves direct `UseStdout().Write()` output ahead of the managed Ink block
+- `RenderWithOptions` now reuses mounted instances per stdout target, matching upstream `render()` more closely
+- `pkg/ink` now exports wrappers for `UseInput`, `UseFocus`, `UseEffect`, `UseMemo`, `UseCallback`, and `UseRef`
+- `RenderOptions` now supports `Debug` and `IncrementalRendering`, and the output layer has basic parity for append-only debug mode plus surgical incremental updates
+- log-update parity tests now also cover no-trailing-newline transitions, repeated clear behavior, and rendering down to a single empty line in incremental mode
+- session runtime now exposes `Sync`, `WriteStdout`, and `WriteStderr`, with parity coverage for cursor replay, cursor reset after `sync()`, and restoring the managed Ink block after out-of-band stdout/stderr writes
+- runtime rendering now splits `Static` output from the managed dynamic block, so appended static items are written above the live region without redrawing older static lines
+- `Static` append-only output now tracks per-root item counts, so replacements do not replay old static content and fullscreen redraws can rebuild the accumulated static history
+- `RenderOptions` now also supports `MaxFPS`, with throttled rerender coalescing, unmount flush/cancel behavior, and TTY synchronized write wrapping for deferred frames
+- throttled rerenders now precompute frames, allowing `Static` appends and exit-triggering renders to bypass the write throttle and cancel stale pending frames
+- managed render instances now auto-resize from compatible stdout implementations, rerender immediately on resize, clear before width shrink, and clean up resize listeners on unmount
+- screen-reader mode now uses a dedicated plain-text render path with basic `aria-label`, `aria-hidden`, `aria-role`, `aria-state`, `display="none"`, and static-output support
+- standard TTY rerenders now use fullscreen `clearTerminal` recovery when the previous interactive frame filled the viewport, while still avoiding fullscreen clears when only `Static` content exceeds the viewport
+- standard and incremental render paths now normalize non-fullscreen output with a trailing newline, while keeping internal logical output separate from the rendered terminal buffer state
+- runtime tests now also cover fullscreen renders without an extra bottom newline plus standard/fullscreen transitions from populated output down to an empty frame
+- runtime tests now also cover reconciler-style rerenders for child updates, text-node updates, append/insert/remove flows, keyed child reorder, and replacing a styled nested child with plain text
+- runtime tests now also cover nested text growth rerenders where a child `Text` node is appended inside an existing `Text` tree and the measured output width must expand from `abc` to `abcx`
+- managed render tests now also cover `nil -> component` transitions for `MeasureElement`, including the effect-driven follow-up render that converges from `Width: 0` to the measured width and the same flow under a throttled managed render instance
+- runtime tests now also cover `OnRender` callback delivery for the initial render, a manual rerender, and an internal state-driven rerender triggered through `UseInput`
+- input normalization and mounted `UseInput` runtime tests now also cover the remaining upstream cursor-navigation key matrix for `pageUp`, `pageDown`, `home`, `end`, and the full `meta` / `ctrl` arrow-direction set
+- low-level input parsing now also recognizes broader upstream raw escape variants, including SS3 cursor keys, putty-style `ESC [[5~` / `ESC [[6~` page keys, and modifier cursor sequences such as `ESC [1;5A`
+- upstream `Text` parity now also covers non-TTY style props such as `color`, `backgroundColor`, `dimColor`, `bold`, `italic`, `underline`, `inverse`, `strikethrough`, and nested style inheritance/override cases
+- upstream `Text` parity now also covers the baseline width-constrained `wrap`, `truncate`, `truncate-middle`, and `truncate-start` behaviors inside fixed-width boxes
+- TTY-backed runtime rendering now uses the ANSI layout renderer for dynamic and static sections, so mounted sessions preserve `color`, `backgroundColor`, `borderColor`, and the basic text modifiers (`bold`, `dimColor`, `italic`, `underline`, `inverse`, `strikethrough`) instead of dropping back to plain text
+- ANSI border rendering now also supports per-side border color and dim props (`borderTopColor`, `borderBottomColor`, `borderLeftColor`, `borderRightColor`, `borderDimColor`, and the per-side dim variants)
+- ANSI text rendering now preserves nested inline style/background overrides for plain `Text` trees, including parent color/background resumption after nested child overrides or clears, the same resumption behavior for `truncate` / `truncate-start` / `truncate-middle` output, and transform-aware style transitions through an ANSI roundtrip path for the current `Transform` parity cases
+- hook runtime now reuses `UseInput` and `UseFocus` slots across rerenders instead of accumulating duplicate registrations, and focus navigation now handles missing-current-focus, inactive targets, and missing-id no-op behavior more like upstream Ink
+- `UseFocus` rerenders now also replay `autoFocus` registration changes more like upstream Ink’s effect-driven hook behavior, while the wrapper raw-mode effect no longer depends on the generated focus id
+- element refs now receive the rendered node handle through `props["ref"]`, and `MeasureElement` can read the latest computed width and height from that handle
+- effect-driven measurement updates now trigger a mounted follow-up rerender after the current commit, which is enough to support the basic `measureElement` flow
+- `DOMElement` now exposes a broader DOM-like surface through parent/child traversal, attribute access, text-content accessors, and computed-layout accessors, and `MeasureElement` now has a narrow intrinsic fallback for bare text-node refs
+- input payloads are now normalized for hooks, including special-key delivery and basic `tab` / `shift-tab` focus navigation parity
+- input payloads now also expose an Ink-like boolean key object for `upArrow`, `downArrow`, `leftArrow`, `rightArrow`, `return`, `escape`, `ctrl`, `shift`, `tab`, `backspace`, `delete`, and related flags
+- renderer-owned layout parsing now accepts native Go numeric props for spacing and flex values, and screen-reader state narration now also accepts `map[string]bool` state inputs in addition to `vdom.Props`
+- renderer-owned child ordering now skips `nil` children entirely, which matches upstream null-child behavior instead of reserving zero-size layout slots that could distort spacing
+- upstream golden parity now also covers more `borders.tsx` and `background.tsx` cases, including full-width round borders, centered/bottom-aligned bordered content, long wrapped text inside bordered boxes, nested bordered boxes, nested row borders with wide/emoji content, extra ANSI background inheritance variants, RGB box backgrounds, and the remaining screen-reader null-child case from `screen-reader.tsx`
+- upstream golden parity now also covers direct upstream cases for colored leading whitespace, single-node wide/emoji fit-content round borders, column-stacked bordered wide/emoji content, single-child `flexGrow`, styled `justifyContent="flex-end"` alignment, and plain `overflowY` multi-box/top-intersection clipping
+- screen-reader role suppression now matches upstream direct-parent semantics, so neutral wrappers no longer hide nested same-role narration from accessibility output
+- upstream golden parity now also covers additional direct upstream accessibility/layout cases, including `screen-reader` nested same-role wrappers, `Static` plus screen-reader parent-role behavior, the previously added `Transform` accessibility labels, empty-content role/state narration spacing, ordered multi-state narration, newline/wrapped-text padding and margin cases, the remaining direct `minWidth="50%"` case from `width-height.tsx`, the remaining fit-content colorful multi-node border case from `borders.tsx`, a direct alias for the `borders.tsx` fit-content variation-selector emoji round-border fixture, direct `undefined` / `null` / single-empty-text child cases from `text.tsx` and `components.tsx`, the direct `text with component` / `text with fragment` / `fragment` cases from `components.tsx`, the direct `text with variable` / `number` cases from `components.tsx`, direct aliases for `Transform` children/squashing fixtures plus the direct `Newline` and `Spacer` component fixtures from `components.tsx`, direct aliases for the upstream `text.tsx` color/background/inversion fixtures, direct aliases for the upstream `screen-reader.tsx` baseline plus aria-state/multiline/listbox/select-input cases, direct aliases for the upstream `components.tsx` basic text plus `width-height.tsx` width/min-height cases, a broader block of direct `borders.tsx` aliases for single-node, multi-node, and nested round-border fixtures, the remaining direct `components.tsx` text aliases for variable/component/fragment children, wrap behavior, truncation, and empty-text handling, plus exact-name aliases for the upstream `display.tsx`, `gap.tsx`, `flex-direction.tsx`, `flex-wrap.tsx`, `padding.tsx`, `margin.tsx`, `text-width.tsx`, `screen-reader.tsx`, and `width-height.tsx` fixture titles where the rendered output is already covered, along with the remaining parity-safe concurrent exact-title aliases from `components.tsx`, `text.tsx`, `width-height.tsx`, and `borders.tsx`, the exact-title alias for `gap - concurrent`, and the final failure/runtime fixture titles now handled directly in the parity harness through `mode: "error"` and `mode: "managed-frames"`, bringing the suite to 706 cases total with 412 `Box` cases, 145 `Text` cases, 45 `Transform` cases, 37 `Static` cases, 33 `Newline` cases, and 34 `Spacer` cases
+- mounted runtime now matches upstream `render all frames if CI environment variable equals false` behavior more closely by disabling synchronized redraw semantics in CI, skipping managed resize subscriptions there, streaming static output immediately, and emitting only the final dynamic frame on unmount
+- public `components.Box` / `components.Text` trees now enforce the upstream invalid-text fixture semantics at render time, and the upstream parity harness now understands those failure cases directly through `mode: "error"` plus the remaining CI=false multi-frame runtime case through `mode: "managed-frames"`
+- render-phase panic recovery now covers both the initial mount and subsequent managed rerenders, so thrown render errors surface through `WaitUntilExit()` instead of escaping the process
+- mounted session `WriteStdout` / `WriteStderr` restore cycles now also use synchronized update wrapping on TTYs, matching upstream clear-write-restore behavior more closely
+- mounted `UseStdout().Write(...)` / `UseStderr().Write(...)` calls now also flow through the same session-managed clear-and-restore path as explicit `Instance.WriteStdout` / `WriteStderr`
+- `WaitUntilExit()` now flushes buffered stdout writers during unmount and propagates flush failures, while CI detection now matches upstream `is-in-ci` semantics more closely
+- disabling focus management now preserves visible focus state instead of hiding the currently focused item, while manual `focus()` / `blur()` updates continue to trigger rerenders
+- missing `focus(id)` targets now fall back to the first registered focus target, which matches the upstream `useFocusManager().focus()` contract more closely
+- `MeasureText` is now exposed publicly, ignores ANSI escape sequences when computing visible width, and `DOMElement` now also supports DOM-style navigation helpers such as sibling traversal and ancestry checks
+- `MeasureText` now also treats ASCII and C1 control characters as zero-width, and DOM-style node mutations invalidate stale computed layout so later measurements do not reuse obsolete dimensions
+- low-level input parsing now also collapses more upstream-style meta-prefixed raw input variants, including `ESC m`, `ESC space`, `ESC return`, `ESC delete`, and doubled-escape meta-arrow sequences
+- modern `UseInput` key objects now treat bare `Escape` as `escape + meta`, while legacy key-name slices keep the upstream-compatible bare `["escape"]` shape
+- ANSI styled-text rendering now also treats variation selectors and other zero-width code points as display width `0`, keeping emoji sequences stable during styled wrapping and truncation
+- `MeasureText` and text-node `MeasureElement` fallback now also treat emoji modifier presentation clusters such as `✌🏽` as width `2`, and ignore OSC hyperlink `ST` escape sequences in width calculations
+- screen-reader rendering now treats a default `Box` as row-oriented output, joining sibling content with spaces unless `flexDirection` explicitly switches it to a column
+
+Public export audit against `../ink/src/index.ts`:
+
+- core component exports are present
+- core runtime hook exports are present
+- `CursorPosition` is present
+- `measureElement` now has a minimal Go equivalent through `MeasureElement`
+- `DOMElement` now exists as a minimal Go-level ref handle backed by the rendered `vdom.Node`
+- full ref parity and broader state-driven rerender behavior still differ from upstream Ink
+
+Still incomplete compared with upstream Ink:
+
+- broader accessibility parity beyond the currently supported `aria-label`, `aria-hidden`, `aria-role`, and `aria-state` subset
+- full `measureElement` parity beyond the current minimal explicit-ref flow
+- broader DOM-like element ref/measurement parity beyond the current minimal handle
+- the remaining `useInput` edge cases around the full upstream key matrix and deeper stdin/raw-mode lifecycle behavior
+- the remaining `useFocus` surface differences around the exact public options shape
+- full Box/Text style parity with upstream Ink, including the remaining arbitrary `Transform` ANSI edge cases that intentionally mutate embedded ANSI sequences, broader overflow-with-border edge cases, and the remaining upstream default `flexShrink` behavior for more complex text/box combinations
+- full App lifecycle parity with upstream static-output edge cases and the remaining debug/incremental edge cases
+- broader layout parity with Yoga
+
+## Suggested Next Steps
+
+1. Port the remaining `render()` behavior: static-output edge cases and the remaining debug/incremental edge cases.
+2. Expand the remaining `useInput` edge cases across the broader upstream key matrix and raw-stdin lifecycle behavior.
+3. Tighten the remaining `useFocus` public-surface parity gaps.
+4. Expand the DOM-like ref surface beyond `MeasureElement`, including better parity for element refs.
+5. Expand accessibility parity and remaining screen-reader edge cases.
+6. Expand Box/Text prop compatibility against `../ink/src/components/*.tsx`.

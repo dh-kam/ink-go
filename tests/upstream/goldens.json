@@ -1,0 +1,5650 @@
+[
+  {
+    "name": "text/empty",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": ""
+  },
+  {
+    "name": "text/text",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Hello World"
+  },
+  {
+    "name": "text/undefined-child",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": ""
+  },
+  {
+    "name": "text/with-undefined-children",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": ""
+  },
+  {
+    "name": "text/<Text> with undefined children",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": ""
+  },
+  {
+    "name": "text/null-child",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": ""
+  },
+  {
+    "name": "text/with-null-children",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": ""
+  },
+  {
+    "name": "text/<Text> with null children",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": ""
+  },
+  {
+    "name": "text/single-empty-raw",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": ""
+  },
+  {
+    "name": "text/render-a-single-empty-text-node",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": ""
+  },
+  {
+    "name": "text/basic-hello",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Hello"
+  },
+  {
+    "name": "text/basic-hello-world",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Hello World"
+  },
+  {
+    "name": "text/with-variable",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Count: 1"
+  },
+  {
+    "name": "text/text with variable",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Count: 1"
+  },
+  {
+    "name": "text/number",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "1"
+  },
+  {
+    "name": "text/fail when text nodes are not within <Text> component",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "error",
+    "error": "Text string \"Hello\" must be rendered inside <Text> component"
+  },
+  {
+    "name": "text/fail when text node is not within <Text> component",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "error",
+    "error": "Text string \"Hello World\" must be rendered inside <Text> component"
+  },
+  {
+    "name": "text/fail when <Box> is inside <Text> component",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "error",
+    "error": "<Box> can’t be nested inside <Text> component"
+  },
+  {
+    "name": "text/multiple-raw",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Hello World"
+  },
+  {
+    "name": "text/multiple text nodes",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Hello World"
+  },
+  {
+    "name": "text/with-component",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Hello World"
+  },
+  {
+    "name": "text/text with component",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Hello World"
+  },
+  {
+    "name": "text/with-fragment",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Hello World"
+  },
+  {
+    "name": "text/text with fragment",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Hello World"
+  },
+  {
+    "name": "text/fragment",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Hello World"
+  },
+  {
+    "name": "text/multiple-text-nodes",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Hello World"
+  },
+  {
+    "name": "text/nested-basic",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Hello World"
+  },
+  {
+    "name": "text/nested-around",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Hello World"
+  },
+  {
+    "name": "text/nested-double",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "[AB]"
+  },
+  {
+    "name": "text/nested-empty",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "AB"
+  },
+  {
+    "name": "text/multiple-empty",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": ""
+  },
+  {
+    "name": "text/multiline-two-lines",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A\nB"
+  },
+  {
+    "name": "text/multiline-leading-newline",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\nA"
+  },
+  {
+    "name": "text/multiline-trailing-newline",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A\n"
+  },
+  {
+    "name": "text/constructor",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "constructor"
+  },
+  {
+    "name": "text/text with content \"constructor\" wraps correctly",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "constructor"
+  },
+  {
+    "name": "text/remeasure text when text is changed",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "abcx"
+  },
+  {
+    "name": "text/remeasure text when text nodes are changed",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "abcx"
+  },
+  {
+    "name": "text/remesure text dimensions on text change",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "abcx"
+  },
+  {
+    "name": "text/punctuation",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "!@#$%^&*()"
+  },
+  {
+    "name": "text/numbers",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "12345"
+  },
+  {
+    "name": "text/mixed-alnum",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "abc123XYZ"
+  },
+  {
+    "name": "text/leading-space",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": " Hello"
+  },
+  {
+    "name": "text/trailing-space",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Hello"
+  },
+  {
+    "name": "text/double-space",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Hello  World"
+  },
+  {
+    "name": "text/empty-raw-between",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "AB"
+  },
+  {
+    "name": "text/raw-nested-raw",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "ABC"
+  },
+  {
+    "name": "text/triple-nested",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "deep"
+  },
+  {
+    "name": "text/mixed-case",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "GoLang Ink PORT"
+  },
+  {
+    "name": "text/emoji",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "go 🚀"
+  },
+  {
+    "name": "text/cjk",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "한글 테스트"
+  },
+  {
+    "name": "text/brackets",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "[]{}<>"
+  },
+  {
+    "name": "text/slashes",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "a/b\\c"
+  },
+  {
+    "name": "text/long-word",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "supercalifragilistic"
+  },
+  {
+    "name": "text/many-pieces",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "abcde"
+  },
+  {
+    "name": "text/multiline-three-lines",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A\nB\nC"
+  },
+  {
+    "name": "text/count-inline",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Count: 1"
+  },
+  {
+    "name": "text/ignore-empty-sibling-column",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Hello World"
+  },
+  {
+    "name": "text/ignore-empty-text-node",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Hello World"
+  },
+  {
+    "name": "text/ignore empty text node",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Hello World"
+  },
+  {
+    "name": "text/style-color-red",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Red"
+  },
+  {
+    "name": "text/style-background-blue",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Blue BG"
+  },
+  {
+    "name": "text/style-dim",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Dim"
+  },
+  {
+    "name": "text/style-bold",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Bold"
+  },
+  {
+    "name": "text/style-italic",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Italic"
+  },
+  {
+    "name": "text/style-underline",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Underline"
+  },
+  {
+    "name": "text/style-inverse",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Inverse"
+  },
+  {
+    "name": "text/style-strikethrough",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Strike"
+  },
+  {
+    "name": "text/style-color-background-combo",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Combo"
+  },
+  {
+    "name": "text/style-nested-parent-color",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A B C"
+  },
+  {
+    "name": "text/style-nested-child-color-override",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A B C"
+  },
+  {
+    "name": "text/style-nested-background-override",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A B C"
+  },
+  {
+    "name": "text/wrap-basic",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Hello\nWorld"
+  },
+  {
+    "name": "text/wrap-text",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Hello\nWorld"
+  },
+  {
+    "name": "text/wrap text",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Hello\nWorld"
+  },
+  {
+    "name": "text/wrap-enough-space",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Hello World"
+  },
+  {
+    "name": "text/dont-wrap-text-if-enough-space",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Hello World"
+  },
+  {
+    "name": "text/don’t wrap text if there is enough space",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Hello World"
+  },
+  {
+    "name": "text/truncate-end",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Hello …"
+  },
+  {
+    "name": "text/truncate-text-in-the-end",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Hello …"
+  },
+  {
+    "name": "text/truncate text in the end",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Hello …"
+  },
+  {
+    "name": "text/truncate-middle",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Hel…rld"
+  },
+  {
+    "name": "text/truncate-text-in-the-middle",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Hel…rld"
+  },
+  {
+    "name": "text/truncate text in the middle",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Hel…rld"
+  },
+  {
+    "name": "text/truncate-start",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "… World"
+  },
+  {
+    "name": "text/truncate-text-in-the-beginning",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "… World"
+  },
+  {
+    "name": "text/truncate text in the beginning",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "… World"
+  },
+  {
+    "name": "text/text - concurrent",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Hello World"
+  },
+  {
+    "name": "text/multiple text nodes - concurrent",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Hello World"
+  },
+  {
+    "name": "text/wrap text - concurrent",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Hello\nWorld"
+  },
+  {
+    "name": "text/truncate text in the end - concurrent",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Hello …"
+  },
+  {
+    "name": "text/remeasure text when text is changed - concurrent",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "abcx"
+  },
+  {
+    "name": "text/remeasure text when text nodes are changed - concurrent",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "abcx"
+  },
+  {
+    "name": "text/remeasure text dimensions on text change - concurrent",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "abcx"
+  },
+  {
+    "name": "text/remesure text dimensions on text change - concurrent",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "abcx"
+  },
+  {
+    "name": "text/hooks",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Hello"
+  },
+  {
+    "name": "text/replace child node with text",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "x"
+  },
+  {
+    "name": "text/disable raw mode when all input components are unmounted",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Test"
+  },
+  {
+    "name": "text/setRawMode() should throw if raw mode is not supported",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Test"
+  },
+  {
+    "name": "text/render different component based on whether stdin is a TTY or not",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": ""
+  },
+  {
+    "name": "text/reset prop when it’s removed from the element",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "x"
+  },
+  {
+    "name": "text/link ansi escapes are closed properly",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\u001b]8;;https://example.com\u0007Example\u001b]8;;\u0007"
+  },
+  {
+    "name": "text/render only last frame when run in CI",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Counter: 5"
+  },
+  {
+    "name": "text/render a single empty text node",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": ""
+  },
+  {
+    "name": "text/ansi-color-standard",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "\u001b[32mTest\u001b[39m"
+  },
+  {
+    "name": "text/with-standard-color",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "\u001b[32mTest\u001b[39m"
+  },
+  {
+    "name": "text/text with standard color",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "\u001b[32mTest\u001b[39m"
+  },
+  {
+    "name": "text/text with standard color - concurrent",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "\u001b[32mTest\u001b[39m"
+  },
+  {
+    "name": "text/ansi-color-dim-bold",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "\u001b[1m\u001b[2mTest\u001b[22m"
+  },
+  {
+    "name": "text/with-dim-plus-bold",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "\u001b[1m\u001b[2mTest\u001b[22m"
+  },
+  {
+    "name": "text/text with dim+bold",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "\u001b[1m\u001b[2mTest\u001b[22m"
+  },
+  {
+    "name": "text/text with dim+bold - concurrent",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "\u001b[1m\u001b[2mTest\u001b[22m"
+  },
+  {
+    "name": "text/ansi-color-dim-green",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "\u001b[32m\u001b[2mTest\u001b[22m\u001b[39m"
+  },
+  {
+    "name": "text/with-dimmed-color",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "\u001b[32m\u001b[2mTest\u001b[22m\u001b[39m"
+  },
+  {
+    "name": "text/text with dimmed color",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "\u001b[32m\u001b[2mTest\u001b[22m\u001b[39m"
+  },
+  {
+    "name": "text/ansi-color-hex",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "\u001b[38;2;255;136;0mTest\u001b[39m"
+  },
+  {
+    "name": "text/with-hex-color",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "\u001b[38;2;255;136;0mTest\u001b[39m"
+  },
+  {
+    "name": "text/text with hex color",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "\u001b[38;2;255;136;0mTest\u001b[39m"
+  },
+  {
+    "name": "text/text with hex color - concurrent",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "\u001b[38;2;255;136;0mTest\u001b[39m"
+  },
+  {
+    "name": "text/ansi-color-rgb",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "\u001b[38;2;255;136;0mTest\u001b[39m"
+  },
+  {
+    "name": "text/with-rgb-color",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "\u001b[38;2;255;136;0mTest\u001b[39m"
+  },
+  {
+    "name": "text/text with rgb color",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "\u001b[38;2;255;136;0mTest\u001b[39m"
+  },
+  {
+    "name": "text/ansi-color-ansi256",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "\u001b[38;5;194mTest\u001b[39m"
+  },
+  {
+    "name": "text/with-ansi256-color",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "\u001b[38;5;194mTest\u001b[39m"
+  },
+  {
+    "name": "text/text with ansi256 color",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "\u001b[38;5;194mTest\u001b[39m"
+  },
+  {
+    "name": "text/ansi-background-standard",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "\u001b[42mTest\u001b[49m"
+  },
+  {
+    "name": "text/with-standard-background-color",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "\u001b[42mTest\u001b[49m"
+  },
+  {
+    "name": "text/text with standard background color",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "\u001b[42mTest\u001b[49m"
+  },
+  {
+    "name": "text/ansi-background-hex",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "\u001b[48;2;255;136;0mTest\u001b[49m"
+  },
+  {
+    "name": "text/with-hex-background-color",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "\u001b[48;2;255;136;0mTest\u001b[49m"
+  },
+  {
+    "name": "text/text with hex background color",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "\u001b[48;2;255;136;0mTest\u001b[49m"
+  },
+  {
+    "name": "text/ansi-background-rgb",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "\u001b[48;2;255;136;0mTest\u001b[49m"
+  },
+  {
+    "name": "text/with-rgb-background-color",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "\u001b[48;2;255;136;0mTest\u001b[49m"
+  },
+  {
+    "name": "text/text with rgb background color",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "\u001b[48;2;255;136;0mTest\u001b[49m"
+  },
+  {
+    "name": "text/ansi-background-ansi256",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "\u001b[48;5;194mTest\u001b[49m"
+  },
+  {
+    "name": "text/with-ansi256-background-color",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "\u001b[48;5;194mTest\u001b[49m"
+  },
+  {
+    "name": "text/text with ansi256 background color",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "\u001b[48;5;194mTest\u001b[49m"
+  },
+  {
+    "name": "text/ansi-inverse",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "\u001b[7mTest\u001b[27m"
+  },
+  {
+    "name": "text/with-inversion",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "\u001b[7mTest\u001b[27m"
+  },
+  {
+    "name": "text/text with inversion",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "\u001b[7mTest\u001b[27m"
+  },
+  {
+    "name": "text/text with inversion - concurrent",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "\u001b[7mTest\u001b[27m"
+  },
+  {
+    "name": "text/ansi-leading-whitespace-red",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "\u001b[31m ERROR \u001b[39m"
+  },
+  {
+    "name": "text/ensure wrap-ansi doesn’t trim leading whitespace",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "\u001b[31m ERROR \u001b[39m"
+  },
+  {
+    "name": "text/<Text> with undefined children - concurrent",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": ""
+  },
+  {
+    "name": "text/<Text> with null children - concurrent",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": ""
+  },
+  {
+    "name": "newline/middle-1",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Hello\nWorld"
+  },
+  {
+    "name": "newline/leading-1",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\nWorld"
+  },
+  {
+    "name": "newline/trailing-1",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Hello\n"
+  },
+  {
+    "name": "newline/only-1",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\n"
+  },
+  {
+    "name": "newline/nested-1",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A\nB"
+  },
+  {
+    "name": "newline/sandwich-1",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Top\nMid\nBottom"
+  },
+  {
+    "name": "newline/middle-2",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Hello\n\nWorld"
+  },
+  {
+    "name": "newline/leading-2",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\n\nWorld"
+  },
+  {
+    "name": "newline/trailing-2",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Hello\n\n"
+  },
+  {
+    "name": "newline/only-2",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\n\n"
+  },
+  {
+    "name": "newline/nested-2",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A\n\nB"
+  },
+  {
+    "name": "newline/sandwich-2",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Top\n\nMid\n\nBottom"
+  },
+  {
+    "name": "newline/middle-3",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Hello\n\n\nWorld"
+  },
+  {
+    "name": "newline/leading-3",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\n\n\nWorld"
+  },
+  {
+    "name": "newline/trailing-3",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Hello\n\n\n"
+  },
+  {
+    "name": "newline/only-3",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\n\n\n"
+  },
+  {
+    "name": "newline/nested-3",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A\n\n\nB"
+  },
+  {
+    "name": "newline/sandwich-3",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Top\n\n\nMid\n\n\nBottom"
+  },
+  {
+    "name": "newline/middle-4",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Hello\n\n\n\nWorld"
+  },
+  {
+    "name": "newline/leading-4",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\n\n\n\nWorld"
+  },
+  {
+    "name": "newline/trailing-4",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Hello\n\n\n\n"
+  },
+  {
+    "name": "newline/only-4",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\n\n\n\n"
+  },
+  {
+    "name": "newline/nested-4",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A\n\n\n\nB"
+  },
+  {
+    "name": "newline/sandwich-4",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Top\n\n\n\nMid\n\n\n\nBottom"
+  },
+  {
+    "name": "newline/middle-5",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Hello\n\n\n\n\nWorld"
+  },
+  {
+    "name": "newline/leading-5",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\n\n\n\n\nWorld"
+  },
+  {
+    "name": "newline/trailing-5",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Hello\n\n\n\n\n"
+  },
+  {
+    "name": "newline/only-5",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\n\n\n\n\n"
+  },
+  {
+    "name": "newline/nested-5",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A\n\n\n\n\nB"
+  },
+  {
+    "name": "newline/sandwich-5",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Top\n\n\n\n\nMid\n\n\n\n\nBottom"
+  },
+  {
+    "name": "newline/newline",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Hello\nWorld"
+  },
+  {
+    "name": "newline/multiple newlines",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Hello\n\nWorld"
+  },
+  {
+    "name": "newline/newline - concurrent",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Hello\nWorld"
+  },
+  {
+    "name": "spacer/h-between-8",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "L      R"
+  },
+  {
+    "name": "spacer/h-between-10",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "L        R"
+  },
+  {
+    "name": "spacer/h-between-12",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "L          R"
+  },
+  {
+    "name": "spacer/h-between-14",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "L            R"
+  },
+  {
+    "name": "spacer/h-between-20",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "L                  R"
+  },
+  {
+    "name": "spacer/h-leading-4",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "   R"
+  },
+  {
+    "name": "spacer/h-leading-6",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "     R"
+  },
+  {
+    "name": "spacer/h-leading-8",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "       R"
+  },
+  {
+    "name": "spacer/h-leading-10",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "         R"
+  },
+  {
+    "name": "spacer/h-leading-12",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "           R"
+  },
+  {
+    "name": "spacer/h-trailing-4",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "L"
+  },
+  {
+    "name": "spacer/h-trailing-6",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "L"
+  },
+  {
+    "name": "spacer/h-trailing-8",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "L"
+  },
+  {
+    "name": "spacer/h-trailing-10",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "L"
+  },
+  {
+    "name": "spacer/h-trailing-12",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "L"
+  },
+  {
+    "name": "spacer/h-double-11",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A    B    C"
+  },
+  {
+    "name": "spacer/h-double-15",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A      B      C"
+  },
+  {
+    "name": "spacer/h-double-19",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A        B        C"
+  },
+  {
+    "name": "spacer/h-double-23",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A          B          C"
+  },
+  {
+    "name": "spacer/h-double-27",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A            B            C"
+  },
+  {
+    "name": "spacer/v-between-4",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Top\n\n\nBottom"
+  },
+  {
+    "name": "spacer/v-between-5",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Top\n\n\n\nBottom"
+  },
+  {
+    "name": "spacer/v-between-6",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Top\n\n\n\n\nBottom"
+  },
+  {
+    "name": "spacer/v-between-7",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Top\n\n\n\n\n\nBottom"
+  },
+  {
+    "name": "spacer/v-between-8",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Top\n\n\n\n\n\n\nBottom"
+  },
+  {
+    "name": "spacer/v-double-7",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A\n\n\nB\n\n\nC"
+  },
+  {
+    "name": "spacer/v-double-9",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A\n\n\n\nB\n\n\n\nC"
+  },
+  {
+    "name": "spacer/v-double-11",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A\n\n\n\n\nB\n\n\n\n\nC"
+  },
+  {
+    "name": "spacer/v-double-13",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A\n\n\n\n\n\nB\n\n\n\n\n\nC"
+  },
+  {
+    "name": "spacer/v-double-15",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A\n\n\n\n\n\n\nB\n\n\n\n\n\n\nC"
+  },
+  {
+    "name": "spacer/horizontal spacer",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Left           Right"
+  },
+  {
+    "name": "spacer/vertical spacer",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Top\n\n\n\n\nBottom"
+  },
+  {
+    "name": "spacer/horizontal spacer - concurrent",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Left           Right"
+  },
+  {
+    "name": "spacer/vertical spacer - concurrent",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Top\n\n\n\n\nBottom"
+  },
+  {
+    "name": "transform/identity-basic",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "hello"
+  },
+  {
+    "name": "transform/identity-multiline",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "hello\nworld"
+  },
+  {
+    "name": "transform/identity-nested",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "{0: hello}"
+  },
+  {
+    "name": "transform/identity-inside-text",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "pre mid post"
+  },
+  {
+    "name": "transform/identity-empty",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": ""
+  },
+  {
+    "name": "transform/bracket_index-basic",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "[0: hello]"
+  },
+  {
+    "name": "transform/bracket_index-multiline",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "[0: hello]\n[1: world]"
+  },
+  {
+    "name": "transform/bracket_index-nested",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "[0: {0: hello}]"
+  },
+  {
+    "name": "transform/bracket_index-inside-text",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "pre [1: mid] post"
+  },
+  {
+    "name": "transform/bracket_index-empty",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": ""
+  },
+  {
+    "name": "transform/brace_index-basic",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "{0: hello}"
+  },
+  {
+    "name": "transform/brace_index-multiline",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "{0: hello}\n{1: world}"
+  },
+  {
+    "name": "transform/brace_index-nested",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "{0: {0: hello}}"
+  },
+  {
+    "name": "transform/brace_index-inside-text",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "pre {1: mid} post"
+  },
+  {
+    "name": "transform/brace_index-empty",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": ""
+  },
+  {
+    "name": "transform/angle-basic",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "<hello>"
+  },
+  {
+    "name": "transform/angle-multiline",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "<hello>\n<world>"
+  },
+  {
+    "name": "transform/angle-nested",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "<{0: hello}>"
+  },
+  {
+    "name": "transform/angle-inside-text",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "pre <mid> post"
+  },
+  {
+    "name": "transform/angle-empty",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": ""
+  },
+  {
+    "name": "transform/upper-basic",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "HELLO"
+  },
+  {
+    "name": "transform/upper-multiline",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "HELLO\nWORLD"
+  },
+  {
+    "name": "transform/upper-nested",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "{0: HELLO}"
+  },
+  {
+    "name": "transform/upper-inside-text",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "pre MID post"
+  },
+  {
+    "name": "transform/upper-empty",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": ""
+  },
+  {
+    "name": "transform/reverse-basic",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "olleh"
+  },
+  {
+    "name": "transform/reverse-multiline",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "olleh\ndlrow"
+  },
+  {
+    "name": "transform/reverse-nested",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "}olleh :0{"
+  },
+  {
+    "name": "transform/reverse-inside-text",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "pre dim post"
+  },
+  {
+    "name": "transform/reverse-empty",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": ""
+  },
+  {
+    "name": "transform/bracket_index-squash-multi-text",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "[0: {0: hello world}]"
+  },
+  {
+    "name": "transform/transform children",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "[0: {0: test}]"
+  },
+  {
+    "name": "transform/transform children - concurrent",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "[0: {0: test}]"
+  },
+  {
+    "name": "transform/bracket_index-squash-nested-text",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "[0: {0: hello world}]"
+  },
+  {
+    "name": "transform/squash multiple text nodes",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "[0: {0: hello world}]"
+  },
+  {
+    "name": "transform/transform with multiple lines",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "[0: hello world]\n[1: goodbye world]"
+  },
+  {
+    "name": "transform/squash multiple nested text nodes",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "[0: {0: hello world}]"
+  },
+  {
+    "name": "transform/identity-empty-text-child",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": ""
+  },
+  {
+    "name": "transform/squash empty `<Text>` nodes",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": ""
+  },
+  {
+    "name": "transform/undefined-child",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": ""
+  },
+  {
+    "name": "transform/null-child",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": ""
+  },
+  {
+    "name": "transform/<Transform> with undefined children",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": ""
+  },
+  {
+    "name": "transform/<Transform> with null children",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": ""
+  },
+  {
+    "name": "transform/screen-reader-accessibility-label",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "spoken value"
+  },
+  {
+    "name": "transform/screen-reader-accessibility-label-parent-role",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "button: spoken value"
+  },
+  {
+    "name": "box/row-basic-two",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "AB"
+  },
+  {
+    "name": "box/row-basic-three",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "ABC"
+  },
+  {
+    "name": "box/display-flex",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "X"
+  },
+  {
+    "name": "box/display flex",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "X"
+  },
+  {
+    "name": "box/display-none",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Doggo"
+  },
+  {
+    "name": "box/display none",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Doggo"
+  },
+  {
+    "name": "box/row-reverse-basic-two",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "  BA"
+  },
+  {
+    "name": "box/gap-wrap",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A B\n\nC"
+  },
+  {
+    "name": "box/gap",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A B\n\nC"
+  },
+  {
+    "name": "box/gap - concurrent",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A B\n\nC"
+  },
+  {
+    "name": "box/gap-column",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A B"
+  },
+  {
+    "name": "box/column gap",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A B"
+  },
+  {
+    "name": "box/gap-row",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A\n\nB"
+  },
+  {
+    "name": "box/row gap",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A\n\nB"
+  },
+  {
+    "name": "box/flex-wrap-row-nowrap",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "BC\n"
+  },
+  {
+    "name": "box/row - no wrap",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "BC\n"
+  },
+  {
+    "name": "box/flex-wrap-row-wrap",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A\nBC"
+  },
+  {
+    "name": "box/row - wrap content",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A\nBC"
+  },
+  {
+    "name": "box/column-basic-two",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A\nB"
+  },
+  {
+    "name": "box/direction column",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A\nB"
+  },
+  {
+    "name": "box/column-basic-three",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A\nB\nC"
+  },
+  {
+    "name": "box/flex-wrap-column-nowrap",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "B\nC"
+  },
+  {
+    "name": "box/column - no wrap",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "B\nC"
+  },
+  {
+    "name": "box/flex-wrap-column-wrap",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "AC\nB"
+  },
+  {
+    "name": "box/column - wrap content",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "AC\nB"
+  },
+  {
+    "name": "box/column-reverse-basic-two",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\n\nB\nA"
+  },
+  {
+    "name": "box/direction column reverse",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\n\nB\nA"
+  },
+  {
+    "name": "box/flex-wrap-column-wrap-reverse",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": " CA\n  B"
+  },
+  {
+    "name": "box/column - wrap content reverse",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": " CA\n  B"
+  },
+  {
+    "name": "box/flex-wrap-row-wrap-reverse",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\nC\nAB"
+  },
+  {
+    "name": "box/row - wrap content reverse",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\nC\nAB"
+  },
+  {
+    "name": "box/direction row",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "AB"
+  },
+  {
+    "name": "box/direction row reverse",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "  BA"
+  },
+  {
+    "name": "box/don’t squash text nodes when column direction is applied",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A\nB"
+  },
+  {
+    "name": "box/justify-center-row-one",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "   ABC"
+  },
+  {
+    "name": "box/justify-center-row-two",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "    AB"
+  },
+  {
+    "name": "box/justify-end-row-one",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "      ABC"
+  },
+  {
+    "name": "box/justify-end-row-two",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "        AB"
+  },
+  {
+    "name": "box/justify-between-row-two",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A   B"
+  },
+  {
+    "name": "box/justify-around-row-two",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A  B"
+  },
+  {
+    "name": "box/justify-between-row-three",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A  B  C"
+  },
+  {
+    "name": "box/justify-center-column-one",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\nA\n"
+  },
+  {
+    "name": "box/justify-center-column-two",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\nA\nB\n"
+  },
+  {
+    "name": "box/justify-end-column-one",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\n\nA"
+  },
+  {
+    "name": "box/justify-end-column-two",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\n\nA\nB"
+  },
+  {
+    "name": "box/justify-between-column-two",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A\n\n\nB"
+  },
+  {
+    "name": "box/justify-around-column-two",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A\n\n\nB\n"
+  },
+  {
+    "name": "box/justify-between-column-three",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A\n\nB\n\nC"
+  },
+  {
+    "name": "box/padding-all-one",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\n X\n"
+  },
+  {
+    "name": "box/padding-all-two",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\n\n  X\n\n"
+  },
+  {
+    "name": "box/padding",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\n\n  X\n\n"
+  },
+  {
+    "name": "box/padding-x-one",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": " X Y"
+  },
+  {
+    "name": "box/padding-x-two",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "  X  Y"
+  },
+  {
+    "name": "box/padding X",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "  X  Y"
+  },
+  {
+    "name": "box/padding-y-one",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\nX\n"
+  },
+  {
+    "name": "box/padding-y-two",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\n\nX\n\n"
+  },
+  {
+    "name": "box/padding Y",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\n\nX\n\n"
+  },
+  {
+    "name": "box/padding-top-two",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\n\nX"
+  },
+  {
+    "name": "box/padding top",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\n\nX"
+  },
+  {
+    "name": "box/padding-bottom-two",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "X\n\n"
+  },
+  {
+    "name": "box/padding bottom",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "X\n\n"
+  },
+  {
+    "name": "box/padding-left-two",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "  X"
+  },
+  {
+    "name": "box/padding left",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "  X"
+  },
+  {
+    "name": "box/padding-right-two",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "X  Y"
+  },
+  {
+    "name": "box/padding right",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "X  Y"
+  },
+  {
+    "name": "box/nested-padding",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\n\n  X\n\n"
+  },
+  {
+    "name": "box/nested padding",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\n\n\n\n    X\n\n\n\n"
+  },
+  {
+    "name": "box/multiline-padding",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\n A\n B\n"
+  },
+  {
+    "name": "box/padding with multiline string",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\n\n  A\n  B\n\n"
+  },
+  {
+    "name": "box/padding-text-newlines",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\n Hello\n World\n"
+  },
+  {
+    "name": "box/apply padding to text with newlines",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\n Hello\n World\n"
+  },
+  {
+    "name": "box/padding-wrapped-text",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\n Hel\n lo\n Wor\n ld\n"
+  },
+  {
+    "name": "box/apply padding to wrapped text",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\n Hel\n lo\n Wor\n ld\n"
+  },
+  {
+    "name": "box/flex-grow-row",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A   B"
+  },
+  {
+    "name": "box/flex-grow-one",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A    B"
+  },
+  {
+    "name": "box/flex-grow-column",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A\n\n\nB\n\n"
+  },
+  {
+    "name": "box/flex-shrink-none",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A     B     C"
+  },
+  {
+    "name": "box/flex-shrink-equal",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A    B   C"
+  },
+  {
+    "name": "box/default-flex-shrink-text-pair",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "HellWorl\no   d"
+  },
+  {
+    "name": "box/default-flex-shrink-text-pair-bordered",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭────────╮\n│HellWorl│\n│o   d   │\n╰────────╯"
+  },
+  {
+    "name": "box/default-flex-shrink-text-box-text",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "ABCEFGIJKL\n   H"
+  },
+  {
+    "name": "box/default-flex-shrink-mixed-bordered",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭───────╮\n│AAB  CC│\n│A      │\n╰───────╯"
+  },
+  {
+    "name": "box/default-flex-shrink-text-pair-space",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "HelloWorld\n"
+  },
+  {
+    "name": "box/default-flex-shrink-box-text-plain",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A    BBBB\n"
+  },
+  {
+    "name": "box/default-flex-shrink-text-box-plain",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "AAAAB\n"
+  },
+  {
+    "name": "box/default-flex-shrink-mixed-plain",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "AAAB   CC\nA"
+  },
+  {
+    "name": "box/default-flex-shrink-text-triple",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "ABCEFGIJKL\n"
+  },
+  {
+    "name": "box/default-flex-shrink-text-triple-bordered",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭──────────╮\n│ABCEFGIJKL│\n│          │\n╰──────────╯"
+  },
+  {
+    "name": "box/default-flex-shrink-box-text-box",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "ABCEFGHIJK\nD      L"
+  },
+  {
+    "name": "box/default-flex-shrink-text-box-box",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "ABCEFG IJK\n   H   L"
+  },
+  {
+    "name": "box/default-flex-shrink-box-box-text",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "ABCEFGIJKL\nD  H"
+  },
+  {
+    "name": "box/default-flex-shrink-wide-middle",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "ABCEFGHJKLM\n   I"
+  },
+  {
+    "name": "box/default-flex-shrink-text-space-triple",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "AB CD EFGH"
+  },
+  {
+    "name": "box/overflow-x-hidden-single-text",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Hello"
+  },
+  {
+    "name": "box/overflow-x-hidden-left-intersection",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "lo Wor"
+  },
+  {
+    "name": "box/overflow-x-before-left-edge",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": ""
+  },
+  {
+    "name": "box/overflow-x-after-right-edge",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": ""
+  },
+  {
+    "name": "box/overflow-x-right-intersection",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "   Hel"
+  },
+  {
+    "name": "box/overflow-y-hidden-single-text",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Hello"
+  },
+  {
+    "name": "box/overflow-y-hidden-multi-boxes",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Line #1\nLine #2"
+  },
+  {
+    "name": "box/overflow-y-hidden-top-intersection",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "World"
+  },
+  {
+    "name": "box/overflow-hidden-both",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Hello"
+  },
+  {
+    "name": "box/border-round-full-width",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭──────────────────────────────────────────────────────────────────────────────────────────────────╮\n│Hello World                                                                                       │\n╰──────────────────────────────────────────────────────────────────────────────────────────────────╯"
+  },
+  {
+    "name": "box/single node - full width box",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭──────────────────────────────────────────────────────────────────────────────────────────────────╮\n│Hello World                                                                                       │\n╰──────────────────────────────────────────────────────────────────────────────────────────────────╯"
+  },
+  {
+    "name": "box/render border after update",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭──────────────────────────────────────────────────────────────────────────────────────────────────╮\n│Hello World                                                                                       │\n╰──────────────────────────────────────────────────────────────────────────────────────────────────╯"
+  },
+  {
+    "name": "box/single node - full width box - concurrent",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭──────────────────────────────────────────────────────────────────────────────────────────────────╮\n│Hello World                                                                                       │\n╰──────────────────────────────────────────────────────────────────────────────────────────────────╯"
+  },
+  {
+    "name": "box/single node - full width box with colorful border",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "\u001b[32m╭──────────────────────────────────────────────────────────────────────────────────────────────────╮\u001b[39m\n\u001b[32m│\u001b[39mHello World                                                                                       \u001b[32m│\u001b[39m\n\u001b[32m╰──────────────────────────────────────────────────────────────────────────────────────────────────╯\u001b[39m"
+  },
+  {
+    "name": "box/render border after update - concurrent",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "\u001b[32m╭──────────────────────────────────────────────────────────────────────────────────────────────────╮\u001b[39m\n\u001b[32m│\u001b[39mHello World                                                                                       \u001b[32m│\u001b[39m\n\u001b[32m╰──────────────────────────────────────────────────────────────────────────────────────────────────╯\u001b[39m"
+  },
+  {
+    "name": "box/border-round-full-width-multi-node",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭──────────────────────────────────────────────────────────────────────────────────────────────────╮\n│Hello World                                                                                       │\n╰──────────────────────────────────────────────────────────────────────────────────────────────────╯"
+  },
+  {
+    "name": "box/multiple nodes - full width box",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭──────────────────────────────────────────────────────────────────────────────────────────────────╮\n│Hello World                                                                                       │\n╰──────────────────────────────────────────────────────────────────────────────────────────────────╯"
+  },
+  {
+    "name": "box/multiple nodes - full width box with colorful border",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "\u001b[32m╭──────────────────────────────────────────────────────────────────────────────────────────────────╮\u001b[39m\n\u001b[32m│\u001b[39mHello World                                                                                       \u001b[32m│\u001b[39m\n\u001b[32m╰──────────────────────────────────────────────────────────────────────────────────────────────────╯\u001b[39m"
+  },
+  {
+    "name": "box/border-round-fit-content",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭───────────╮\n│Hello World│\n╰───────────╯"
+  },
+  {
+    "name": "box/single node - fit-content box",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭───────────╮\n│Hello World│\n╰───────────╯"
+  },
+  {
+    "name": "box/single node - fit-content box - concurrent",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭───────────╮\n│Hello World│\n╰───────────╯"
+  },
+  {
+    "name": "box/border-round-fit-content-multi-node",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭───────────╮\n│Hello World│\n╰───────────╯"
+  },
+  {
+    "name": "box/multiple nodes - fit-content box",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭───────────╮\n│Hello World│\n╰───────────╯"
+  },
+  {
+    "name": "box/border-round-fit-content-wide",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭──────────╮\n│こんにちは│\n╰──────────╯"
+  },
+  {
+    "name": "box/single node - fit-content box with wide characters",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭──────────╮\n│こんにちは│\n╰──────────╯"
+  },
+  {
+    "name": "box/border-round-fit-content-emojis",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭────╮\n│🌊🌊│\n╰────╯"
+  },
+  {
+    "name": "box/single node - fit-content box with emojis",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭────╮\n│🌊🌊│\n╰────╯"
+  },
+  {
+    "name": "box/single node - fit-content box with variation selector emojis",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭──────╮\n│🌡️⚠️✅│\n╰──────╯"
+  },
+  {
+    "name": "box/border-round-fixed-width",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭──────────────────╮\n│Hello World       │\n╰──────────────────╯"
+  },
+  {
+    "name": "box/single node - fixed width box",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭──────────────────╮\n│Hello World       │\n╰──────────────────╯"
+  },
+  {
+    "name": "box/border-round-fixed-width-multi-node",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭──────────────────╮\n│Hello World       │\n╰──────────────────╯"
+  },
+  {
+    "name": "box/multiple nodes - fixed width box",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭──────────────────╮\n│Hello World       │\n╰──────────────────╯"
+  },
+  {
+    "name": "box/border-round-fixed-width-height",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭──────────────────╮\n│Hello World       │\n│                  │\n│                  │\n│                  │\n│                  │\n│                  │\n│                  │\n│                  │\n│                  │\n│                  │\n│                  │\n│                  │\n│                  │\n│                  │\n│                  │\n│                  │\n│                  │\n│                  │\n╰──────────────────╯"
+  },
+  {
+    "name": "box/single node - fixed width and height box",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭──────────────────╮\n│Hello World       │\n│                  │\n│                  │\n│                  │\n│                  │\n│                  │\n│                  │\n│                  │\n│                  │\n│                  │\n│                  │\n│                  │\n│                  │\n│                  │\n│                  │\n│                  │\n│                  │\n│                  │\n╰──────────────────╯"
+  },
+  {
+    "name": "box/border-round-fixed-width-height-multi-node",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭──────────────────╮\n│Hello World       │\n│                  │\n│                  │\n│                  │\n│                  │\n│                  │\n│                  │\n│                  │\n│                  │\n│                  │\n│                  │\n│                  │\n│                  │\n│                  │\n│                  │\n│                  │\n│                  │\n│                  │\n╰──────────────────╯"
+  },
+  {
+    "name": "box/multiple nodes - fixed width and height box",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭──────────────────╮\n│Hello World       │\n│                  │\n│                  │\n│                  │\n│                  │\n│                  │\n│                  │\n│                  │\n│                  │\n│                  │\n│                  │\n│                  │\n│                  │\n│                  │\n│                  │\n│                  │\n│                  │\n│                  │\n╰──────────────────╯"
+  },
+  {
+    "name": "box/border-round-padding",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭─────────────╮\n│             │\n│ Hello World │\n│             │\n╰─────────────╯"
+  },
+  {
+    "name": "box/single node - box with padding",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭─────────────╮\n│             │\n│ Hello World │\n│             │\n╰─────────────╯"
+  },
+  {
+    "name": "box/border-round-padding-multi-node",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭─────────────╮\n│             │\n│ Hello World │\n│             │\n╰─────────────╯"
+  },
+  {
+    "name": "box/multiple nodes - box with padding",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭─────────────╮\n│             │\n│ Hello World │\n│             │\n╰─────────────╯"
+  },
+  {
+    "name": "box/border-round-justify-center",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭──────────────────╮\n│   Hello World    │\n╰──────────────────╯"
+  },
+  {
+    "name": "box/single node - box with horizontal alignment",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭──────────────────╮\n│   Hello World    │\n╰──────────────────╯"
+  },
+  {
+    "name": "box/border-round-justify-center-multi-node",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭──────────────────╮\n│   Hello World    │\n╰──────────────────╯"
+  },
+  {
+    "name": "box/multiple nodes - box with horizontal alignment",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭──────────────────╮\n│   Hello World    │\n╰──────────────────╯"
+  },
+  {
+    "name": "box/border-round-align-center",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭───────────╮\n│           │\n│           │\n│           │\n│           │\n│           │\n│           │\n│           │\n│           │\n│Hello World│\n│           │\n│           │\n│           │\n│           │\n│           │\n│           │\n│           │\n│           │\n│           │\n╰───────────╯"
+  },
+  {
+    "name": "box/single node - box with vertical alignment",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭───────────╮\n│           │\n│           │\n│           │\n│           │\n│           │\n│           │\n│           │\n│           │\n│Hello World│\n│           │\n│           │\n│           │\n│           │\n│           │\n│           │\n│           │\n│           │\n│           │\n╰───────────╯"
+  },
+  {
+    "name": "box/border-round-align-center-multi-node",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭───────────╮\n│           │\n│           │\n│           │\n│           │\n│           │\n│           │\n│           │\n│           │\n│Hello World│\n│           │\n│           │\n│           │\n│           │\n│           │\n│           │\n│           │\n│           │\n│           │\n╰───────────╯"
+  },
+  {
+    "name": "box/multiple nodes - box with vertical alignment",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭───────────╮\n│           │\n│           │\n│           │\n│           │\n│           │\n│           │\n│           │\n│           │\n│Hello World│\n│           │\n│           │\n│           │\n│           │\n│           │\n│           │\n│           │\n│           │\n│           │\n╰───────────╯"
+  },
+  {
+    "name": "box/border-round-wrap",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭────────╮\n│Hello   │\n│World   │\n╰────────╯"
+  },
+  {
+    "name": "box/single node - box with wrapping",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭────────╮\n│Hello   │\n│World   │\n╰────────╯"
+  },
+  {
+    "name": "box/border-round-wrap-multi-node",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭────────╮\n│Hello   │\n│World   │\n╰────────╯"
+  },
+  {
+    "name": "box/multiple nodes - box with wrapping",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭────────╮\n│Hello   │\n│World   │\n╰────────╯"
+  },
+  {
+    "name": "box/border-round-wrap-long-first-node",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭────────╮\n│Helloooo│\n│oo World│\n╰────────╯"
+  },
+  {
+    "name": "box/multiple nodes - box with wrapping and long first node",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭────────╮\n│Helloooo│\n│oo World│\n╰────────╯"
+  },
+  {
+    "name": "box/border-round-wrap-very-long-first-node",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭────────╮\n│Helloooo│\n│oooooooo│\n│o World │\n╰────────╯"
+  },
+  {
+    "name": "box/multiple nodes - box with wrapping and very long first node",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭────────╮\n│Helloooo│\n│oooooooo│\n│o World │\n╰────────╯"
+  },
+  {
+    "name": "box/border-round-nested",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭──────────────────────────────────────╮\n│                                      │\n│ ╭─────────────╮                      │\n│ │             │                      │\n│ │ Hello World │                      │\n│ │             │                      │\n│ ╰─────────────╯                      │\n│                                      │\n╰──────────────────────────────────────╯"
+  },
+  {
+    "name": "box/nested boxes",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭──────────────────────────────────────╮\n│                                      │\n│ ╭─────────────╮                      │\n│ │             │                      │\n│ │ Hello World │                      │\n│ │             │                      │\n│ ╰─────────────╯                      │\n│                                      │\n╰──────────────────────────────────────╯"
+  },
+  {
+    "name": "box/nested boxes - concurrent",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭──────────────────────────────────────╮\n│                                      │\n│ ╭─────────────╮                      │\n│ │             │                      │\n│ │ Hello World │                      │\n│ │             │                      │\n│ ╰─────────────╯                      │\n│                                      │\n╰──────────────────────────────────────╯"
+  },
+  {
+    "name": "box/border-round-row-wide-nested",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭────────────────────────────────╮\n│╭────────╮╭────────╮╭──────────╮│\n││ミスター││スポック││カーク船長││\n│╰────────╯╰────────╯╰──────────╯│\n╰────────────────────────────────╯"
+  },
+  {
+    "name": "box/nested boxes - fit-content box with wide characters on flex-direction row",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭────────────────────────────────╮\n│╭────────╮╭────────╮╭──────────╮│\n││ミスター││スポック││カーク船長││\n│╰────────╯╰────────╯╰──────────╯│\n╰────────────────────────────────╯"
+  },
+  {
+    "name": "box/border-round-row-emoji-nested",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭────────────╮\n│╭──╮╭──╮╭──╮│\n││🦾││🌏││😋││\n│╰──╯╰──╯╰──╯│\n╰────────────╯"
+  },
+  {
+    "name": "box/nested boxes - fit-content box with emojis on flex-direction row",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭────────────╮\n│╭──╮╭──╮╭──╮│\n││🦾││🌏││😋││\n│╰──╯╰──╯╰──╯│\n╰────────────╯"
+  },
+  {
+    "name": "box/border-round-column-wide-nested",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭────────────╮\n│╭──────────╮│\n││ミスター  ││\n│╰──────────╯│\n│╭──────────╮│\n││スポック  ││\n│╰──────────╯│\n│╭──────────╮│\n││カーク船長││\n│╰──────────╯│\n╰────────────╯"
+  },
+  {
+    "name": "box/nested boxes - fit-content box with wide characters on flex-direction column",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭────────────╮\n│╭──────────╮│\n││ミスター  ││\n│╰──────────╯│\n│╭──────────╮│\n││スポック  ││\n│╰──────────╯│\n│╭──────────╮│\n││カーク船長││\n│╰──────────╯│\n╰────────────╯"
+  },
+  {
+    "name": "box/border-round-column-emoji-nested",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭────╮\n│╭──╮│\n││🦾││\n│╰──╯│\n│╭──╮│\n││🌏││\n│╰──╯│\n│╭──╮│\n││😋││\n│╰──╯│\n╰────╯"
+  },
+  {
+    "name": "box/nested boxes - fit-content box with emojis on flex-direction column",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭────╮\n│╭──╮│\n││🦾││\n│╰──╯│\n│╭──╮│\n││🌏││\n│╰──╯│\n│╭──╮│\n││😋││\n│╰──╯│\n╰────╯"
+  },
+  {
+    "name": "box/border-round-hide-top",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Above\n│Content│\n╰───────╯\nBelow"
+  },
+  {
+    "name": "box/hide top border",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Above\n│Content│\n╰───────╯\nBelow"
+  },
+  {
+    "name": "box/border-round-hide-left-right",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Above\n───────\nContent\n───────\nBelow"
+  },
+  {
+    "name": "box/hide left and right border",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Above\n───────\nContent\n───────\nBelow"
+  },
+  {
+    "name": "box/overflow-x-hidden-border-round",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭────╮\n│Hell│\n╰────╯"
+  },
+  {
+    "name": "box/overflow-y-hidden-border-round",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭──────────────────╮\n│Hello             │\n╰──────────────────╯"
+  },
+  {
+    "name": "box/border-round-hide-bottom",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Above\n╭───────╮\n│Content│\nBelow"
+  },
+  {
+    "name": "box/hide bottom border",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Above\n╭───────╮\n│Content│\nBelow"
+  },
+  {
+    "name": "box/border-round-hide-top-bottom",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Above\n│Content│\nBelow"
+  },
+  {
+    "name": "box/hide top and bottom borders",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Above\n│Content│\nBelow"
+  },
+  {
+    "name": "box/border-round-hide-left",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Above\n───────╮\nContent│\n───────╯\nBelow"
+  },
+  {
+    "name": "box/hide left border",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Above\n───────╮\nContent│\n───────╯\nBelow"
+  },
+  {
+    "name": "box/border-round-hide-right",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Above\n╭───────\n│Content\n╰───────\nBelow"
+  },
+  {
+    "name": "box/hide right border",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Above\n╭───────\n│Content\n╰───────\nBelow"
+  },
+  {
+    "name": "box/border-round-hide-all",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Above\nContent\nBelow"
+  },
+  {
+    "name": "box/hide all borders",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Above\nContent\nBelow"
+  },
+  {
+    "name": "box/border-custom-arrow",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "↘↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↙\n→Content                                                                                           ←\n↗↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↖"
+  },
+  {
+    "name": "box/custom border style",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "↘↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↙\n→Content                                                                                           ←\n↗↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↖"
+  },
+  {
+    "name": "box/background-fixed-area",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Hello\n\n"
+  },
+  {
+    "name": "box/background-border-round",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭────────╮\n│Hi      │\n│        │\n│        │\n╰────────╯"
+  },
+  {
+    "name": "box/background-padding-area",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\n Hi\n\n\n"
+  },
+  {
+    "name": "box/background-center-area",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "    Hi\n\n"
+  },
+  {
+    "name": "box/background-column-area",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Line 1\nLine 2\n\n\n"
+  },
+  {
+    "name": "box/overflow-x-hidden-child-border",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭─────\n│Hello\n╰─────"
+  },
+  {
+    "name": "box/overflow-x-hidden-multi-text-border-container",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭──────╮\n│Hello │\n╰──────╯"
+  },
+  {
+    "name": "box/overflow-x-hidden-multi-boxes",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Hello"
+  },
+  {
+    "name": "box/overflow-x-hidden-multi-boxes-border-container",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭──────╮\n│Hello │\n╰──────╯"
+  },
+  {
+    "name": "box/overflow-x-before-left-border-container",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭────╮\n│    │\n╰────╯"
+  },
+  {
+    "name": "box/overflow-y-hidden-multi-boxes-border-container",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭───────╮\n│Line #1│\n│Line #2│\n╰───────╯"
+  },
+  {
+    "name": "box/overflow-y-hidden-top-intersection-border-container",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭─────╮\n│World│\n╰─────╯"
+  },
+  {
+    "name": "box/overflow-y-hidden-above-top",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": ""
+  },
+  {
+    "name": "box/overflow-y-hidden-below-bottom",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": ""
+  },
+  {
+    "name": "box/overflow-y-hidden-bottom-intersection",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Hello"
+  },
+  {
+    "name": "box/overflow-y-hidden-above-top-border-container",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭─────╮\n│     │\n╰─────╯"
+  },
+  {
+    "name": "box/overflow-y-hidden-below-bottom-border-container",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭─────╮\n│     │\n╰─────╯"
+  },
+  {
+    "name": "box/overflow-y-hidden-bottom-intersection-border-container",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭─────╮\n│Hello│\n╰─────╯"
+  },
+  {
+    "name": "box/overflow-hidden-single-text-border-container",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭──────╮\n│Hello │\n╰──────╯\n"
+  },
+  {
+    "name": "box/overflow-x-hidden-multi-text-child-border",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭───────\n│HelloWo\n│\n╰───────"
+  },
+  {
+    "name": "box/overflow-hidden-top-left-intersection",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "CC\nDD\n\n"
+  },
+  {
+    "name": "box/overflow-hidden-top-right-intersection",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "  CC\n  DD\n\n"
+  },
+  {
+    "name": "box/overflow-hidden-bottom-left-intersection",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\n\nAA\nBB"
+  },
+  {
+    "name": "box/overflow-hidden-bottom-right-intersection",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\n\n  AA\n  BB"
+  },
+  {
+    "name": "box/overflow-hidden-multi-boxes-border-container",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭────╮\n│TLTR│\n╰────╯\n"
+  },
+  {
+    "name": "box/nested-overflow",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "AA\nBB\nXXXX\nYYYY\n"
+  },
+  {
+    "name": "box/out-of-bounds-writes",
+    "columns": 10,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭──────────╮\n│         │\n│         │\n│         │\n│         │\n│         │\n│         │\n│         │\n│         │\n╰──────────╯"
+  },
+  {
+    "name": "box/default-flex-shrink-equal",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A    B   C"
+  },
+  {
+    "name": "box/default-flex-shrink-equal-bordered",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭──────────╮\n│A    B   C│\n╰──────────╯"
+  },
+  {
+    "name": "box/margin-all-one",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\n X\n"
+  },
+  {
+    "name": "box/margin-all-two",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\n\n  X\n\n"
+  },
+  {
+    "name": "box/margin",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\n\n  X\n\n"
+  },
+  {
+    "name": "box/margin-x-one",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": " X Y"
+  },
+  {
+    "name": "box/margin-x-two",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "  X  Y"
+  },
+  {
+    "name": "box/margin X",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "  X  Y"
+  },
+  {
+    "name": "box/margin-y-one",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\nX\n"
+  },
+  {
+    "name": "box/margin-y-two",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\n\nX\n\n"
+  },
+  {
+    "name": "box/margin Y",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\n\nX\n\n"
+  },
+  {
+    "name": "box/margin-top-two",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\n\nX"
+  },
+  {
+    "name": "box/margin top",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\n\nX"
+  },
+  {
+    "name": "box/margin-bottom-two",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "X\n\n"
+  },
+  {
+    "name": "box/margin bottom",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "X\n\n"
+  },
+  {
+    "name": "box/margin-left-two",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "  X"
+  },
+  {
+    "name": "box/margin left",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "  X"
+  },
+  {
+    "name": "box/margin-right-two",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "X  Y"
+  },
+  {
+    "name": "box/margin right",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "X  Y"
+  },
+  {
+    "name": "box/nested-margin",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\n\n  X\n\n"
+  },
+  {
+    "name": "box/nested margin",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\n\n\n\n    X\n\n\n\n"
+  },
+  {
+    "name": "box/multiline-margin",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\n A\n B\n"
+  },
+  {
+    "name": "box/margin with multiline string",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\n\n  A\n  B\n\n"
+  },
+  {
+    "name": "box/margin-text-newlines",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\n Hello\n World\n"
+  },
+  {
+    "name": "box/apply margin to text with newlines",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\n Hello\n World\n"
+  },
+  {
+    "name": "box/margin-wrapped-text",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\n Hello\n World\n"
+  },
+  {
+    "name": "box/apply margin to wrapped text",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\n Hello\n World\n"
+  },
+  {
+    "name": "box/align-center-row",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\nTest\n"
+  },
+  {
+    "name": "box/align-end-row",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\n\nTest"
+  },
+  {
+    "name": "box/align-center-row-two",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\nAB\n"
+  },
+  {
+    "name": "box/align-end-row-two",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\n\nAB"
+  },
+  {
+    "name": "box/align-center-column",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "   Test"
+  },
+  {
+    "name": "box/align-end-column",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "      Test"
+  },
+  {
+    "name": "box/justify-evenly-row",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "  A   B"
+  },
+  {
+    "name": "box/align-self-center-row",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\nTest\n"
+  },
+  {
+    "name": "box/align-self-center-row-two",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\nAB\n"
+  },
+  {
+    "name": "box/align-self-end-row",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\n\nTest"
+  },
+  {
+    "name": "box/align-self-end-row-two",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\n\nAB"
+  },
+  {
+    "name": "box/align-self-center-column",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "   Test"
+  },
+  {
+    "name": "box/align-self-end-column",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "      Test"
+  },
+  {
+    "name": "box/flex-basis-row",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A  B"
+  },
+  {
+    "name": "box/flex-basis-row-percent",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A  B"
+  },
+  {
+    "name": "box/flex-basis-column",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A\n\n\nB\n\n"
+  },
+  {
+    "name": "box/flex-basis-column-percent",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A\n\n\nB\n\n"
+  },
+  {
+    "name": "box/width-fixed-row",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A    B"
+  },
+  {
+    "name": "box/set-width",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A    B"
+  },
+  {
+    "name": "box/set width",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A    B"
+  },
+  {
+    "name": "box/set width - concurrent",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A    B"
+  },
+  {
+    "name": "box/width-percent-row",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A    B"
+  },
+  {
+    "name": "box/set-width-in-percent",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A    B"
+  },
+  {
+    "name": "box/set width in percent",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A    B"
+  },
+  {
+    "name": "box/min-width-small",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A    B"
+  },
+  {
+    "name": "box/set-min-width-small",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A    B"
+  },
+  {
+    "name": "box/set min width",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A    B"
+  },
+  {
+    "name": "box/min-width-large",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "AAAAAB"
+  },
+  {
+    "name": "box/set-min-width-large",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "AAAAAB"
+  },
+  {
+    "name": "box/min-width-percent-row",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A                                                 B"
+  },
+  {
+    "name": "box/set min width in percent",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A                                                 B"
+  },
+  {
+    "name": "box/height-fixed-row",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "AB\n\n\n"
+  },
+  {
+    "name": "box/set-height",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "AB\n\n\n"
+  },
+  {
+    "name": "box/set height",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "AB\n\n\n"
+  },
+  {
+    "name": "box/set height - concurrent",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "AB\n\n\n"
+  },
+  {
+    "name": "box/height-percent-column",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A\n\n\nB\n\n"
+  },
+  {
+    "name": "box/set-height-in-percent",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A\n\n\nB\n\n"
+  },
+  {
+    "name": "box/set height in percent",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A\n\n\nB\n\n"
+  },
+  {
+    "name": "box/height-cut-text",
+    "columns": 4,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "AAAA\nBBBB"
+  },
+  {
+    "name": "box/cut-text-over-the-set-height",
+    "columns": 4,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "AAAA\nBBBB"
+  },
+  {
+    "name": "box/cut text over the set height",
+    "columns": 4,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "AAAA\nBBBB"
+  },
+  {
+    "name": "box/min-height-small",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A\n\n\n"
+  },
+  {
+    "name": "box/set-min-height-small",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A\n\n\n"
+  },
+  {
+    "name": "box/set min height",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A\n\n\n"
+  },
+  {
+    "name": "box/min-height-large",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A\n\n\n"
+  },
+  {
+    "name": "box/set-min-height-large",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A\n\n\n"
+  },
+  {
+    "name": "box/text-width-wide-fixed-box",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "🍔|\n⏳|"
+  },
+  {
+    "name": "box/wide characters do not add extra space inside fixed-width Box",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "🍔|\n⏳|"
+  },
+  {
+    "name": "box/border-round-fit-content-variation-emojis",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭──────╮\n│🌡️⚠️✅│\n╰──────╯"
+  },
+  {
+    "name": "box/single-node-fit-content-box-with-variation-selector-emojis",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭──────╮\n│🌡️⚠️✅│\n╰──────╯"
+  },
+  {
+    "name": "box/single node - fit-content box with variation selector emojis",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭──────╮\n│🌡️⚠️✅│\n╰──────╯"
+  },
+  {
+    "name": "box/ansi-background-inherit",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "\u001b[42mHello World\u001b[49m"
+  },
+  {
+    "name": "box/ansi-background-nested-inherit",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "\u001b[44mHello World\u001b[49m"
+  },
+  {
+    "name": "box/ansi-background-no-inherit-without-parent",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "Hello World"
+  },
+  {
+    "name": "box/ansi-background-shared-across-text-children",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "\u001b[43mHello World\u001b[49m"
+  },
+  {
+    "name": "box/ansi-background-override",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "\u001b[44mHello World\u001b[49m"
+  },
+  {
+    "name": "box/ansi-background-mixed-clear-override",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "\u001b[42mInherited \u001b[49mNo BG \u001b[41mRed BG\u001b[49m"
+  },
+  {
+    "name": "box/ansi-background-nested-complex",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "\u001b[43mOuter: \u001b[44mInner: \u001b[41mExplicit\u001b[49m"
+  },
+  {
+    "name": "box/ansi-background-fixed-area",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "\u001b[41mHello     \u001b[49m\n\u001b[41m          \u001b[49m\n\u001b[41m          \u001b[49m"
+  },
+  {
+    "name": "box/ansi-background-fixed-area-hex",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "\u001b[48;2;255;0;0mHello     \u001b[49m\n\u001b[48;2;255;0;0m          \u001b[49m\n\u001b[48;2;255;0;0m          \u001b[49m"
+  },
+  {
+    "name": "box/ansi-background-fixed-area-rgb",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "\u001b[48;2;255;0;0mHello     \u001b[49m\n\u001b[48;2;255;0;0m          \u001b[49m\n\u001b[48;2;255;0;0m          \u001b[49m"
+  },
+  {
+    "name": "box/ansi-background-fixed-area-ansi256",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "\u001b[48;5;9mHello     \u001b[49m\n\u001b[48;5;9m          \u001b[49m\n\u001b[48;5;9m          \u001b[49m"
+  },
+  {
+    "name": "box/ansi-background-hex",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "\u001b[48;2;255;0;0mHello\u001b[49m"
+  },
+  {
+    "name": "box/ansi-background-rgb",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "\u001b[48;2;255;0;0mHello\u001b[49m"
+  },
+  {
+    "name": "box/ansi-background-ansi256",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "\u001b[48;5;9mHello\u001b[49m"
+  },
+  {
+    "name": "box/ansi-background-wide",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "\u001b[43mこんにちは\u001b[49m"
+  },
+  {
+    "name": "box/ansi-background-emoji",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "\u001b[41m🎉🎊\u001b[49m"
+  },
+  {
+    "name": "box/ansi-background-border-round",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "╭────────╮\n│\u001b[46mHi      \u001b[49m│\n│\u001b[46m        \u001b[49m│\n│\u001b[46m        \u001b[49m│\n╰────────╯"
+  },
+  {
+    "name": "box/ansi-background-padding-area",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "\u001b[45m          \u001b[49m\n\u001b[45m Hi       \u001b[49m\n\u001b[45m          \u001b[49m\n\u001b[45m          \u001b[49m\n\u001b[45m          \u001b[49m"
+  },
+  {
+    "name": "box/ansi-background-center-area",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "\u001b[44m    Hi    \u001b[49m\n\u001b[44m          \u001b[49m\n\u001b[44m          \u001b[49m"
+  },
+  {
+    "name": "box/ansi-background-column-area",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "\u001b[42mLine 1    \u001b[49m\n\u001b[42mLine 2    \u001b[49m\n\u001b[42m          \u001b[49m\n\u001b[42m          \u001b[49m\n\u001b[42m          \u001b[49m"
+  },
+  {
+    "name": "box/ansi-justify-end-colored-text",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "    \u001b[32mX\u001b[39m"
+  },
+  {
+    "name": "box/ansi-border-color-full-width",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "\u001b[32m╭──────────────────────────────────────────────────────────────────────────────────────────────────╮\u001b[39m\n\u001b[32m│\u001b[39mHello World                                                                                       \u001b[32m│\u001b[39m\n\u001b[32m╰──────────────────────────────────────────────────────────────────────────────────────────────────╯\u001b[39m"
+  },
+  {
+    "name": "box/ansi-border-color-full-width-multi-node",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "\u001b[32m╭──────────────────────────────────────────────────────────────────────────────────────────────────╮\u001b[39m\n\u001b[32m│\u001b[39mHello World                                                                                       \u001b[32m│\u001b[39m\n\u001b[32m╰──────────────────────────────────────────────────────────────────────────────────────────────────╯\u001b[39m"
+  },
+  {
+    "name": "box/ansi-border-color-fit-content",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "\u001b[32m╭───────────╮\u001b[39m\n\u001b[32m│\u001b[39mHello World\u001b[32m│\u001b[39m\n\u001b[32m╰───────────╯\u001b[39m"
+  },
+  {
+    "name": "box/ansi-border-color-fit-content-multi-node",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "\u001b[32m╭───────────╮\u001b[39m\n\u001b[32m│\u001b[39mHello World\u001b[32m│\u001b[39m\n\u001b[32m╰───────────╯\u001b[39m"
+  },
+  {
+    "name": "box/ansi-border-top-color",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "Above\n\u001b[32m╭───────╮\u001b[39m\n│Content│\n╰───────╯\nBelow"
+  },
+  {
+    "name": "box/change color of top border",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "Above\n\u001b[32m╭───────╮\u001b[39m\n│Content│\n╰───────╯\nBelow"
+  },
+  {
+    "name": "box/ansi-border-bottom-color",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "Above\n╭───────╮\n│Content│\n\u001b[32m╰───────╯\u001b[39m\nBelow"
+  },
+  {
+    "name": "box/change color of bottom border",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "Above\n╭───────╮\n│Content│\n\u001b[32m╰───────╯\u001b[39m\nBelow"
+  },
+  {
+    "name": "box/ansi-border-left-color",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "Above\n╭───────╮\n\u001b[32m│\u001b[39mContent│\n╰───────╯\nBelow"
+  },
+  {
+    "name": "box/change color of left border",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "Above\n╭───────╮\n\u001b[32m│\u001b[39mContent│\n╰───────╯\nBelow"
+  },
+  {
+    "name": "box/ansi-border-right-color",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "Above\n╭───────╮\n│Content\u001b[32m│\u001b[39m\n╰───────╯\nBelow"
+  },
+  {
+    "name": "box/change color of right border",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "Above\n╭───────╮\n│Content\u001b[32m│\u001b[39m\n╰───────╯\nBelow"
+  },
+  {
+    "name": "box/ansi-border-dim",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "\u001b[2m╭───────╮\u001b[22m\n\u001b[2m│\u001b[22mContent\u001b[2m│\u001b[22m\n\u001b[2m╰───────╯\u001b[22m"
+  },
+  {
+    "name": "box/dim border color",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "\u001b[2m╭───────╮\u001b[22m\n\u001b[2m│\u001b[22mContent\u001b[2m│\u001b[22m\n\u001b[2m╰───────╯\u001b[22m"
+  },
+  {
+    "name": "box/ansi-border-top-dim",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "Above\n\u001b[2m╭───────╮\u001b[22m\n│Content│\n╰───────╯\nBelow"
+  },
+  {
+    "name": "box/dim top border color",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "Above\n\u001b[2m╭───────╮\u001b[22m\n│Content│\n╰───────╯\nBelow"
+  },
+  {
+    "name": "box/ansi-border-bottom-dim",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "Above\n╭───────╮\n│Content│\n\u001b[2m╰───────╯\u001b[22m\nBelow"
+  },
+  {
+    "name": "box/dim bottom border color",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "Above\n╭───────╮\n│Content│\n\u001b[2m╰───────╯\u001b[22m\nBelow"
+  },
+  {
+    "name": "box/ansi-border-left-dim",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "Above\n╭───────╮\n\u001b[2m│\u001b[22mContent│\n╰───────╯\nBelow"
+  },
+  {
+    "name": "box/dim left border color",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "Above\n╭───────╮\n\u001b[2m│\u001b[22mContent│\n╰───────╯\nBelow"
+  },
+  {
+    "name": "box/ansi-border-right-dim",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "Above\n╭───────╮\n│Content\u001b[2m│\u001b[22m\n╰───────╯\nBelow"
+  },
+  {
+    "name": "box/dim right border color",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "Above\n╭───────╮\n│Content\u001b[2m│\u001b[22m\n╰───────╯\nBelow"
+  },
+  {
+    "name": "box/ansi-border-dim-preserves-child-style",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "\u001b[2m╭───────────╮\u001b[22m\n\u001b[2m│\u001b[22m\u001b[1m\u001b[34mstyled text\u001b[39m\u001b[22m\u001b[2m│\u001b[22m\n\u001b[2m╰───────────╯\u001b[22m"
+  },
+  {
+    "name": "box/borderDimColor does not dim styled child Text touching left edge",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "\u001b[2m╭───────────╮\u001b[22m\n\u001b[2m│\u001b[22m\u001b[1m\u001b[34mstyled text\u001b[39m\u001b[22m\u001b[2m│\u001b[22m\n\u001b[2m╰───────────╯\u001b[22m"
+  },
+  {
+    "name": "box/screen-reader-aria-label",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "Hello World"
+  },
+  {
+    "name": "box/render-text-for-screen-readers",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "Hello World"
+  },
+  {
+    "name": "box/render text for screen readers",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "Hello World"
+  },
+  {
+    "name": "box/screen-reader-aria-hidden",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": ""
+  },
+  {
+    "name": "box/render-text-for-screen-readers-with-aria-hidden",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": ""
+  },
+  {
+    "name": "box/render text for screen readers with aria-hidden",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": ""
+  },
+  {
+    "name": "box/screen-reader-role",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "button: Click me"
+  },
+  {
+    "name": "box/render-text-for-screen-readers-with-aria-role",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "button: Click me"
+  },
+  {
+    "name": "box/render text for screen readers with aria-role",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "button: Click me"
+  },
+  {
+    "name": "box/screen-reader-role-empty",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "button: "
+  },
+  {
+    "name": "box/screen-reader-list-selected",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "list: Select a color:\nlistitem: 1. Red\nlistitem: (selected) 2. Green\nlistitem: 3. Blue"
+  },
+  {
+    "name": "box/screen-reader-list-selected-with-children",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "list: Select a color:\nlistitem: 1. Red\nlistitem: (selected) 2. Green\nlistitem: 3. Blue"
+  },
+  {
+    "name": "box/render-select-input-for-screen-readers",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "list: Select a color:\nlistitem: 1. Red\nlistitem: (selected) 2. Green\nlistitem: 3. Blue"
+  },
+  {
+    "name": "box/render select input for screen readers",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "list: Select a color:\nlistitem: 1. Red\nlistitem: (selected) 2. Green\nlistitem: 3. Blue"
+  },
+  {
+    "name": "box/screen-reader-label-only-text",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "Screen-reader only"
+  },
+  {
+    "name": "box/render-aria-label-only-text-for-screen-readers",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "Screen-reader only"
+  },
+  {
+    "name": "box/render aria-label only Text for screen readers",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "Screen-reader only"
+  },
+  {
+    "name": "box/screen-reader-label-only-box",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "Screen-reader only"
+  },
+  {
+    "name": "box/render-aria-label-only-box-for-screen-readers",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "Screen-reader only"
+  },
+  {
+    "name": "box/render aria-label only Box for screen readers",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "Screen-reader only"
+  },
+  {
+    "name": "box/screen-reader-styled-text",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "Styled content"
+  },
+  {
+    "name": "box/omit-ansi-styling-in-screen-reader-output",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "Styled content"
+  },
+  {
+    "name": "box/omit ANSI styling in screen-reader output",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "Styled content"
+  },
+  {
+    "name": "box/screen-reader-display-none",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "Visible"
+  },
+  {
+    "name": "box/skip-display-none-in-screen-reader-output",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "Visible"
+  },
+  {
+    "name": "box/skip nodes with display:none style in screen-reader output",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "Visible"
+  },
+  {
+    "name": "box/screen-reader-multiple-text",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "Hello\nWorld"
+  },
+  {
+    "name": "box/render-multi-line-text",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "Line 1\nLine 2"
+  },
+  {
+    "name": "box/render multi-line text",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "Line 1\nLine 2"
+  },
+  {
+    "name": "box/render multi-line text",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "Line 1\nLine 2"
+  },
+  {
+    "name": "box/render-multiple-text-components-for-screen-readers",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "Hello\nWorld"
+  },
+  {
+    "name": "box/render multiple Text components",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "Hello\nWorld"
+  },
+  {
+    "name": "box/screen-reader-nested-box",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "Hello\nWorld"
+  },
+  {
+    "name": "box/render-nested-box-components-with-text-for-screen-readers",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "Hello\nWorld"
+  },
+  {
+    "name": "box/render nested Box components with Text",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "Hello\nWorld"
+  },
+  {
+    "name": "box/screen-reader-null-child",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "Hello\nWorld"
+  },
+  {
+    "name": "box/render-component-that-returns-null-for-screen-readers",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "Hello\nWorld"
+  },
+  {
+    "name": "box/render component that returns null",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "Hello\nWorld"
+  },
+  {
+    "name": "box/screen-reader-busy",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "(busy) Loading"
+  },
+  {
+    "name": "box/render-with-aria-state-busy",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "(busy) Loading"
+  },
+  {
+    "name": "box/render with aria-state.busy",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "(busy) Loading"
+  },
+  {
+    "name": "box/screen-reader-busy-empty",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "(busy) "
+  },
+  {
+    "name": "box/screen-reader-checked",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "checkbox: (checked) Accept terms"
+  },
+  {
+    "name": "box/render-with-aria-state-checked",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "checkbox: (checked) Accept terms"
+  },
+  {
+    "name": "box/render with aria-state.checked",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "checkbox: (checked) Accept terms"
+  },
+  {
+    "name": "box/screen-reader-disabled",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "button: (disabled) Submit"
+  },
+  {
+    "name": "box/render-with-aria-state-disabled",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "button: (disabled) Submit"
+  },
+  {
+    "name": "box/render with aria-state.disabled",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "button: (disabled) Submit"
+  },
+  {
+    "name": "box/screen-reader-expanded",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "combobox: (expanded) Select"
+  },
+  {
+    "name": "box/render-with-aria-state-expanded",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "combobox: (expanded) Select"
+  },
+  {
+    "name": "box/render with aria-state.expanded",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "combobox: (expanded) Select"
+  },
+  {
+    "name": "box/screen-reader-multiline-state",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "textbox: (multiline) Hello"
+  },
+  {
+    "name": "box/render-with-aria-state-multiline",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "textbox: (multiline) Hello"
+  },
+  {
+    "name": "box/render with aria-state.multiline",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "textbox: (multiline) Hello"
+  },
+  {
+    "name": "box/screen-reader-multiselectable-state",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "listbox: (multiselectable) Options"
+  },
+  {
+    "name": "box/render-with-aria-state-multiselectable",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "listbox: (multiselectable) Options"
+  },
+  {
+    "name": "box/render with aria-state.multiselectable",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "listbox: (multiselectable) Options"
+  },
+  {
+    "name": "box/screen-reader-readonly",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "textbox: (readonly) Hello"
+  },
+  {
+    "name": "box/render-with-aria-state-readonly",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "textbox: (readonly) Hello"
+  },
+  {
+    "name": "box/render with aria-state.readonly",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "textbox: (readonly) Hello"
+  },
+  {
+    "name": "box/screen-reader-required",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "textbox: (required) Name"
+  },
+  {
+    "name": "box/render-with-aria-state-required",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "textbox: (required) Name"
+  },
+  {
+    "name": "box/render with aria-state.required",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "textbox: (required) Name"
+  },
+  {
+    "name": "box/screen-reader-selected",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "option: (selected) Blue"
+  },
+  {
+    "name": "box/render-with-aria-state-selected",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "option: (selected) Blue"
+  },
+  {
+    "name": "box/render with aria-state.selected",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "option: (selected) Blue"
+  },
+  {
+    "name": "box/screen-reader-selected-empty",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "option: (selected) "
+  },
+  {
+    "name": "box/screen-reader-selected-disabled-expanded-empty",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "option: (selected, disabled, expanded) "
+  },
+  {
+    "name": "box/screen-reader-expanded-selected-disabled-empty",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "option: (expanded, selected, disabled) "
+  },
+  {
+    "name": "box/screen-reader-nested-multiline",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "Line 1\nLine 2"
+  },
+  {
+    "name": "box/render-nested-multi-line-text",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "Line 1\nLine 2"
+  },
+  {
+    "name": "box/render nested multi-line text",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "Line 1\nLine 2"
+  },
+  {
+    "name": "box/screen-reader-nested-row",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "Line 1 Line 2"
+  },
+  {
+    "name": "box/render-nested-row",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "Line 1 Line 2"
+  },
+  {
+    "name": "box/render nested row",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "Line 1 Line 2"
+  },
+  {
+    "name": "box/screen-reader-multiline-roles",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "list: listitem: Item 1\nlistitem: Item 2"
+  },
+  {
+    "name": "box/render-multi-line-text-with-roles",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "list: listitem: Item 1\nlistitem: Item 2"
+  },
+  {
+    "name": "box/render multi-line text with roles",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "list: listitem: Item 1\nlistitem: Item 2"
+  },
+  {
+    "name": "box/screen-reader-listbox-multiselectable",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "listbox: (multiselectable) option: (selected) Option 1\noption: Option 2\noption: (selected) Option 3"
+  },
+  {
+    "name": "box/render-listbox-with-multiselectable-options",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "listbox: (multiselectable) option: (selected) Option 1\noption: Option 2\noption: (selected) Option 3"
+  },
+  {
+    "name": "box/render listbox with multiselectable options",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "listbox: (multiselectable) option: (selected) Option 1\noption: Option 2\noption: (selected) Option 3"
+  },
+  {
+    "name": "box/screen-reader-nested-same-role-via-wrapper",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "list: list: Nested"
+  },
+  {
+    "name": "box/screen-reader-nested-same-role-row-wrapper",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "button: button: Nested"
+  },
+  {
+    "name": "box/screen-reader-nested-same-role-with-state-via-wrapper",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "listbox: listbox: (multiselectable) Options"
+  },
+  {
+    "name": "static/simple-0",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": ""
+  },
+  {
+    "name": "static/simple-1",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A\n"
+  },
+  {
+    "name": "static/simple-2",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A\nB\n"
+  },
+  {
+    "name": "static/simple-3",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A\nB\nC\n"
+  },
+  {
+    "name": "static/simple-4",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A\nB\nC\nD\n"
+  },
+  {
+    "name": "static/padding-left-1",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": " A\n"
+  },
+  {
+    "name": "static/padding-left-2",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "  A\n  B\n"
+  },
+  {
+    "name": "static/padding-top-1",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\nA\nB\n"
+  },
+  {
+    "name": "static/padding-bottom-1",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A\nB\nC\n\n"
+  },
+  {
+    "name": "static/column-followup-angle",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "<A>\n<B>\n<C>\ndone"
+  },
+  {
+    "name": "static/indexed-1",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "[0] one\n"
+  },
+  {
+    "name": "static/indexed-2",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "[0] one\n[1] two\n"
+  },
+  {
+    "name": "static/indexed-3",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "[0] one\n[1] two\n[2] three\n"
+  },
+  {
+    "name": "static/indexed-padding-left",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": " [0] one\n [1] two\n"
+  },
+  {
+    "name": "static/indexed-padding-bottom",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "[0] one\n[1] two\n[2] three\n\n"
+  },
+  {
+    "name": "static/prefixed-1",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": ">A\n"
+  },
+  {
+    "name": "static/prefixed-2",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": ">A\n>B\n"
+  },
+  {
+    "name": "static/prefixed-3",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": ">A\n>B\n>C\n"
+  },
+  {
+    "name": "static/labelled-2",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "item:A\nitem:B\n"
+  },
+  {
+    "name": "static/labelled-3",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "item:go\nitem:ink\nitem:port\n"
+  },
+  {
+    "name": "static/angle-1",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "<A>\n"
+  },
+  {
+    "name": "static/angle-2",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "<A>\n<B>\n"
+  },
+  {
+    "name": "static/upper-2",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "GO\nINK\n"
+  },
+  {
+    "name": "static/reverse-3",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "ba\ndc\nfe\n"
+  },
+  {
+    "name": "static/brace-2",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "{0: A}\n{0: B}\n"
+  },
+  {
+    "name": "static/screen-reader-list-parent-context",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "listitem: 1. One\nlistitem: 2. Two\nlist: "
+  },
+  {
+    "name": "static/column-followup-1",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A\ndone"
+  },
+  {
+    "name": "static/column-followup-2",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A\nB\ndone"
+  },
+  {
+    "name": "static/column-followup-padding",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A\nB\nC\n\ndone"
+  },
+  {
+    "name": "static/column-followup-indexed",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "[0] A\n[1] B\ndone"
+  },
+  {
+    "name": "static/column-followup-labelled",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "item:A\nitem:B\ndone"
+  },
+  {
+    "name": "static/components-padding-followup-margin-top",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A\nB\nC\n\n\nX"
+  },
+  {
+    "name": "static/static output",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A\nB\nC\n\n\nX"
+  },
+  {
+    "name": "static/static output - concurrent",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A\nB\nC\n\n\nX"
+  },
+  {
+    "name": "static/skip previous output when rendering new static output",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A\nB\n"
+  },
+  {
+    "name": "static/render only new items in static output on final render",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A\nB\n"
+  },
+  {
+    "name": "static/render all frames if CI environment variable equals false",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "managed-frames",
+    "contains": []
+  }
+]

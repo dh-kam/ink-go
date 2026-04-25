@@ -1,0 +1,178 @@
+[
+  {
+    "name": "gemini-cli/checklist/completed-listitem",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "✓ Ship project-based golden suite"
+  },
+  {
+    "name": "gemini-cli/checklist/in-progress-listitem",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "» Capture real Ink usage patterns"
+  },
+  {
+    "name": "gemini-cli/checklist/cancelled-listitem",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "✗ Discard outdated snapshot"
+  },
+  {
+    "name": "gemini-cli/progress-bar/partial",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "▬▬▬▬▬▬▬▬▬▬"
+  },
+  {
+    "name": "gemini-cli/progress-bar/warning-threshold",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "▬▬▬▬▬▬▬▬▬▬"
+  },
+  {
+    "name": "gemini-cli/progress-bar/full-error",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "▬▬▬▬▬▬▬▬▬▬"
+  },
+  {
+    "name": "gemini-cli/loading-indicator/inline-thinking",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "⠋ Thinking about the next shell step (esc to cancel, 7s)"
+  },
+  {
+    "name": "gemini-cli/loading-indicator/inline-waiting-for-confirmation",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "⠏ Waiting for confirmation (press tab to focus)"
+  },
+  {
+    "name": "neovate-code/messages/static-header-and-dynamic-pending",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "header\nCompleted item A\nCompleted item B\nPending item A\nPending item B"
+  },
+  {
+    "name": "neovate-code/bash-command-message",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\n  ! git status --short"
+  },
+  {
+    "name": "neovate-code/user-message-bubble",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\n  dh.kam\n  Ship the Go port parity work."
+  },
+  {
+    "name": "neovate-code/user-cancel-notice",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\n  dh.kam\n  User canceled the request"
+  },
+  {
+    "name": "neovate-code/approval-modal-invalid-questions",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭──────────────────────────────────────────────────────────────────────────────────────────────────╮\n│                                                                                                  │\n│ Invalid Questions                                                                                │\n│ No questions provided to askUserQuestion tool                                                    │\n│                                                                                                  │\n│ Press enter or esc to cancel                                                                     │\n│                                                                                                  │\n╰──────────────────────────────────────────────────────────────────────────────────────────────────╯"
+  },
+  {
+    "name": "neovate-code/thinking-block-with-hidden-lines",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\nthinking\nWorking through the shell plan line by line\n... 3 more lines hidden ..."
+  },
+  {
+    "name": "neovate-code/queued-messages-warning-card",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭──────────────────────────────────────────────────────────────────────────────────────────────────╮\n│ 2 queued messages                                                                                │\n│                                                                                                  │\n│ 1. Summarize the repo state                                                                      │\n│ 2. Create project-based goldens                                                                  │\n│                                                                                                  │\n│ They will run after the current task finishes                                                    │\n╰──────────────────────────────────────────────────────────────────────────────────────────────────╯"
+  },
+  {
+    "name": "neovate-code/transcript-mode-banner",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\n────────────────────────────────────────────────────────────────────────────────────────────────────\nShowing detailed transcript. Press Esc or Ctrl+C to exit."
+  },
+  {
+    "name": "neovate-code/approval-modal-edit-title",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Edit file src/ui/App.tsx"
+  },
+  {
+    "name": "neovate-code/approval-modal-bash-preview",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "  npm test -- --watch\n  Run focused test file in watch mode\n"
+  },
+  {
+    "name": "neovate-code/app-main-column-and-footer-modals",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Messages\nBackgroundPrompt\nActivityIndicator\nQueueDisplay\nChatInput\nExitHint\nDebug\nApprovalModal\nSlashCommandJSX"
+  },
+  {
+    "name": "shopify-cli/prompt-layout/submitted-confirmation-row",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "✓  Apply changes"
+  },
+  {
+    "name": "tweakcc/main-view/left-border-notification-banner",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "┌──────────────────────────────────────────────────────────────────────────────────────────────────┐\n│ Theme changes staged but not yet applied                                                         │\n└──────────────────────────────────────────────────────────────────────────────────────────────────┘"
+  },
+  {
+    "name": "nanocoder/assistant-message/response-card",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "gpt-5.4:\n\n┌──────────────────────────────────────────────────────────────────────────────────────────────────┐\n│                                                                                                  │\n│ Generated answer content                                                                         │\n│                                                                                                  │\n└──────────────────────────────────────────────────────────────────────────────────────────────────┘\n\n~234 tokens\n\n"
+  }
+]

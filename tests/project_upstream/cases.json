@@ -1,0 +1,1244 @@
+[
+  {
+    "name": "gemini-cli/checklist/completed-listitem",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "project": "gemini-cli",
+    "sourceRepo": "google-gemini/gemini-cli",
+    "sourceFile": "packages/cli/src/ui/components/ChecklistItem.tsx",
+    "node": {
+      "type": "box",
+      "props": {
+        "flexDirection": "row",
+        "columnGap": 1,
+        "aria-role": "listitem"
+      },
+      "children": [
+        {
+          "type": "text",
+          "props": {
+            "color": "green",
+            "aria-label": "Completed"
+          },
+          "children": [
+            {
+              "type": "raw",
+              "value": "✓"
+            }
+          ]
+        },
+        {
+          "type": "box",
+          "props": {
+            "flexShrink": 1
+          },
+          "children": [
+            {
+              "type": "text",
+              "props": {
+                "color": "gray",
+                "strikethrough": false
+              },
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "Ship project-based golden suite"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "gemini-cli/checklist/in-progress-listitem",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "project": "gemini-cli",
+    "sourceRepo": "google-gemini/gemini-cli",
+    "sourceFile": "packages/cli/src/ui/components/ChecklistItem.tsx",
+    "node": {
+      "type": "box",
+      "props": {
+        "flexDirection": "row",
+        "columnGap": 1,
+        "aria-role": "listitem"
+      },
+      "children": [
+        {
+          "type": "text",
+          "props": {
+            "color": "cyan",
+            "aria-label": "In Progress"
+          },
+          "children": [
+            {
+              "type": "raw",
+              "value": "»"
+            }
+          ]
+        },
+        {
+          "type": "box",
+          "props": {
+            "flexShrink": 1
+          },
+          "children": [
+            {
+              "type": "text",
+              "props": {
+                "color": "cyan"
+              },
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "Capture real Ink usage patterns"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "gemini-cli/checklist/cancelled-listitem",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "project": "gemini-cli",
+    "sourceRepo": "google-gemini/gemini-cli",
+    "sourceFile": "packages/cli/src/ui/components/ChecklistItem.tsx",
+    "node": {
+      "type": "box",
+      "props": {
+        "flexDirection": "row",
+        "columnGap": 1,
+        "aria-role": "listitem"
+      },
+      "children": [
+        {
+          "type": "text",
+          "props": {
+            "color": "red",
+            "aria-label": "Cancelled"
+          },
+          "children": [
+            {
+              "type": "raw",
+              "value": "✗"
+            }
+          ]
+        },
+        {
+          "type": "box",
+          "props": {
+            "flexShrink": 1
+          },
+          "children": [
+            {
+              "type": "text",
+              "props": {
+                "color": "gray",
+                "strikethrough": true
+              },
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "Discard outdated snapshot"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "gemini-cli/progress-bar/partial",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "project": "gemini-cli",
+    "sourceRepo": "google-gemini/gemini-cli",
+    "sourceFile": "packages/cli/src/ui/components/ProgressBar.tsx",
+    "node": {
+      "type": "box",
+      "props": {
+        "flexDirection": "row"
+      },
+      "children": [
+        {
+          "type": "text",
+          "props": {
+            "color": "green"
+          },
+          "children": [
+            {
+              "type": "raw",
+              "value": "▬▬▬▬"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "props": {
+            "color": "gray"
+          },
+          "children": [
+            {
+              "type": "raw",
+              "value": "▬▬▬▬▬▬"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "gemini-cli/progress-bar/warning-threshold",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "project": "gemini-cli",
+    "sourceRepo": "google-gemini/gemini-cli",
+    "sourceFile": "packages/cli/src/ui/components/ProgressBar.tsx",
+    "node": {
+      "type": "box",
+      "props": {
+        "flexDirection": "row"
+      },
+      "children": [
+        {
+          "type": "text",
+          "props": {
+            "color": "yellow"
+          },
+          "children": [
+            {
+              "type": "raw",
+              "value": "▬▬▬▬▬▬▬▬"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "props": {
+            "color": "gray"
+          },
+          "children": [
+            {
+              "type": "raw",
+              "value": "▬▬"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "gemini-cli/progress-bar/full-error",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "project": "gemini-cli",
+    "sourceRepo": "google-gemini/gemini-cli",
+    "sourceFile": "packages/cli/src/ui/components/ProgressBar.tsx",
+    "node": {
+      "type": "box",
+      "props": {
+        "flexDirection": "row"
+      },
+      "children": [
+        {
+          "type": "text",
+          "props": {
+            "color": "red"
+          },
+          "children": [
+            {
+              "type": "raw",
+              "value": "▬▬▬▬▬▬▬▬▬▬"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "props": {
+            "color": "gray"
+          },
+          "children": [
+            {
+              "type": "raw",
+              "value": ""
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "gemini-cli/loading-indicator/inline-thinking",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "project": "gemini-cli",
+    "sourceRepo": "google-gemini/gemini-cli",
+    "sourceFile": "packages/cli/src/ui/components/LoadingIndicator.tsx",
+    "node": {
+      "type": "box",
+      "children": [
+        {
+          "type": "box",
+          "props": {
+            "marginRight": 1
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "⠋"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "box",
+          "props": {
+            "flexShrink": 1
+          },
+          "children": [
+            {
+              "type": "text",
+              "props": {
+                "color": "white",
+                "italic": true,
+                "wrap": "truncate-end"
+              },
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "Thinking about the next shell step"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "box",
+          "props": {
+            "flexShrink": 0,
+            "width": 1
+          },
+          "children": []
+        },
+        {
+          "type": "text",
+          "children": [
+            {
+              "type": "raw",
+              "value": "(esc to cancel, 7s)"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "gemini-cli/loading-indicator/inline-waiting-for-confirmation",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "project": "gemini-cli",
+    "sourceRepo": "google-gemini/gemini-cli",
+    "sourceFile": "packages/cli/src/ui/components/LoadingIndicator.tsx",
+    "node": {
+      "type": "box",
+      "children": [
+        {
+          "type": "box",
+          "props": {
+            "marginRight": 1
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "⠏"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "box",
+          "props": {
+            "flexShrink": 1
+          },
+          "children": [
+            {
+              "type": "text",
+              "props": {
+                "color": "white",
+                "italic": true,
+                "wrap": "truncate-end"
+              },
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "Waiting for confirmation"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "props": {
+                "color": "cyan",
+                "italic": true
+              },
+              "children": [
+                {
+                  "type": "raw",
+                  "value": " (press tab to focus)"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "neovate-code/messages/static-header-and-dynamic-pending",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "project": "neovate-code",
+    "sourceRepo": "neovateai/neovate-code",
+    "sourceFile": "src/ui/Messages.tsx",
+    "node": {
+      "type": "box",
+      "props": {
+        "flexDirection": "column"
+      },
+      "children": [
+        {
+          "type": "static",
+          "items": [
+            "header",
+            "Completed item A",
+            "Completed item B"
+          ],
+          "template": {
+            "type": "box",
+            "props": {
+              "flexDirection": "column"
+            },
+            "children": [
+              {
+                "type": "text",
+                "children": [
+                  {
+                    "type": "raw",
+                    "value": "{{item}}"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "type": "box",
+          "props": {
+            "flexDirection": "column"
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "Pending item A"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "Pending item B"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "neovate-code/bash-command-message",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "project": "neovate-code",
+    "sourceRepo": "neovateai/neovate-code",
+    "sourceFile": "src/ui/Messages.tsx",
+    "node": {
+      "type": "box",
+      "props": {
+        "flexDirection": "column",
+        "marginTop": 1,
+        "marginLeft": 2
+      },
+      "children": [
+        {
+          "type": "box",
+          "children": [
+            {
+              "type": "text",
+              "props": {
+                "color": "yellow",
+                "bold": true
+              },
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "! "
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "props": {
+                "bold": true,
+                "color": "cyan"
+              },
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "git status --short"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "neovate-code/user-message-bubble",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "project": "neovate-code",
+    "sourceRepo": "neovateai/neovate-code",
+    "sourceFile": "src/ui/Messages.tsx",
+    "node": {
+      "type": "box",
+      "props": {
+        "flexDirection": "column",
+        "marginTop": 1,
+        "marginLeft": 2
+      },
+      "children": [
+        {
+          "type": "text",
+          "props": {
+            "bold": true,
+            "color": "cyan"
+          },
+          "children": [
+            {
+              "type": "raw",
+              "value": "dh.kam"
+            }
+          ]
+        },
+        {
+          "type": "box",
+          "children": [
+            {
+              "type": "text",
+              "props": {
+                "color": "white",
+                "backgroundColor": "#555555"
+              },
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "Ship the Go port parity work."
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "neovate-code/user-cancel-notice",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "project": "neovate-code",
+    "sourceRepo": "neovateai/neovate-code",
+    "sourceFile": "src/ui/Messages.tsx",
+    "node": {
+      "type": "box",
+      "props": {
+        "flexDirection": "column",
+        "marginTop": 1,
+        "marginLeft": 2
+      },
+      "children": [
+        {
+          "type": "text",
+          "props": {
+            "bold": true,
+            "color": "cyan"
+          },
+          "children": [
+            {
+              "type": "raw",
+              "value": "dh.kam"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "props": {
+            "color": "red"
+          },
+          "children": [
+            {
+              "type": "raw",
+              "value": "User canceled the request"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "neovate-code/approval-modal-invalid-questions",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "project": "neovate-code",
+    "sourceRepo": "neovateai/neovate-code",
+    "sourceFile": "src/ui/ApprovalModal.tsx",
+    "node": {
+      "type": "box",
+      "props": {
+        "flexDirection": "column",
+        "padding": 1,
+        "borderStyle": "round",
+        "borderColor": "red"
+      },
+      "children": [
+        {
+          "type": "text",
+          "props": {
+            "color": "red",
+            "bold": true
+          },
+          "children": [
+            {
+              "type": "raw",
+              "value": "Invalid Questions"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "children": [
+            {
+              "type": "raw",
+              "value": "No questions provided to askUserQuestion tool"
+            }
+          ]
+        },
+        {
+          "type": "box",
+          "props": {
+            "marginTop": 1
+          },
+          "children": [
+            {
+              "type": "text",
+              "props": {
+                "dimColor": true
+              },
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "Press enter or esc to cancel"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "neovate-code/thinking-block-with-hidden-lines",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "project": "neovate-code",
+    "sourceRepo": "neovateai/neovate-code",
+    "sourceFile": "src/ui/Messages.tsx",
+    "node": {
+      "type": "box",
+      "props": {
+        "flexDirection": "column",
+        "marginTop": 1
+      },
+      "children": [
+        {
+          "type": "text",
+          "props": {
+            "bold": true,
+            "color": "gray"
+          },
+          "children": [
+            {
+              "type": "raw",
+              "value": "thinking"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "props": {
+            "color": "gray",
+            "italic": true
+          },
+          "children": [
+            {
+              "type": "raw",
+              "value": "Working through the shell plan line by line"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "props": {
+            "color": "gray",
+            "dimColor": true
+          },
+          "children": [
+            {
+              "type": "raw",
+              "value": "... 3 more lines hidden ..."
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "neovate-code/queued-messages-warning-card",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "project": "neovate-code",
+    "sourceRepo": "neovateai/neovate-code",
+    "sourceFile": "src/ui/QueueDisplay.tsx",
+    "node": {
+      "type": "box",
+      "props": {
+        "flexDirection": "column",
+        "borderStyle": "round",
+        "borderColor": "yellow",
+        "paddingX": 1
+      },
+      "children": [
+        {
+          "type": "box",
+          "props": {
+            "flexDirection": "row",
+            "justifyContent": "space-between"
+          },
+          "children": [
+            {
+              "type": "text",
+              "props": {
+                "bold": true,
+                "color": "yellow"
+              },
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "2 queued messages"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "box",
+          "props": {
+            "flexDirection": "column",
+            "marginTop": 1
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "1. Summarize the repo state"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "2. Create project-based goldens"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "box",
+          "props": {
+            "marginTop": 1
+          },
+          "children": [
+            {
+              "type": "text",
+              "props": {
+                "color": "yellow"
+              },
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "They will run after the current task finishes"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "neovate-code/transcript-mode-banner",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "project": "neovate-code",
+    "sourceRepo": "neovateai/neovate-code",
+    "sourceFile": "src/ui/TranscriptModeIndicator.tsx",
+    "node": {
+      "type": "box",
+      "props": {
+        "flexDirection": "column",
+        "marginTop": 1
+      },
+      "children": [
+        {
+          "type": "box",
+          "props": {
+            "borderStyle": "single",
+            "borderBottom": false,
+            "borderLeft": false,
+            "borderRight": false
+          },
+          "children": []
+        },
+        {
+          "type": "box",
+          "children": [
+            {
+              "type": "text",
+              "props": {
+                "dimColor": true
+              },
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "Showing detailed transcript. Press Esc or Ctrl+C to exit."
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "neovate-code/approval-modal-edit-title",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "project": "neovate-code",
+    "sourceRepo": "neovateai/neovate-code",
+    "sourceFile": "src/ui/ApprovalModal.tsx",
+    "node": {
+      "type": "box",
+      "children": [
+        {
+          "type": "text",
+          "props": {
+            "bold": true,
+            "color": "yellow"
+          },
+          "children": [
+            {
+              "type": "raw",
+              "value": "Edit file "
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "children": [
+            {
+              "type": "raw",
+              "value": "src/ui/App.tsx"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "neovate-code/approval-modal-bash-preview",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "project": "neovate-code",
+    "sourceRepo": "neovateai/neovate-code",
+    "sourceFile": "src/ui/ApprovalModal.tsx",
+    "node": {
+      "type": "box",
+      "props": {
+        "flexDirection": "column",
+        "marginBottom": 1
+      },
+      "children": [
+        {
+          "type": "box",
+          "props": {
+            "marginLeft": 2
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "npm test -- --watch"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "box",
+          "props": {
+            "marginLeft": 2
+          },
+          "children": [
+            {
+              "type": "text",
+              "props": {
+                "color": "gray"
+              },
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "Run focused test file in watch mode"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "neovate-code/app-main-column-and-footer-modals",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "project": "neovate-code",
+    "sourceRepo": "neovateai/neovate-code",
+    "sourceFile": "src/ui/App.tsx",
+    "node": {
+      "type": "box",
+      "props": {
+        "flexDirection": "column"
+      },
+      "children": [
+        {
+          "type": "box",
+          "props": {
+            "flexDirection": "column"
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "Messages"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "BackgroundPrompt"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "ActivityIndicator"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "QueueDisplay"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "ChatInput"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "ExitHint"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "Debug"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "children": [
+            {
+              "type": "raw",
+              "value": "ApprovalModal"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "children": [
+            {
+              "type": "raw",
+              "value": "SlashCommandJSX"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "shopify-cli/prompt-layout/submitted-confirmation-row",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "project": "shopify-cli",
+    "sourceRepo": "Shopify/cli",
+    "sourceFile": "packages/cli-kit/src/private/node/ui/components/Prompts/PromptLayout.tsx",
+    "node": {
+      "type": "box",
+      "props": {
+        "flexDirection": "row"
+      },
+      "children": [
+        {
+          "type": "box",
+          "props": {
+            "width": 3
+          },
+          "children": [
+            {
+              "type": "text",
+              "props": {
+                "color": "cyan"
+              },
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "✓"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "props": {
+            "color": "cyan"
+          },
+          "children": [
+            {
+              "type": "raw",
+              "value": "Apply changes"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "tweakcc/main-view/left-border-notification-banner",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "project": "tweakcc",
+    "sourceRepo": "Piebald-AI/tweakcc",
+    "sourceFile": "src/ui/components/MainView.tsx",
+    "node": {
+      "type": "box",
+      "props": {
+        "borderLeft": true,
+        "borderStyle": "single",
+        "borderColor": "blue",
+        "paddingLeft": 1,
+        "flexDirection": "column"
+      },
+      "children": [
+        {
+          "type": "text",
+          "props": {
+            "color": "blue"
+          },
+          "children": [
+            {
+              "type": "raw",
+              "value": "Theme changes staged but not yet applied"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "nanocoder/assistant-message/response-card",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "project": "nanocoder",
+    "sourceRepo": "nano-collective/nanocoder",
+    "sourceFile": "source/components/assistant-message.tsx",
+    "node": {
+      "type": "box",
+      "props": {
+        "flexDirection": "column"
+      },
+      "children": [
+        {
+          "type": "box",
+          "props": {
+            "marginBottom": 1
+          },
+          "children": [
+            {
+              "type": "text",
+              "props": {
+                "color": "cyan",
+                "bold": true
+              },
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "gpt-5.4:"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "box",
+          "props": {
+            "flexDirection": "column",
+            "marginBottom": 1,
+            "padding": 1,
+            "borderLeft": true,
+            "borderStyle": "single",
+            "borderLeftColor": "gray",
+            "backgroundColor": "black"
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "Generated answer content"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "box",
+          "props": {
+            "marginBottom": 2
+          },
+          "children": [
+            {
+              "type": "text",
+              "props": {
+                "color": "gray"
+              },
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "~234 tokens"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+]
