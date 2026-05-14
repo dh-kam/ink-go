@@ -3,8 +3,8 @@ package ink_test
 import (
 	"testing"
 
-	"github.com/dh-kam/goink.go/pkg/ink"
-	"github.com/dh-kam/goink.go/pkg/vdom"
+	"github.com/dh-kam/ink-go/pkg/ink"
+	"github.com/dh-kam/ink-go/pkg/vdom"
 )
 
 // TestDOMRefGetAttributeReturnsExposedValues exercises the DOM-like

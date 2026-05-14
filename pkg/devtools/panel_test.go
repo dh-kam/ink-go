@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/dh-kam/goink.go/pkg/devtools"
-	"github.com/dh-kam/goink.go/pkg/vdom"
+	"github.com/dh-kam/ink-go/pkg/devtools"
+	"github.com/dh-kam/ink-go/pkg/vdom"
 )
 
 // collectText flattens all text nodes underneath a vdom subtree into a single

@@ -14,8 +14,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/dh-kam/goink.go/pkg/components"
-	"github.com/dh-kam/goink.go/pkg/vdom"
+	"github.com/dh-kam/ink-go/pkg/components"
+	"github.com/dh-kam/ink-go/pkg/vdom"
 )
 
 // PanelData contains the metrics surfaced by DebugPanel. All fields are

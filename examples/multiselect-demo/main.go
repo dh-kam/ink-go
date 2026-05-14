@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/dh-kam/goink.go/pkg/components"
-	"github.com/dh-kam/goink.go/pkg/ink"
+	"github.com/dh-kam/ink-go/pkg/components"
+	"github.com/dh-kam/ink-go/pkg/ink"
 )
 
 // Demo: a controlled MultiSelect rendered against a MultiSelectState.

@@ -4,7 +4,7 @@ import (
 	"io"
 	"sync"
 
-	"github.com/dh-kam/goink.go/pkg/vdom"
+	"github.com/dh-kam/ink-go/pkg/vdom"
 )
 
 // Instance is the handle returned by Render. It accumulates every frame

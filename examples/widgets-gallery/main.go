@@ -7,9 +7,9 @@ package main
 import (
 	"fmt"
 
-	"github.com/dh-kam/goink.go/internal/renderer"
-	"github.com/dh-kam/goink.go/pkg/components"
-	"github.com/dh-kam/goink.go/pkg/vdom"
+	"github.com/dh-kam/ink-go/internal/renderer"
+	"github.com/dh-kam/ink-go/pkg/components"
+	"github.com/dh-kam/ink-go/pkg/vdom"
 )
 
 const (
@@ -260,7 +260,7 @@ func widgetQuickSearch() *vdom.Node {
 func widgetLink() *vdom.Node {
 	return section("Link",
 		components.Link(components.LinkProps{
-			URL:  "https://github.com/dh-kam/goink.go",
+			URL:  "https://github.com/dh-kam/ink-go",
 			Text: "goink.go on GitHub",
 		}),
 	)

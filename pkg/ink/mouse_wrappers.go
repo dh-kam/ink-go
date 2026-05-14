@@ -1,9 +1,9 @@
 package ink
 
 import (
-	"github.com/dh-kam/goink.go/pkg/hooks"
-	"github.com/dh-kam/goink.go/pkg/input"
-	"github.com/dh-kam/goink.go/pkg/terminal"
+	"github.com/dh-kam/ink-go/pkg/hooks"
+	"github.com/dh-kam/ink-go/pkg/input"
+	"github.com/dh-kam/ink-go/pkg/terminal"
 )
 
 // MouseEvent re-exports input.MouseEvent so consumers don't have to import

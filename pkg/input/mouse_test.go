@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/dh-kam/goink.go/pkg/input"
+	"github.com/dh-kam/ink-go/pkg/input"
 )
 
 func TestIsSGRMouseSequence(t *testing.T) {

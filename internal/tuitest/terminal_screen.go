@@ -5,7 +5,7 @@ import (
 	"strings"
 	"unicode/utf8"
 
-	"github.com/dh-kam/goink.go/pkg/utils"
+	"github.com/dh-kam/ink-go/pkg/utils"
 )
 
 // TerminalScreen projects a PTY byte stream into a plain terminal viewport.

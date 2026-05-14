@@ -6,7 +6,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/dh-kam/goink.go/pkg/terminal"
+	"github.com/dh-kam/ink-go/pkg/terminal"
 )
 
 func TestEnableMouseToBytes(t *testing.T) {

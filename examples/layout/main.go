@@ -3,7 +3,7 @@ package main
 import (
 "fmt"
 
-"github.com/dh-kam/goink.go/pkg/layout"
+"github.com/dh-kam/ink-go/pkg/layout"
 )
 
 func main() {

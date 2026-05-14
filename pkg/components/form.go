@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/dh-kam/goink.go/pkg/vdom"
+	"github.com/dh-kam/ink-go/pkg/vdom"
 )
 
 // FormFieldKind discriminates how a FormField is rendered and edited.

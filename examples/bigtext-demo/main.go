@@ -6,9 +6,9 @@ package main
 import (
 	"fmt"
 
-	"github.com/dh-kam/goink.go/pkg/components"
-	"github.com/dh-kam/goink.go/pkg/styles"
-	"github.com/dh-kam/goink.go/pkg/vdom"
+	"github.com/dh-kam/ink-go/pkg/components"
+	"github.com/dh-kam/ink-go/pkg/styles"
+	"github.com/dh-kam/ink-go/pkg/vdom"
 )
 
 const banner = "GOINK"

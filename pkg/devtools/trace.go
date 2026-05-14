@@ -16,8 +16,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/dh-kam/goink.go/pkg/reconciler"
-	"github.com/dh-kam/goink.go/pkg/vdom"
+	"github.com/dh-kam/ink-go/pkg/reconciler"
+	"github.com/dh-kam/ink-go/pkg/vdom"
 )
 
 // TraceEntry is one diff event in chronological order.

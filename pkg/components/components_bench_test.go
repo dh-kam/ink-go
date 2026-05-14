@@ -3,7 +3,7 @@ package components_test
 import (
 	"testing"
 
-	"github.com/dh-kam/goink.go/pkg/components"
+	"github.com/dh-kam/ink-go/pkg/components"
 )
 
 // BenchmarkSpinner benchmarks spinner creation

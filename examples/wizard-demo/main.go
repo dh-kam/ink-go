@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/dh-kam/goink.go/pkg/components"
-	"github.com/dh-kam/goink.go/pkg/ink"
+	"github.com/dh-kam/ink-go/pkg/components"
+	"github.com/dh-kam/ink-go/pkg/ink"
 )
 
 // Demo: a 3-step signup wizard wired through FormWizard. The driver loop

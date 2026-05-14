@@ -3,8 +3,8 @@ package main
 import (
 	"testing"
 
-	"github.com/dh-kam/goink.go/internal/tuitest"
-	"github.com/dh-kam/goink.go/pkg/ink"
+	"github.com/dh-kam/ink-go/internal/tuitest"
+	"github.com/dh-kam/ink-go/pkg/ink"
 )
 
 func TestTableScenario(t *testing.T) {

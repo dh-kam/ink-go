@@ -5,7 +5,7 @@ import (
 	"reflect"
 	"strings"
 
-	"github.com/dh-kam/goink.go/pkg/vdom"
+	"github.com/dh-kam/ink-go/pkg/vdom"
 )
 
 // TransformFunc transforms rendered text output.

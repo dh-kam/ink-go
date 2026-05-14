@@ -5,7 +5,7 @@ import (
 	"testing"
 	"unicode/utf8"
 
-	"github.com/dh-kam/goink.go/pkg/components"
+	"github.com/dh-kam/ink-go/pkg/components"
 )
 
 // TestProgressBarDefault tests default progress bar

@@ -1,8 +1,8 @@
 package ink
 
 import (
-	gocontext "github.com/dh-kam/goink.go/pkg/context"
-	"github.com/dh-kam/goink.go/pkg/hooks"
+	gocontext "github.com/dh-kam/ink-go/pkg/context"
+	"github.com/dh-kam/ink-go/pkg/hooks"
 )
 
 // Context is the Ink-level alias for context.Context, kept as a generic type

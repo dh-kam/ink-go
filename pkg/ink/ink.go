@@ -1,8 +1,8 @@
 package ink
 
 import (
-	"github.com/dh-kam/goink.go/internal/renderer"
-	"github.com/dh-kam/goink.go/pkg/vdom"
+	"github.com/dh-kam/ink-go/internal/renderer"
+	"github.com/dh-kam/ink-go/pkg/vdom"
 )
 
 // ComponentFunc is a function that returns a virtual DOM node

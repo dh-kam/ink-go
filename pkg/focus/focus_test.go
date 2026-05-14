@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/dh-kam/goink.go/pkg/focus"
+	"github.com/dh-kam/ink-go/pkg/focus"
 )
 
 // TestNewFocusManager tests focus manager creation

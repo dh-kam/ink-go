@@ -5,8 +5,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/dh-kam/goink.go/pkg/hooks"
-	inkinput "github.com/dh-kam/goink.go/pkg/input"
+	"github.com/dh-kam/ink-go/pkg/hooks"
+	inkinput "github.com/dh-kam/ink-go/pkg/input"
 )
 
 // TestSnapshotContext_Nil verifies that passing a nil context returns a

@@ -5,7 +5,7 @@ import (
 	"sync/atomic"
 	"testing"
 
-	gocontext "github.com/dh-kam/goink.go/pkg/context"
+	gocontext "github.com/dh-kam/ink-go/pkg/context"
 )
 
 func TestDefaultWhenEmpty(t *testing.T) {

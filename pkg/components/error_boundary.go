@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"runtime"
 
-	"github.com/dh-kam/goink.go/pkg/styles"
-	"github.com/dh-kam/goink.go/pkg/vdom"
+	"github.com/dh-kam/ink-go/pkg/styles"
+	"github.com/dh-kam/ink-go/pkg/vdom"
 )
 
 // ErrorInfo carries the recovered error and stack trace produced when an

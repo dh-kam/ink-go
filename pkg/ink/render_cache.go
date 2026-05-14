@@ -3,9 +3,9 @@ package ink
 import (
 	"sync"
 
-	"github.com/dh-kam/goink.go/internal/renderer"
-	"github.com/dh-kam/goink.go/pkg/reconciler"
-	"github.com/dh-kam/goink.go/pkg/vdom"
+	"github.com/dh-kam/ink-go/internal/renderer"
+	"github.com/dh-kam/ink-go/pkg/reconciler"
+	"github.com/dh-kam/ink-go/pkg/vdom"
 )
 
 // renderTracker is a thin pkg/ink-local wrapper around reconciler.Tracker.

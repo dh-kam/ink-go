@@ -3,8 +3,8 @@ package components
 import (
 	"strings"
 
-	"github.com/dh-kam/goink.go/pkg/styles"
-	"github.com/dh-kam/goink.go/pkg/vdom"
+	"github.com/dh-kam/ink-go/pkg/styles"
+	"github.com/dh-kam/ink-go/pkg/vdom"
 )
 
 // QuickSearchProps configures the pure-render QuickSearch component. Like

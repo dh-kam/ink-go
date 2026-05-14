@@ -3,7 +3,7 @@ package reconciler
 import (
 	"sync"
 
-	"github.com/dh-kam/goink.go/pkg/vdom"
+	"github.com/dh-kam/ink-go/pkg/vdom"
 )
 
 // RenderFunc materializes a vdom tree into a frame string. Matches the

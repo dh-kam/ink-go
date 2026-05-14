@@ -3,9 +3,9 @@ package main
 import (
 	"fmt"
 
-	"github.com/dh-kam/goink.go/pkg/components"
-	"github.com/dh-kam/goink.go/pkg/input"
-	"github.com/dh-kam/goink.go/pkg/vdom"
+	"github.com/dh-kam/ink-go/pkg/components"
+	"github.com/dh-kam/ink-go/pkg/input"
+	"github.com/dh-kam/ink-go/pkg/vdom"
 )
 
 // This demo parses a few SGR mouse sequences offline so it runs in any

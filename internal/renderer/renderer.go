@@ -9,11 +9,11 @@ import (
 	"unicode"
 	"unicode/utf8"
 
-	"github.com/dh-kam/goink.go/internal/buffer"
-	"github.com/dh-kam/goink.go/pkg/layout"
-	"github.com/dh-kam/goink.go/pkg/styles"
-	"github.com/dh-kam/goink.go/pkg/utils"
-	"github.com/dh-kam/goink.go/pkg/vdom"
+	"github.com/dh-kam/ink-go/internal/buffer"
+	"github.com/dh-kam/ink-go/pkg/layout"
+	"github.com/dh-kam/ink-go/pkg/styles"
+	"github.com/dh-kam/ink-go/pkg/utils"
+	"github.com/dh-kam/ink-go/pkg/vdom"
 	"github.com/rivo/uniseg"
 )
 

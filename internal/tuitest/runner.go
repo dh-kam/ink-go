@@ -8,8 +8,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/dh-kam/goink.go/pkg/ink"
-	testrenderer "github.com/dh-kam/goink.go/pkg/renderer"
+	"github.com/dh-kam/ink-go/pkg/ink"
+	testrenderer "github.com/dh-kam/ink-go/pkg/renderer"
 )
 
 const (

@@ -8,7 +8,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/dh-kam/goink.go/internal/tuitest"
+	"github.com/dh-kam/ink-go/internal/tuitest"
 )
 
 func main() {

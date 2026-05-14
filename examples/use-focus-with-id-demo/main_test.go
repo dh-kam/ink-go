@@ -3,7 +3,7 @@ package main
 import (
 	"testing"
 
-	"github.com/dh-kam/goink.go/internal/tuitest"
+	"github.com/dh-kam/ink-go/internal/tuitest"
 )
 
 func TestUseFocusWithIDNavigationScenario(t *testing.T) {

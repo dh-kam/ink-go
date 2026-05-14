@@ -15,7 +15,7 @@ import (
 	"strings"
 	"unsafe"
 
-	"github.com/dh-kam/goink.go/pkg/hooks"
+	"github.com/dh-kam/ink-go/pkg/hooks"
 )
 
 // HookInfo describes a single hook slot inside a hooks.Context.

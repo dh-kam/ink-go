@@ -5,8 +5,8 @@ import (
 	"sync/atomic"
 	"testing"
 
-	"github.com/dh-kam/goink.go/pkg/hooks"
-	"github.com/dh-kam/goink.go/pkg/input"
+	"github.com/dh-kam/ink-go/pkg/hooks"
+	"github.com/dh-kam/ink-go/pkg/input"
 )
 
 func TestMouseHookRegisterDispatchUnregister(t *testing.T) {

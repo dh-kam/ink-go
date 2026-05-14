@@ -3,7 +3,7 @@ package components
 import (
 	"strings"
 
-	"github.com/dh-kam/goink.go/pkg/vdom"
+	"github.com/dh-kam/ink-go/pkg/vdom"
 )
 
 // TextInputProps defines the properties for a TextInput component

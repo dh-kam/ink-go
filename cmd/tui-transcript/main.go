@@ -16,8 +16,8 @@ import (
 	"time"
 
 	"github.com/creack/pty"
-	"github.com/dh-kam/goink.go/internal/tuitest"
-	testrenderer "github.com/dh-kam/goink.go/pkg/renderer"
+	"github.com/dh-kam/ink-go/internal/tuitest"
+	testrenderer "github.com/dh-kam/ink-go/pkg/renderer"
 )
 
 func main() {

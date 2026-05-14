@@ -3,12 +3,12 @@ package main
 import (
 	"fmt"
 
-	"github.com/dh-kam/goink.go/internal/renderer"
-	"github.com/dh-kam/goink.go/pkg/components"
-	"github.com/dh-kam/goink.go/pkg/ink"
-	"github.com/dh-kam/goink.go/pkg/layout"
-	"github.com/dh-kam/goink.go/pkg/styles"
-	"github.com/dh-kam/goink.go/pkg/vdom"
+	"github.com/dh-kam/ink-go/internal/renderer"
+	"github.com/dh-kam/ink-go/pkg/components"
+	"github.com/dh-kam/ink-go/pkg/ink"
+	"github.com/dh-kam/ink-go/pkg/layout"
+	"github.com/dh-kam/ink-go/pkg/styles"
+	"github.com/dh-kam/ink-go/pkg/vdom"
 )
 
 func Dashboard() *vdom.Node {

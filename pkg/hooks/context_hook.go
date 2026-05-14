@@ -1,7 +1,7 @@
 package hooks
 
 import (
-	gocontext "github.com/dh-kam/goink.go/pkg/context"
+	gocontext "github.com/dh-kam/ink-go/pkg/context"
 )
 
 // UseContext returns the current value of the supplied Context.

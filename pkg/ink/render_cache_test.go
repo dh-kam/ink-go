@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/dh-kam/goink.go/internal/renderer"
-	"github.com/dh-kam/goink.go/pkg/vdom"
+	"github.com/dh-kam/ink-go/internal/renderer"
+	"github.com/dh-kam/ink-go/pkg/vdom"
 )
 
 // buildTextTree returns a simple <Text>text</Text> element used as a stable

@@ -6,7 +6,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/dh-kam/goink.go/pkg/vdom"
+	"github.com/dh-kam/ink-go/pkg/vdom"
 )
 
 // Profile is a single render measurement.

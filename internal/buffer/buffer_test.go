@@ -3,7 +3,7 @@ package buffer_test
 import (
 	"testing"
 
-	"github.com/dh-kam/goink.go/internal/buffer"
+	"github.com/dh-kam/ink-go/internal/buffer"
 )
 
 // TestNewBuffer tests creating a new buffer

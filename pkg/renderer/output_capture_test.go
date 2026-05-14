@@ -5,8 +5,8 @@ import (
 	"io"
 	"testing"
 
-	"github.com/dh-kam/goink.go/pkg/renderer"
-	"github.com/dh-kam/goink.go/pkg/vdom"
+	"github.com/dh-kam/ink-go/pkg/renderer"
+	"github.com/dh-kam/ink-go/pkg/vdom"
 )
 
 func TestStdoutNilWhenNotConfigured(t *testing.T) {

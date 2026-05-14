@@ -1,6 +1,6 @@
 package ink
 
-import "github.com/dh-kam/goink.go/pkg/vdom"
+import "github.com/dh-kam/ink-go/pkg/vdom"
 
 type suspension struct {
 	done <-chan struct{}

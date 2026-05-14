@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/dh-kam/goink.go/pkg/components"
+	"github.com/dh-kam/ink-go/pkg/components"
 )
 
 // TestSimpleTable tests creating a simple table

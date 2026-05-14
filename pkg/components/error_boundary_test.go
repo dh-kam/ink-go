@@ -5,8 +5,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/dh-kam/goink.go/pkg/components"
-	"github.com/dh-kam/goink.go/pkg/vdom"
+	"github.com/dh-kam/ink-go/pkg/components"
+	"github.com/dh-kam/ink-go/pkg/vdom"
 )
 
 // renderText concatenates the text content of a vdom subtree for assertion.

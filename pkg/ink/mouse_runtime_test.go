@@ -3,10 +3,10 @@ package ink
 import (
 	"testing"
 
-	"github.com/dh-kam/goink.go/pkg/components"
-	"github.com/dh-kam/goink.go/pkg/hooks"
-	"github.com/dh-kam/goink.go/pkg/input"
-	"github.com/dh-kam/goink.go/pkg/vdom"
+	"github.com/dh-kam/ink-go/pkg/components"
+	"github.com/dh-kam/ink-go/pkg/hooks"
+	"github.com/dh-kam/ink-go/pkg/input"
+	"github.com/dh-kam/ink-go/pkg/vdom"
 )
 
 func x10MouseFrame(cb, cx, cy int) string {

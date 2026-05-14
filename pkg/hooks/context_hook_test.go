@@ -3,8 +3,8 @@ package hooks_test
 import (
 	"testing"
 
-	gocontext "github.com/dh-kam/goink.go/pkg/context"
-	"github.com/dh-kam/goink.go/pkg/hooks"
+	gocontext "github.com/dh-kam/ink-go/pkg/context"
+	"github.com/dh-kam/ink-go/pkg/hooks"
 )
 
 func TestUseContextDefault(t *testing.T) {

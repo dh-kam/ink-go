@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/dh-kam/goink.go/pkg/vdom"
+	"github.com/dh-kam/ink-go/pkg/vdom"
 )
 
 // firstNonEmptyTransition returns the index of the first stdout write that

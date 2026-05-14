@@ -3,10 +3,10 @@ package main
 import (
 	"fmt"
 
-	"github.com/dh-kam/goink.go/internal/renderer"
-	"github.com/dh-kam/goink.go/pkg/components"
-	"github.com/dh-kam/goink.go/pkg/terminal"
-	"github.com/dh-kam/goink.go/pkg/vdom"
+	"github.com/dh-kam/ink-go/internal/renderer"
+	"github.com/dh-kam/ink-go/pkg/components"
+	"github.com/dh-kam/ink-go/pkg/terminal"
+	"github.com/dh-kam/ink-go/pkg/vdom"
 )
 
 const (

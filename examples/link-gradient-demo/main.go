@@ -3,9 +3,9 @@ package main
 import (
 	"fmt"
 
-	"github.com/dh-kam/goink.go/pkg/components"
-	"github.com/dh-kam/goink.go/pkg/ink"
-	"github.com/dh-kam/goink.go/pkg/vdom"
+	"github.com/dh-kam/ink-go/pkg/components"
+	"github.com/dh-kam/ink-go/pkg/ink"
+	"github.com/dh-kam/ink-go/pkg/vdom"
 )
 
 // App composes a single bordered column showing:
@@ -17,7 +17,7 @@ import (
 // falls back to plain text.
 func App() *vdom.Node {
 	link := components.Link(components.LinkProps{
-		URL:  "https://github.com/dh-kam/goink.go",
+		URL:  "https://github.com/dh-kam/ink-go",
 		Text: "goink.go on GitHub",
 	})
 

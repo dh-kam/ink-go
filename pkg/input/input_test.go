@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/dh-kam/goink.go/pkg/input"
+	"github.com/dh-kam/ink-go/pkg/input"
 )
 
 // TestKeyString tests Key string representation

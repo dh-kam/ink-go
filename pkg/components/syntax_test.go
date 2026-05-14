@@ -4,8 +4,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/dh-kam/goink.go/pkg/components"
-	"github.com/dh-kam/goink.go/pkg/styles"
+	"github.com/dh-kam/ink-go/pkg/components"
+	"github.com/dh-kam/ink-go/pkg/styles"
 )
 
 // syntaxText extracts the rendered text-node content from a Syntax node.

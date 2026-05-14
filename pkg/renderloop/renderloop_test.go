@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/dh-kam/goink.go/pkg/renderloop"
+	"github.com/dh-kam/ink-go/pkg/renderloop"
 )
 
 // TestNewRenderLoop tests render loop creation

@@ -1,6 +1,6 @@
 package reconciler
 
-import "github.com/dh-kam/goink.go/pkg/vdom"
+import "github.com/dh-kam/ink-go/pkg/vdom"
 
 // Diff returns the patches required to transform old into new. The trees are
 // not mutated; pass the patches to ApplyAll (or a renderer) to materialize

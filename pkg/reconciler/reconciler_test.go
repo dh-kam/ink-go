@@ -4,8 +4,8 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/dh-kam/goink.go/pkg/reconciler"
-	"github.com/dh-kam/goink.go/pkg/vdom"
+	"github.com/dh-kam/ink-go/pkg/reconciler"
+	"github.com/dh-kam/ink-go/pkg/vdom"
 )
 
 func box(props vdom.Props, children ...*vdom.Node) *vdom.Node {

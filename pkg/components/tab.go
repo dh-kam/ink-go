@@ -3,8 +3,8 @@ package components
 import (
 	"strings"
 
-	"github.com/dh-kam/goink.go/pkg/styles"
-	"github.com/dh-kam/goink.go/pkg/vdom"
+	"github.com/dh-kam/ink-go/pkg/styles"
+	"github.com/dh-kam/ink-go/pkg/vdom"
 )
 
 // TabItem is a single tab — a header label plus the panel content shown when

@@ -3,7 +3,7 @@ package utils_test
 import (
 	"testing"
 
-	"github.com/dh-kam/goink.go/pkg/utils"
+	"github.com/dh-kam/ink-go/pkg/utils"
 )
 
 // TestTruncate tests string truncation

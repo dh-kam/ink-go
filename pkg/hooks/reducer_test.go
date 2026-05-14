@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/dh-kam/goink.go/pkg/hooks"
+	"github.com/dh-kam/ink-go/pkg/hooks"
 )
 
 // renderOnce simulates a single render pass: reset hook indices then invoke

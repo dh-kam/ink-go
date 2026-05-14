@@ -18,8 +18,8 @@ import (
 	"strings"
 	"unicode"
 
-	"github.com/dh-kam/goink.go/pkg/styles"
-	"github.com/dh-kam/goink.go/pkg/vdom"
+	"github.com/dh-kam/ink-go/pkg/styles"
+	"github.com/dh-kam/ink-go/pkg/vdom"
 )
 
 // BigTextFont selects which embedded font BigText should render with.

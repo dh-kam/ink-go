@@ -4,9 +4,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/dh-kam/goink.go/pkg/focus"
-	"github.com/dh-kam/goink.go/pkg/hooks"
-	inkinput "github.com/dh-kam/goink.go/pkg/input"
+	"github.com/dh-kam/ink-go/pkg/focus"
+	"github.com/dh-kam/ink-go/pkg/hooks"
+	inkinput "github.com/dh-kam/ink-go/pkg/input"
 )
 
 // TestUseState tests basic state management

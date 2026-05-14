@@ -5,8 +5,8 @@ import (
 	"io"
 	"reflect"
 
-	"github.com/dh-kam/goink.go/pkg/focus"
-	inkinput "github.com/dh-kam/goink.go/pkg/input"
+	"github.com/dh-kam/ink-go/pkg/focus"
+	inkinput "github.com/dh-kam/ink-go/pkg/input"
 )
 
 type hookPhase int

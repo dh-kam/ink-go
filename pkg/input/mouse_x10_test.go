@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/dh-kam/goink.go/pkg/input"
+	"github.com/dh-kam/ink-go/pkg/input"
 )
 
 // x10 builds a legacy X10 mouse frame. cb/cx/cy are the *unbiased* values;

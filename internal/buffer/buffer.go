@@ -4,7 +4,7 @@ import (
 	"strings"
 	"unicode/utf8"
 
-	"github.com/dh-kam/goink.go/pkg/utils"
+	"github.com/dh-kam/ink-go/pkg/utils"
 )
 
 // Buffer represents a 2D character buffer for terminal rendering

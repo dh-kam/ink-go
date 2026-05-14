@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/dh-kam/goink.go/internal/buffer"
+	"github.com/dh-kam/ink-go/internal/buffer"
 )
 
 // TestSetOutOfBoundsNegative covers the early return when x or y is negative,

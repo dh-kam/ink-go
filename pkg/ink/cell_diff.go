@@ -3,8 +3,8 @@ package ink
 import (
 	"strings"
 
-	"github.com/dh-kam/goink.go/pkg/styles"
-	"github.com/dh-kam/goink.go/pkg/utils"
+	"github.com/dh-kam/ink-go/pkg/styles"
+	"github.com/dh-kam/ink-go/pkg/utils"
 )
 
 // cellDiffResetSGR resets all active SGR attributes — emitted whenever the

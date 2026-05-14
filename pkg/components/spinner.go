@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/dh-kam/goink.go/pkg/vdom"
+	"github.com/dh-kam/ink-go/pkg/vdom"
 )
 
 // SpinnerFrames contains the animation frames for different spinner styles

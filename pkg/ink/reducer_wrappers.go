@@ -1,6 +1,6 @@
 package ink
 
-import "github.com/dh-kam/goink.go/pkg/hooks"
+import "github.com/dh-kam/ink-go/pkg/hooks"
 
 // UseReducer is the Ink-level wrapper around hooks.UseReducer. Returns
 // (state, dispatch) where dispatch has stable identity across renders, so

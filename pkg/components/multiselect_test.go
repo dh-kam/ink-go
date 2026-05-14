@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/dh-kam/goink.go/pkg/components"
+	"github.com/dh-kam/ink-go/pkg/components"
 )
 
 func mkMultiItems(n int) []components.MultiSelectItem {

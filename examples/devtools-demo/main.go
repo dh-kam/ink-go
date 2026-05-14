@@ -23,10 +23,10 @@ import (
 	"os"
 	"time"
 
-	"github.com/dh-kam/goink.go/pkg/components"
-	"github.com/dh-kam/goink.go/pkg/devtools"
-	"github.com/dh-kam/goink.go/pkg/ink"
-	"github.com/dh-kam/goink.go/pkg/vdom"
+	"github.com/dh-kam/ink-go/pkg/components"
+	"github.com/dh-kam/ink-go/pkg/devtools"
+	"github.com/dh-kam/ink-go/pkg/ink"
+	"github.com/dh-kam/ink-go/pkg/vdom"
 )
 
 // counterComponent is the "real" app under inspection: a single-line counter

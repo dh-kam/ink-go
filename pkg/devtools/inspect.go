@@ -12,7 +12,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/dh-kam/goink.go/pkg/vdom"
+	"github.com/dh-kam/ink-go/pkg/vdom"
 )
 
 // LayoutInfo mirrors the layout metadata stored on a vdom.Node.

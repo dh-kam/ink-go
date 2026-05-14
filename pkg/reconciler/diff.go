@@ -3,7 +3,7 @@ package reconciler
 import (
 	"reflect"
 
-	"github.com/dh-kam/goink.go/pkg/vdom"
+	"github.com/dh-kam/ink-go/pkg/vdom"
 )
 
 // diffNode produces the patches needed to transform old into new at the

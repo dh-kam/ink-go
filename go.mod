@@ -1,4 +1,4 @@
-module github.com/dh-kam/goink.go
+module github.com/dh-kam/ink-go
 
 go 1.25.1
 

@@ -3,8 +3,8 @@ package ink
 import (
 	"strings"
 
-	"github.com/dh-kam/goink.go/pkg/hooks"
-	"github.com/dh-kam/goink.go/pkg/input"
+	"github.com/dh-kam/ink-go/pkg/hooks"
+	"github.com/dh-kam/ink-go/pkg/input"
 )
 
 // routeMouseInput inspects raw stdin data, parses SGR 1006 or legacy X10

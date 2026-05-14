@@ -8,10 +8,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/dh-kam/goink.go/internal/ttyinput"
-	"github.com/dh-kam/goink.go/pkg/ink"
-	"github.com/dh-kam/goink.go/pkg/terminal"
-	"github.com/dh-kam/goink.go/pkg/vdom"
+	"github.com/dh-kam/ink-go/internal/ttyinput"
+	"github.com/dh-kam/ink-go/pkg/ink"
+	"github.com/dh-kam/ink-go/pkg/terminal"
+	"github.com/dh-kam/ink-go/pkg/vdom"
 )
 
 var incrementalRows = []string{

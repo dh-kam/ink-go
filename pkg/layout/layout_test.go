@@ -4,7 +4,7 @@ import (
 	"math"
 	"testing"
 
-	"github.com/dh-kam/goink.go/pkg/layout"
+	"github.com/dh-kam/ink-go/pkg/layout"
 )
 
 // TestNodeCreation tests creating a layout node

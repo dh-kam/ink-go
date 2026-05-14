@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/dh-kam/goink.go/pkg/components"
-	"github.com/dh-kam/goink.go/pkg/input"
-	"github.com/dh-kam/goink.go/pkg/renderloop"
-	sty "github.com/dh-kam/goink.go/pkg/styles"
-	"github.com/dh-kam/goink.go/pkg/terminal"
+	"github.com/dh-kam/ink-go/pkg/components"
+	"github.com/dh-kam/ink-go/pkg/input"
+	"github.com/dh-kam/ink-go/pkg/renderloop"
+	sty "github.com/dh-kam/ink-go/pkg/styles"
+	"github.com/dh-kam/ink-go/pkg/terminal"
 )
 
 func main() {

@@ -4,8 +4,8 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/dh-kam/goink.go/pkg/styles"
-	"github.com/dh-kam/goink.go/pkg/vdom"
+	"github.com/dh-kam/ink-go/pkg/styles"
+	"github.com/dh-kam/ink-go/pkg/vdom"
 )
 
 // MultiSelectItem is one row in a MultiSelect list. Items with Disabled

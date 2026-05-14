@@ -3,8 +3,8 @@ package renderer_test
 import (
 	"testing"
 
-	"github.com/dh-kam/goink.go/pkg/renderer"
-	"github.com/dh-kam/goink.go/pkg/vdom"
+	"github.com/dh-kam/ink-go/pkg/renderer"
+	"github.com/dh-kam/ink-go/pkg/vdom"
 )
 
 func textNode(s string) *vdom.Node { return vdom.CreateTextNode(s) }

@@ -8,7 +8,7 @@ import (
 	"sync"
 	"time"
 
-	inkinput "github.com/dh-kam/goink.go/pkg/input"
+	inkinput "github.com/dh-kam/ink-go/pkg/input"
 )
 
 // RenderMetrics describes one completed render pass.

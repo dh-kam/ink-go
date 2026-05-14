@@ -7,11 +7,11 @@ import (
 	"os"
 	"strings"
 
-	"github.com/dh-kam/goink.go/internal/renderer"
-	"github.com/dh-kam/goink.go/pkg/focus"
-	"github.com/dh-kam/goink.go/pkg/hooks"
-	"github.com/dh-kam/goink.go/pkg/terminal"
-	"github.com/dh-kam/goink.go/pkg/vdom"
+	"github.com/dh-kam/ink-go/internal/renderer"
+	"github.com/dh-kam/ink-go/pkg/focus"
+	"github.com/dh-kam/ink-go/pkg/hooks"
+	"github.com/dh-kam/ink-go/pkg/terminal"
+	"github.com/dh-kam/ink-go/pkg/vdom"
 )
 
 const publicComponentMarkerKey = "__inkPublicComponent"

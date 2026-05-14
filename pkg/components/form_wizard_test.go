@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/dh-kam/goink.go/pkg/components"
+	"github.com/dh-kam/ink-go/pkg/components"
 )
 
 // wizardFixture returns a 3-step wizard whose middle step starts populated

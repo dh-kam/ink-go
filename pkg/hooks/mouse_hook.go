@@ -3,7 +3,7 @@ package hooks
 import (
 	"sync"
 
-	"github.com/dh-kam/goink.go/pkg/input"
+	"github.com/dh-kam/ink-go/pkg/input"
 )
 
 // MouseCallback receives one decoded mouse event.

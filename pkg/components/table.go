@@ -3,7 +3,7 @@ package components
 import (
 	"strings"
 
-	"github.com/dh-kam/goink.go/pkg/vdom"
+	"github.com/dh-kam/ink-go/pkg/vdom"
 )
 
 // TableCell represents a single cell in a table
