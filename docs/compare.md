@@ -106,20 +106,20 @@ current confirmed parity when the example path or implementation target differs.
 | [x] | Select Input | `examples/test-select.tsx` | `examples/test-select` | Covered by the current confirmed table. |
 | [x] | Text Input | `examples/test-input-field.tsx` | `examples/test-textinput` | Covered by the current confirmed table after matching Enter no-op behavior. |
 | [x] | Table | `examples/test-table.tsx` | `examples/test-table` | Covered by the current confirmed table after replacing the Go widget table with the upstream-shaped Box/Text fixture. |
-| [ ] | Spinner | `examples/test-spinner.tsx` | `examples/test-spinner` | Legacy pending item; no current equivalent recorded. |
-| [ ] | Progress Bar | `examples/test-progress.tsx` | `examples/test-progress` | Legacy pending item; no current equivalent recorded. |
+| [ ] | Spinner | `examples/test-spinner.tsx` | `pkg/components.Spinner` | Component exists and is covered by package tests; no current terminal parity example recorded. |
+| [ ] | Progress Bar | `examples/test-progress.tsx` | `pkg/components.ProgressBar` | Component exists and is covered by package tests; no current terminal parity example recorded. |
 | [x] | Hyperlinks | `test/components.tsx` OSC 8 link cases | `examples/test-link` | Covered by the current confirmed table using upstream OSC 8 preservation behavior. |
-| [ ] | Images | `examples/test-image.tsx` | `examples/test-image` | Legacy pending item; related capabilities may belong under `examples/syntax-image-demo`. |
-| [ ] | Gradients | `examples/test-gradient.tsx` | `examples/test-gradient` | Legacy pending item; related capabilities may belong under `examples/link-gradient-demo`. |
-| [ ] | Big Text | `examples/test-bigtext.tsx` | `examples/test-bigtext` | Legacy pending item; related capabilities may belong under `examples/bigtext-demo`. |
-| [ ] | Syntax Highlighting | `examples/test-syntax.tsx` | `examples/test-syntax` | Legacy pending item; related capabilities may belong under `examples/syntax-image-demo`. |
-| [ ] | Confirm Dialog | `examples/test-confirm.tsx` | `examples/test-confirm` | Legacy pending item; related capabilities may belong under `examples/confirm-demo`. |
-| [ ] | Alert Dialog | `examples/test-alert.tsx` | `examples/test-alert` | Legacy pending item; related capabilities may belong under `examples/alert-demo`. |
-| [ ] | Tabs | `examples/test-tabs.tsx` | `examples/test-tabs` | Legacy pending item; related capabilities may belong under `examples/tab-demo`. |
-| [ ] | Forms | `examples/test-form.tsx` | `examples/test-form` | Legacy pending item; related capabilities may belong under `examples/form-demo`. |
-| [ ] | Multi Select | `examples/test-multiselect.tsx` | `examples/test-multiselect` | Legacy pending item; related capabilities may belong under `examples/multiselect-demo`. |
+| [ ] | Images | `examples/test-image.tsx` | `examples/syntax-image-demo` | Component and demo exist; full upstream terminal parity is still pending confirmation. |
+| [ ] | Gradients | `examples/test-gradient.tsx` | `examples/link-gradient-demo` | Component and demo exist; full upstream terminal parity is still pending confirmation. |
+| [ ] | Big Text | `examples/test-bigtext.tsx` | `examples/bigtext-demo` | Component and demo exist; full upstream terminal parity is still pending confirmation. |
+| [ ] | Syntax Highlighting | `examples/test-syntax.tsx` | `examples/syntax-image-demo` | Component and demo exist; full upstream terminal parity is still pending confirmation. |
+| [ ] | Confirm Dialog | `examples/test-confirm.tsx` | `examples/confirm-demo` | Component and demo exist; full upstream terminal parity is still pending confirmation. |
+| [ ] | Alert Dialog | `examples/test-alert.tsx` | `examples/alert-demo` | Component and demo exist; full upstream terminal parity is still pending confirmation. |
+| [ ] | Tabs | `examples/test-tabs.tsx` | `examples/tab-demo` | Component and demo exist; full upstream terminal parity is still pending confirmation. |
+| [ ] | Forms | `examples/test-form.tsx` | `examples/form-demo`, `examples/wizard-demo` | Component and demos exist; full upstream terminal parity is still pending confirmation. |
+| [ ] | Multi Select | `examples/test-multiselect.tsx` | `examples/multiselect-demo` | Component and demo exist; full upstream terminal parity is still pending confirmation. |
 | [x] | Box Gap | `test/gap.tsx` | `examples/test-gap` | Covered by the current confirmed table using upstream `gap.tsx` cases rendered as a terminal comparison fixture. |
 | [x] | Absolute Position | `tests/upstream` absolute-position cases | `examples/test-absolute` | Covered by the current confirmed table using upstream absolute-position parity cases rendered as a terminal comparison fixture. |
 | [ ] | Z-Index | `examples/test-zindex.tsx` | `examples/test-zindex` | Legacy pending item; no current equivalent recorded. |
 | [ ] | Unmount Cleanup | `examples/test-cleanup.tsx` | `examples/test-cleanup` | Legacy pending item; no current equivalent recorded. |
-| [ ] | Error Boundary | `examples/test-error.tsx` | `examples/test-error` | Legacy pending item; related capabilities may belong under `examples/error-demo`. |
+| [ ] | Error Boundary | `examples/test-error.tsx` | `examples/error-demo` | Component and demo exist; full upstream terminal parity is still pending confirmation. |

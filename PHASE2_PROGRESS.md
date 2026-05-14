@@ -1,156 +1,78 @@
 # Phase 2 Progress Report
 
-## ✅ Completed
+Last updated: 2026-05-14
 
-### 1. ANSI Colors & Styling System (`pkg/styles`) - 60.0% coverage
-- [x] Color interface and types
-- [x] Basic colors (Red, Green, Blue, Yellow, Magenta, Cyan, White, Black)
-- [x] RGB color support (24-bit true color)
-- [x] Foreground and background color modes
-- [x] Text styles:
-  - [x] Bold
-  - [x] Dim
-  - [x] Italic
-  - [x] Underline
-  - [x] Strikethrough
-- [x] Style combination support
-- [x] ANSI code generation
-- [x] Color example app ✅ Working!
+## Historical Scope
 
-**Key Achievement:** 
-- No dependencies on external color libraries
-- Pure Go implementation
-- Full ANSI escape sequence support
+Phase 2 originally covered ANSI styling, pure-Go flexbox layout, and integrating
+layout into the renderer. That scope is complete in the current source tree.
 
-### 2. Pure Go Flexbox Layout Engine (`pkg/layout`) - 64.0% coverage
-- [x] Layout node structure
-- [x] Flex direction (Row, Column)
-- [x] Justify content (Start, Center, End, SpaceBetween, SpaceAround)
-- [x] Align items (Stretch, Start, Center, End)
-- [x] Padding support (all edges)
-- [x] Margin support (all edges)
-- [x] Width/Height properties
-- [x] Computed layout positions
-- [x] Tree structure (parent/children)
-- [x] Recursive layout calculation
-- [x] Layout example app ✅ Working!
+## Implemented Phase 2 Surface
 
-**Key Achievement:**
-- ✅ **NO cgo dependencies!**
-- ✅ Pure Go Flexbox implementation (~270 LOC)
-- ✅ Simpler than Yoga
-- ✅ Full control over layout algorithm
-- ✅ Easy to debug and extend
+### Styling
 
-### Examples Added
-- [x] `examples/colored-text` - Demonstrates ANSI colors and styles
-- [x] `examples/layout` - Demonstrates pure Go flexbox layout
+- Basic named colors, RGB truecolor, ANSI-256 downgrade helpers, hex/RGB string
+  parsing, foreground/background modes, and text modifiers
+- Bold, dim, italic, underline, inverse, and strikethrough helpers
+- Nested Text style inheritance and override behavior in ANSI rendering
+- Per-side border colors and dim props
+- OSC 8 hyperlink preservation through ANSI rendering
 
----
+Primary source areas:
 
-## 📊 Updated Test Coverage
+- `pkg/styles`
+- `internal/renderer`
+- `pkg/components/link.go`
+- `pkg/components/gradient.go`
+- `pkg/components/syntax.go`
 
+### Layout
+
+- Pure-Go flexbox-style layout with row/column direction, reverse directions,
+  grow, shrink, basis, min/max dimensions, width/height, percentage dimensions,
+  padding, margin, gaps, wrapping, align/justify controls, align-self,
+  absolute positioning, display none, and overflow clipping
+- Renderer integration for boxes, text nodes, borders, wrapped text, clipped
+  text, background fills, wide runes, grapheme clusters, and screen-reader
+  output
+
+Primary source areas:
+
+- `pkg/layout`
+- `internal/renderer`
+- `pkg/components/components.go`
+
+### Renderer Integration
+
+- Layout output is used by the plain and ANSI renderers.
+- Text measurement handles ANSI, control characters, C1 controls, OSC
+  hyperlinks, CJK, emoji modifiers, variation selectors, combining marks, and
+  ZWJ clusters.
+- Static output and dynamic output can be rendered separately for managed
+  runtime sessions.
+
+Primary source areas:
+
+- `internal/renderer/renderer.go`
+- `pkg/ink/output_helpers.go`
+- `pkg/ink/measure.go`
+
+## Downstream Work Built On Phase 2
+
+Later phases added runtime mounting, input/focus/mouse handling, screen-reader
+output, incremental rendering, the reconciler, component widgets, TUI
+transcript tooling, and upstream parity fixtures. The old Phase 2 "next steps"
+are now implemented elsewhere in the source tree rather than remaining planned
+items.
+
+## Validation
+
+Relevant commands:
+
+```bash
+go test ./pkg/styles ./pkg/layout ./internal/renderer ./pkg/components
+go test ./tests -run 'TestUpstreamGoldenParity|TestUpstreamCoverageCounts' -count=1
 ```
-Package                Coverage      Status      Lines
-────────────────────────────────────────────────────────
-internal/buffer        89.7%         ✅ Excellent  ~100
-internal/renderer      84.6%         ✅ Excellent  ~40
-pkg/components         87.5%         ✅ Excellent  ~30
-pkg/hooks             100.0%         ⭐ Perfect    ~50
-pkg/ink                57.1%         ✓  Good       ~60
-pkg/layout             64.0%         ✅ Good       ~270
-pkg/styles             60.0%         ✅ Good       ~110
-pkg/vdom               79.2%         ✅ Excellent  ~100
-────────────────────────────────────────────────────────
-Overall Average       ~77.6%         ✅ Excellent  ~760
-```
 
-**Production Code:** ~760 LOC (was ~800)
-**Test Code:** ~850 LOC
-**Test/Code Ratio:** 1.12 (excellent!)
-
----
-
-## 🎯 Next Steps (Phase 2 Continued)
-
-### Priority 1: Integrate Layout into Renderer
-- [ ] Connect layout engine to vdom nodes
-- [ ] Use layout for positioning in renderer
-- [ ] Support Box component with layout props
-- [ ] Update renderer to use computed positions
-
-### Priority 2: Input Handling
-- [ ] Terminal raw mode (`golang.org/x/term`)
-- [ ] Key press detection
-- [ ] useInput hook
-- [ ] Focus management (useFocus)
-
-### Priority 3: Live Rendering
-- [ ] Continuous render loop
-- [ ] Exit handler
-- [ ] Screen management (cursor hide/show)
-- [ ] FPS throttling
-
-### Priority 4: Enhanced Components
-- [ ] Text component with color/style props
-- [ ] Box component with layout props
-- [ ] Border rendering
-- [ ] Static component
-
----
-
-## 💡 Technical Decisions Made
-
-### 1. Pure Go vs. cgo Yoga
-**Decision:** Pure Go implementation
-**Rationale:**
-- Simpler build process (no C dependencies)
-- Easier cross-compilation
-- Full control over layout algorithm
-- Easier to debug
-- Smaller codebase
-- No FFI overhead
-
-**Trade-offs:**
-- Less battle-tested than Yoga
-- Need to implement all layout features ourselves
-- But: For CLI rendering, we need subset of features
-
-### 2. Style Application Approach
-**Decision:** Apply styles at text node level (not rendering time)
-**Rationale:**
-- Simpler renderer logic
-- Styles are immutable once applied
-- Better testability
-- Clear separation of concerns
-
----
-
-## 🚀 Phase 2 Achievements So Far
-
-✅ **Zero cgo dependencies** - Pure Go implementation
-✅ **ANSI color support** - Full 24-bit color + styles
-✅ **Flexbox layout** - From scratch in ~270 LOC
-✅ **Maintained TDD** - Every feature test-first
-✅ **High coverage** - Avg 77.6%
-✅ **Working examples** - All demos functional
-
----
-
-## 📈 Comparison: Before vs. After Phase 2
-
-| Metric | Phase 1 | Phase 2 | Change |
-|--------|---------|---------|--------|
-| Packages | 6 | 8 | +2 |
-| Production LOC | ~800 | ~760 | -40 (refactored) |
-| Test LOC | ~600 | ~850 | +250 |
-| Avg Coverage | 83.0% | 77.6% | -5.4% (new code) |
-| Features | Basic | Colors+Layout | Major! |
-| Dependencies | 0 | 0 | Still zero! |
-
-**Coverage drop is expected:** New features need more test cases.
-**Target:** Bring back to 80%+ as we add tests for integration.
-
----
-
-Last Updated: 2026-02-09
+The upstream parity suite currently contains 784 generated cases, with the
+largest family being 467 Box layout/rendering cases.

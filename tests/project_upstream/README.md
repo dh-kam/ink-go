@@ -36,7 +36,7 @@ go test ./tests -run 'TestProjectUpstreamGoldenParity|TestProjectUpstreamCoverag
 - Keep paths relative in this directory and related docs.
 - Add new cases to `cases.mjs`, then regenerate the generated JSON files.
 - These cases are curated from real public Ink applications, not upstream Ink fixture titles.
-- The initial suite currently covers:
+- The current generated suite covers:
   - `gemini-cli`: 8
   - `neovate-code`: 11
   - `shopify-cli`: 1

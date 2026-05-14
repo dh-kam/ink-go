@@ -1,200 +1,116 @@
 # Goink Development Status
 
-## ✅ Phase 1 MVP - COMPLETE! 🎉
+Last updated: 2026-05-14
 
-### Core Infrastructure
-- [x] Go module initialized (`github.com/dh-kam/goink.go`)
-- [x] Directory structure created
-- [x] TDD workflow established and maintained throughout
+## Current State
 
-### Virtual DOM (`pkg/vdom`) - 79.2% coverage
-- [x] Node types (TextNode, ElementNode)
-- [x] CreateTextNode / CreateElement functions
-- [x] Props system
-- [x] Node cloning
-- [x] Comprehensive test suite
+The repository is an active Go port of TypeScript Ink. The source tree now
+contains 95 Go packages from `go list ./...`, 72 example directories, generated
+upstream parity fixtures, project-derived parity fixtures, and PTY-based TUI
+smoke tests.
 
-### Rendering System
-- [x] **2D Buffer** (`internal/buffer`) - 89.7% coverage
-  - Character grid management
-  - String writing with bounds checking
-  - Smart rendering (trim empty lines)
-  
-- [x] **Renderer** (`internal/renderer`) - 84.6% coverage
-  - Tree traversal
-  - Text node rendering
-  - Nested element support
-  - Multi-child rendering
+`go test ./...` passed on the current source before this documentation update.
 
-### State Management (`pkg/hooks`) - 100% coverage ⭐
-- [x] Hooks Context
-- [x] useState hook
-- [x] Multiple hooks support
-- [x] Hook ordering enforcement
-- [x] Perfect test coverage
+## Implemented Surface
 
-### Application Framework (`pkg/ink`) - 57.1% coverage
-- [x] App instance management
-- [x] Render lifecycle
-- [x] Global hooks context
-- [x] RenderOnce method
-- [x] Component function type
+### Core Runtime
 
-### Component Helpers (`pkg/components`) - 87.5% coverage
-- [x] Box component helper
-- [x] Text component helper
-- [x] Newline helper
-- [x] Space helper
+- Virtual DOM node model and element/text helpers (`pkg/vdom`)
+- Public app API (`pkg/ink`) with `Render`, `RenderToString`, `NewApp`,
+  `Mount`, `MountWithOptions`, `RenderWithOptions`, `Rerender`, `Clear`,
+  `Unmount`, and `WaitUntilExit`
+- Managed stdout/stderr output restoration, incremental rendering, throttled
+  `MaxFPS` rendering, resize handling, static output splitting, cursor updates,
+  and CI-aware output behavior
+- Screen-reader render mode with aria labels, roles, state narration, hidden
+  subtrees, live announcements, and static-output deltas
+- DOM-like refs and measurement via `MeasureElement`, `MeasureElementPosition`,
+  and `MeasureText`
 
-### Examples - All Working! ✅
-- [x] **Hello World** - Basic text rendering
-- [x] **Hello Advanced** - Multi-line with helpers
-- [x] **Counter** - Stateful component with useState
+### Components
 
-### Documentation
-- [x] Comprehensive README
-- [x] Quick start guide
-- [x] API reference
-- [x] Architecture diagram
-- [x] Code examples
-- [x] Development guide
+Implemented component helpers include:
 
----
+- Core layout/text: `Box`, `Text`, `Newline`, `Space`, `Spacer`, `Static`,
+  `StaticItems`, `Transform`, `Border`
+- Input and selection: `TextInput`, `PasswordInput`, `Select`, `MultiSelect`,
+  `QuickSearch`, `Confirm`, `Tabs`
+- Display widgets: `Spinner`, `ProgressBar`, `Table`, `Divider`, `Alert`,
+  `Link`, `Gradient`, `BigText`, `Syntax`, `Image`
+- Error and form flows: `ErrorBoundary`, `ErrorOverview`,
+  `ErrorOverviewGroup`, `Form`, `FormState`, `FormWizard`
 
-## 📊 Final MVP Statistics
+`BigText` currently includes block, tiny, shadow, outline, slim, and digital
+fonts. `Syntax` currently includes Go, JSON, YAML, Markdown, Bash, Python, Rust,
+SQL, JavaScript, and diff tokenizers.
 
-### Test Coverage by Package
+### Hooks
 
+Implemented hook surface includes:
+
+- State and lifecycle: `UseState`, `UseEffect`, `UseMemo`, `UseCallback`,
+  `UseRef`, `UseReducer`, `UseContext`
+- Runtime: `UseApp`, `UseStdin`, `UseStdout`, `UseStderr`, `UseCursor`,
+  `UseIsScreenReaderEnabled`, `UseAnnounce`
+- Input and navigation: `UseInput`, `UseFocus`, `UseFocusOpts`,
+  `UseFocusManager`, `UseMouse`
+- Concurrent-style helpers: `UseTransition`, `UseDeferredValue`
+
+### Layout, Rendering, and Input
+
+- Pure-Go flexbox-style layout engine with grow/shrink, basis, min/max
+  dimensions, gaps, wrapping, reverse directions, absolute positioning,
+  clipping, margins, padding, and border-aware geometry
+- ANSI renderer with foreground/background colors, modifiers, nested style
+  inheritance, OSC 8 hyperlink preservation, full-area background fills, and
+  per-side border colors/dim props
+- Grapheme-cluster and wide-rune handling for wrapping, truncation, fixed-width
+  boxes, emoji ZWJ sequences, combining marks, and variation selectors
+- Keyboard parser for upstream-style escape variants, modifiers, bracketed
+  paste, function keys, cursor keys, control keys, and paste chunks
+- SGR 1006 and legacy X10 mouse parsing, terminal mouse mode toggles, and
+  mounted app-scoped mouse dispatch
+
+## Test and Parity Coverage
+
+- `tests/upstream`: 784 generated cases from upstream Ink fixtures
+  - Box: 467
+  - Text: 157
+  - Transform: 49
+  - Static: 38
+  - Newline: 33
+  - Spacer: 34
+  - Measure: 2
+  - Render: 4
+- `tests/project_upstream`: 22 project-derived cases
+  - gemini-cli: 8
+  - neovate-code: 11
+  - shopify-cli: 1
+  - tweakcc: 1
+  - nanocoder: 1
+- `tests/tui`: PTY transcript smoke tests for upstream Node Ink vs Goink
+  scenarios such as background rendering, aria toggle, chat, IME input,
+  select input, focus navigation, static output, stdout/stderr restoration,
+  tables, and terminal resize sweeps
+- `pkg/renderer`: snapshot and output-capture helpers for app-level tests
+- `internal/tuitest`: scenario runner, transcript recorder, terminal screen
+  projection, and manifest-based runtime launcher
+
+## Remaining Risks
+
+- Directly-shrunk text-only sibling rows do not yet implement the full
+  iterative Yoga measure-and-redistribute pass.
+- Real-project parity should keep expanding beyond the current curated
+  `tests/project_upstream` cases.
+- External `ink-*` ecosystem component compatibility is represented by local
+  component ports and examples, but not exhaustively covered by generated
+  upstream fixtures.
+
+## Useful Commands
+
+```bash
+go test ./...
+go test ./tests -run 'TestUpstreamGoldenParity|TestUpstreamCoverageCounts' -count=1
+go test ./tests -run 'TestProjectUpstreamGoldenParity|TestProjectUpstreamCoverageCounts' -count=1
+go test ./tests/tui -count=1
 ```
-Package                Coverage      Status
-──────────────────────────────────────────────
-internal/buffer        89.7%         ✅ Excellent
-internal/renderer      84.6%         ✅ Excellent  
-pkg/components         87.5%         ✅ Excellent
-pkg/hooks             100.0%         ⭐ Perfect
-pkg/ink                57.1%         ✓  Good
-pkg/vdom               79.2%         ✅ Excellent
-──────────────────────────────────────────────
-Overall Average       ~83.0%         ✅ Excellent
-```
-
-### Code Metrics
-- **Total Lines of Code**: ~800 (production code)
-- **Total Test Code**: ~600
-- **Test/Code Ratio**: 0.75 (excellent!)
-- **All Tests**: PASSING ✅
-- **Build Status**: SUCCESS ✅
-
-### TDD Compliance
-- ✅ Every feature test-first
-- ✅ Red → Green → Refactor cycle
-- ✅ No implementation without tests
-- ✅ High code coverage maintained
-
----
-
-## 🎯 Phase 2: Core Features (Next Steps)
-
-### Priority 1: Layout Engine
-- [ ] Yoga layout integration (cgo)
-  - [ ] Build yoga-layout C bindings
-  - [ ] Flexbox properties (flexDirection, justifyContent, etc.)
-  - [ ] Width/height/margin/padding
-  - [ ] Layout calculation in renderer
-  - [ ] Tests for layout computation
-
-### Priority 2: Styling
-- [ ] ANSI color support
-  - [ ] Foreground/background colors
-  - [ ] Color props on Text component
-  - [ ] Integration with fatih/color
-  
-- [ ] Text styles
-  - [ ] Bold, italic, underline
-  - [ ] Dim, strikethrough
-  - [ ] Style composition
-
-- [ ] Borders
-  - [ ] Box borders (single, double, rounded)
-  - [ ] Border colors
-  - [ ] Border rendering in output
-
-### Priority 3: Input Handling
-- [ ] Terminal raw mode
-  - [ ] golang.org/x/term integration
-  - [ ] Stdin reader
-  - [ ] Key parsing
-  
-- [ ] useInput hook
-  - [ ] Key press events
-  - [ ] Handler callbacks
-  - [ ] Focus integration
-
-- [ ] useFocus hook
-  - [ ] Focus management
-  - [ ] Focus context
-  - [ ] Tab navigation
-
-### Priority 4: Live Rendering
-- [ ] Continuous render loop
-  - [ ] Frame-based updates
-  - [ ] FPS throttling
-  - [ ] Exit handling
-  
-- [ ] Screen management
-  - [ ] Cursor hiding
-  - [ ] Alternate screen buffer
-  - [ ] Clean exit
-
----
-
-## 💡 Technical Achievements (MVP)
-
-### Architecture Simplicity
-- Proved React's core concepts are simple (~800 LOC)
-- No need for full Fiber architecture
-- Preact-style approach works great for CLI
-
-### Clean Design
-- Single responsibility principle
-- Clear separation of concerns
-- Testable components
-
-### Developer Experience
-- Type-safe APIs
-- Intuitive component model
-- Familiar React patterns
-
----
-
-## 📈 Success Metrics
-
-✅ **All MVP goals achieved**
-- Virtual DOM: Working
-- Rendering: Working
-- State management: Working
-- Examples: Working
-- Tests: All passing
-- Documentation: Complete
-
-✅ **Code Quality**
-- Average coverage: 83%
-- TDD throughout
-- Clean architecture
-- No technical debt
-
-✅ **Usability**
-- Simple API
-- Clear examples
-- Good documentation
-- Working demos
-
----
-
-**Phase 1 MVP Status: COMPLETE! 🚀**
-
-Ready to proceed to Phase 2: Core Features
-
----
-
-Last Updated: 2026-02-09

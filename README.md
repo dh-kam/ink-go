@@ -1,228 +1,179 @@
 # Goink
 
-> React for CLI apps in Go - A Golang port of [Ink](https://github.com/vadimdemedes/ink)
+React-style terminal UI primitives for Go, ported from the TypeScript
+[Ink](https://github.com/vadimdemedes/ink) model.
 
-Build interactive command-line applications with component-based architecture, just like React.
-
-## Status
-
-✅ **Phase 1 MVP Complete!**
-
-## Features
-
-- ✅ Component-based architecture
-- ✅ Virtual DOM diffing
-- ✅ Hooks (useState)
-- ✅ Simple rendering engine
-- ✅ Built-in components (Box, Text, Newline, Space)
-- 🚧 Flexbox layouts (Phase 2)
-- 🚧 ANSI styling and colors (Phase 2)
-- 🚧 Input handling (Phase 2)
-
-## Installation
+The module path is currently:
 
 ```bash
 go get github.com/dh-kam/goink.go
 ```
 
-## Quick Start
+## Status
 
-### Hello World
+Goink has moved well past the original MVP. The current tree includes the
+core component model, a flexbox-style layout renderer, runtime mounting,
+input/focus hooks, mouse support, screen-reader rendering, snapshot utilities,
+TUI transcript tooling, and upstream parity suites.
+
+Current source-backed highlights:
+
+- Virtual DOM and component helpers in `pkg/vdom` and `pkg/components`
+- Layout, ANSI styling, wide-rune and grapheme-aware rendering
+- Mounted runtime with managed stdout/stderr output, rerendering, cleanup, and
+  throttled rendering
+- Hooks for state, effects, memoization, refs, reducer, context, input, focus,
+  mouse, transition, deferred values, app/stdin/stdout/stderr, cursor, and
+  screen-reader state
+- Interactive components including text input, select, multiselect, quick
+  search, confirm, tabs, forms, form wizard, table, progress bar, spinner,
+  error boundary, error overview, links, gradients, big text, syntax
+  highlighting, and image rendering
+- Reconciler and renderer test helpers for snapshots, fake stdin, and
+  stdout/stderr frame capture
+- 784 generated upstream Ink parity cases plus 22 project-derived parity cases
+- 72 example applications and fixtures under `examples/`
+
+## Quick Start
 
 ```go
 package main
 
 import (
 	"fmt"
+
 	"github.com/dh-kam/goink.go/pkg/components"
 	"github.com/dh-kam/goink.go/pkg/ink"
 	"github.com/dh-kam/goink.go/pkg/vdom"
 )
 
 func App() *vdom.Node {
-	return components.Box(nil,
-		components.Text("Hello, Goink!"),
+	return components.Box(vdom.Props{"flexDirection": "column"},
+		components.Text("Hello, Goink!", vdom.Props{"color": "cyan", "bold": true}),
+		components.Text("Component trees render to terminal output."),
 	)
 }
 
 func main() {
-	app := ink.NewApp(App)
-	fmt.Println(app.RenderOnce())
+	fmt.Print(ink.Render(App))
 }
 ```
 
-### Stateful Counter
+For a managed interactive app:
 
 ```go
 package main
 
 import (
 	"fmt"
+
 	"github.com/dh-kam/goink.go/pkg/components"
 	"github.com/dh-kam/goink.go/pkg/ink"
 	"github.com/dh-kam/goink.go/pkg/vdom"
 )
 
-func Counter() *vdom.Node {
+func App() *vdom.Node {
 	count, setCount := ink.UseState(0)
-	
-	// Update state (normally triggered by user input)
-	if count.(int) < 5 {
-		setCount(count.(int) + 1)
-	}
-	
-	return components.Box(nil,
+	app := ink.UseApp()
+	ink.UseInput(func(input string, key ink.InputKey) {
+		if key.Return {
+			setCount(count.(int) + 1)
+		}
+		if input == "q" || key.Escape {
+			app.Exit()
+		}
+	})
+
+	return components.Box(vdom.Props{"flexDirection": "column"},
 		components.Text(fmt.Sprintf("Count: %d", count)),
+		components.Text("Press Enter to increment, q or Esc to quit.", vdom.Props{"dimColor": true}),
 	)
 }
 
 func main() {
-	app := ink.NewApp(Counter)
-	
-	// Render multiple times to show updates
-	for i := 0; i < 6; i++ {
-		fmt.Println(app.RenderOnce())
+	instance, err := ink.Mount(App)
+	if err != nil {
+		panic(err)
+	}
+	if err := instance.WaitUntilExit(); err != nil {
+		panic(err)
 	}
 }
 ```
 
 ## Examples
 
-Run the examples:
+Representative examples:
 
 ```bash
-# Simple hello world
-go run examples/hello/main.go
-
-# Multi-line text example
-go run examples/hello-advanced/main.go
-
-# Auto-incrementing counter
-go run examples/counter/main.go
+go run ./examples/hello-world-demo
+go run ./examples/border-demo
+go run ./examples/select-input-demo
+go run ./examples/chat-demo
+go run ./examples/table-demo
+go run ./examples/wizard-demo
+go run ./examples/widgets-gallery
 ```
 
-## API Reference
+The example tree also contains parity fixtures for upstream Ink behavior such
+as focus, input, static output, terminal resize, screen-reader output, wrapping,
+overflow, absolute positioning, OSC 8 links, and IME cursor handling.
 
-### Core Functions
+## Packages
 
-- `ink.NewApp(component ComponentFunc) *App` - Create a new app instance
-- `app.RenderOnce() string` - Render the component once and return output
-- `ink.UseState(initialValue interface{}) (value, setValue)` - State management hook
+- `pkg/ink`: public app/runtime API, managed sessions, hooks wrappers, output
+  helpers, measurement, announcer, suspense, and render cache
+- `pkg/components`: public component helpers and higher-level widgets
+- `pkg/layout`: pure-Go flexbox-style layout calculations
+- `pkg/styles`: ANSI color/style helpers and color parsing
+- `pkg/input`: keyboard, SGR 1006 mouse, and X10 mouse parsing
+- `pkg/focus`: focus manager primitives
+- `pkg/context`: generic context provider/consumer support
+- `pkg/reconciler`: vdom diff, patches, and tracker
+- `pkg/renderer`: test renderer, snapshots, fake stdin, stdout/stderr capture
+- `pkg/renderloop`: lower-level render loop utilities
+- `internal/renderer`: layout/ANSI/screen-reader renderer implementation
+- `internal/tuitest`: scenario runner, PTY transcript tools, terminal screen
+  projection, and golden assertions
+- `cmd/tui-transcript` and `cmd/tui-compare`: CLI tools for runtime parity
+  transcript capture and comparison
 
-### Components
-
-- `components.Box(props, children...)` - Container element
-- `components.Text(args...)` - Text element with strings, props, and nested child nodes
-- `components.Newline(count...)` - Newline character, optionally repeated
-- `components.Space()` - Space character
-- `components.Static(args...)` / `components.StaticItems(items, render, props...)` - Static output helpers
-
-### Virtual DOM
-
-- `vdom.CreateElement(type, props, children...)` - Create element node
-- `vdom.CreateTextNode(text)` - Create text node
-
-## Architecture
-
-```
-┌─────────────────────────────────────┐
-│  Component (Go function)            │
-└──────────────┬──────────────────────┘
-               │
-               ▼
-┌─────────────────────────────────────┐
-│  Hooks (useState, etc.)             │
-│  - State management                 │
-│  - Hook ordering                    │
-└──────────────┬──────────────────────┘
-               │
-               ▼
-┌─────────────────────────────────────┐
-│  Virtual DOM                        │
-│  - Node tree structure              │
-│  - Props & children                 │
-└──────────────┬──────────────────────┘
-               │
-               ▼
-┌─────────────────────────────────────┐
-│  Renderer                           │
-│  - 2D buffer                        │
-│  - Tree traversal                   │
-└──────────────┬──────────────────────┘
-               │
-               ▼
-           Terminal
-```
-
-## Development
-
-This project follows **TDD (Test-Driven Development)** principles.
-
-### Run Tests
+## Testing
 
 ```bash
-# All tests
 go test ./...
-
-# With coverage
-go test ./... -cover
-
-# Specific package
-go test ./pkg/vdom -v
 ```
 
-### Test Coverage
+Focused parity suites:
 
-```
-Package                Coverage
-─────────────────────────────────
-internal/buffer        89.7%
-internal/renderer      84.6%
-pkg/components         87.5%
-pkg/hooks             100.0%
-pkg/ink                57.1%
-pkg/vdom               79.2%
-─────────────────────────────────
-Average               ~83.0%
+```bash
+go test ./tests -run 'TestUpstreamGoldenParity|TestUpstreamCoverageCounts' -count=1
+go test ./tests -run 'TestProjectUpstreamGoldenParity|TestProjectUpstreamCoverageCounts' -count=1
+go test ./tests/tui -count=1
 ```
 
-## Roadmap
+Regenerate upstream goldens after editing `tests/upstream/cases.mjs`:
 
-### ✅ Phase 1: MVP (Complete)
-- Virtual DOM
-- Basic rendering
-- useState hook
-- Helper components
-- Examples
+```bash
+node tests/upstream/generate_goldens.mjs
+```
 
-### 🚧 Phase 2: Core Features (Next)
-- Yoga layout engine (Flexbox)
-- ANSI colors and styling
-- Border rendering
-- Input handling (useInput)
-- Focus management
+Regenerate project-based goldens after editing `tests/project_upstream/cases.mjs`:
 
-### 📋 Phase 3: Advanced Features
-- Context API
-- More hooks (useEffect, useMemo, etc.)
-- Static component
-- Error boundaries
-- DevTools support
+```bash
+node tests/project_upstream/generate_goldens.mjs
+```
 
-### 🎯 Phase 4: Production Ready
-- Performance optimization
-- Comprehensive documentation
-- Migration guide from Ink (TS)
-- Cross-platform testing
+## Parity Notes
 
-## Contributing
-
-Contributions are welcome! Please ensure all tests pass and coverage remains high.
+The generated upstream parity skip list is currently empty. Remaining work is
+mostly breadth and edge-case depth rather than missing core APIs: more
+real-project runtime patterns, more terminal edge cases, more external
+`ink-*` component compatibility targets, and a closer iterative Yoga
+shrink-and-redistribute pass for directly-shrunk text-only sibling rows.
 
 ## License
 
 MIT
 
----
-
-Inspired by [Ink](https://github.com/vadimdemedes/ink) by Vadim Demedes
+Inspired by [Ink](https://github.com/vadimdemedes/ink) by Vadim Demedes.

@@ -8,7 +8,7 @@ This repository is the active Go port workspace for the TypeScript Ink project.
 
 The codebase was imported from the local Ink reference workspace under `../ink` on 2026-04-18.
 
-Verified after import:
+Verified on 2026-05-14:
 
 - `go test ./...` passes
 - local reference source under `../ink` is readable
@@ -37,11 +37,13 @@ Verified after import:
 - `QuickSearch` (filter-as-you-type list with fuzzy matching and selection callback)
 - `Link` (OSC 8 hyperlink wrapper around inline `Text`)
 - `Gradient` (per-character RGB interpolation across one or more stops)
-- `BigText` (figlet-style headline with `Block` and `Tiny` built-in fonts)
-- `Syntax` (inline source highlighter with `Go` and `JSON` tokenizers)
+- `BigText` (figlet-style headline with `Block`, `Tiny`, `Shadow`, `Outline`, `Slim`, and `Digital` built-in fonts)
+- `Syntax` (inline source highlighter with `Go`, `JSON`, `YAML`, `Markdown`, `Bash`, `Python`, `Rust`, `SQL`, `JavaScript`, and `Diff` tokenizers)
 - `Image` (ANSI half-block image rendering for raw RGBA data)
 - `ErrorBoundary` (panic-recovery wrapper with default red bordered fallback and `OnError` hook)
+- `ErrorOverview` / `ErrorOverviewGroup` (grouped validation/runtime errors with stack/source context)
 - `Form` (multi-field controller with per-field validation, focus traversal, and submit/cancel callbacks)
+- `FormWizard` (multi-step form controller with validation gates and aggregated errors)
 
 ### Hooks / State
 
@@ -55,6 +57,8 @@ Verified after import:
 - `UseReducer` (generic Redux-style state, stable dispatch identity)
 - `UseContext` (generic provider/consumer via `pkg/context`)
 - `UseMouse` (SGR 1006 mouse events with multi-subscriber fan-out)
+- `UseTransition`
+- `UseDeferredValue`
 - `UseApp`
 - `UseStdin`
 - `UseStdout`
@@ -62,7 +66,10 @@ Verified after import:
 - `UseFocusManager`
 - `UseCursor`
 - `UseIsScreenReaderEnabled`
+- `UseAnnounce`
 - `MeasureElement`
+- `MeasureElementPosition`
+- `MeasureText`
 - `DOMElement` (current minimal Go-level ref handle)
 
 ### Runtime / Infra
