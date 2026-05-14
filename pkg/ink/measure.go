@@ -19,6 +19,26 @@ type ElementDimensions struct {
 	Height int
 }
 
+// ElementPosition contains the measured top/left coordinates of an element
+// relative to its rendered surface.
+type ElementPosition struct {
+	Left int
+	Top  int
+}
+
+// MeasureElementPosition returns the top/left coordinates that the layout
+// engine has assigned to the element. Returns the zero value when the element
+// has not yet been laid out (for example, before the first render or for refs
+// attached to detached nodes).
+func MeasureElementPosition(node *DOMElement) ElementPosition {
+	if node == nil {
+		return ElementPosition{}
+	}
+
+	layout := node.ComputedLayout()
+	return ElementPosition{Left: layout.Left, Top: layout.Top}
+}
+
 var measureTextCache sync.Map
 
 // MeasureElement returns the latest computed layout dimensions for an element ref.

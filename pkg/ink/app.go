@@ -45,15 +45,25 @@ type App struct {
 	stderr              io.Writer
 	rawState            *terminal.State
 	rawModeUsers        int
+	mouseManager        *hooks.MouseManager
 	exitRequested       bool
 	exitErr             error
 	cursorPosition      *CursorPosition
 	screenReaderEnabled bool
+	announcer           *Announcer
 }
 
 func (a *App) renderVNode() *vdom.Node {
 	a.hooksCtx.Reset()
 	a.cursorPosition = nil
+	// Rotate the announcer queue *before* invoking the component so that
+	// any UseAnnounce dispatch made during this render body (or its
+	// effects) accumulates into the next frame's pending queue rather than
+	// the active one being emitted right now. The "land in next frame"
+	// guarantee documented on UseAnnounce depends on this ordering.
+	if a.announcer != nil {
+		a.announcer.BeginRender()
+	}
 	currentHooksContext = a.hooksCtx
 	currentApp = a
 	defer ResetCurrentHooksContext()
@@ -81,22 +91,6 @@ func NewApp(component ComponentFunc) *App {
 
 // NewAppWithOptions creates a new Ink application with explicit runtime options.
 func NewAppWithOptions(component ComponentFunc, options AppOptions) *App {
-	width := options.Width
-	height := options.Height
-	autoWidth := width <= 0
-	autoHeight := height <= 0
-	if width <= 0 || height <= 0 {
-		defaultWidth, defaultHeight := terminalViewportSize(options.Stdout, 80, 24)
-
-		if width <= 0 {
-			width = defaultWidth
-		}
-
-		if height <= 0 {
-			height = defaultHeight
-		}
-	}
-
 	stdin := options.Stdin
 	if stdin == nil {
 		stdin = os.Stdin
@@ -112,7 +106,28 @@ func NewAppWithOptions(component ComponentFunc, options AppOptions) *App {
 		stderr = os.Stderr
 	}
 
-	return &App{
+	width := options.Width
+	height := options.Height
+	autoWidth := width <= 0
+	autoHeight := height <= 0
+	if width <= 0 || height <= 0 {
+		defaultWidth, defaultHeight := terminalViewportSize(stdout, 80, 24)
+
+		if width <= 0 {
+			width = defaultWidth
+		}
+
+		if height <= 0 {
+			height = defaultHeight
+		}
+	}
+
+	screenReaderEnabled := options.ScreenReaderEnabled
+	if !screenReaderEnabled {
+		screenReaderEnabled = isTruthyEnvironmentFlag("INK_SCREEN_READER")
+	}
+
+	app := &App{
 		component:           component,
 		hooksCtx:            hooks.NewContext(),
 		width:               width,
@@ -122,8 +137,17 @@ func NewAppWithOptions(component ComponentFunc, options AppOptions) *App {
 		stdin:               stdin,
 		stdout:              stdout,
 		stderr:              stderr,
-		screenReaderEnabled: options.ScreenReaderEnabled,
+		mouseManager:        hooks.NewMouseManager(),
+		screenReaderEnabled: screenReaderEnabled,
 	}
+	// The announcer requests a rerender whenever a message is dispatched
+	// outside of a render pass — otherwise an Announce call from a goroutine
+	// or external callback would never surface until some other state
+	// change forced a frame.
+	app.announcer = newAnnouncer(func() {
+		app.hooksCtx.RequestRerender()
+	})
+	return app
 }
 
 // RenderOnce renders the component once and returns the output.
@@ -135,9 +159,16 @@ func (a *App) RenderOnce() string {
 	}
 
 	validatePublicComponentTree(node)
-	output := renderer.RenderWithLayout(node, a.width, a.height)
+	var sections renderer.RenderSections
+	if a.IsScreenReaderEnabled() {
+		sections = renderer.RenderScreenReaderSections(node)
+	} else {
+		sections = renderer.RenderWithLayoutSectionsMode(node, a.width, a.height, a.shouldRenderANSI())
+	}
+
+	sections.Output = a.appendRuntimeAnnouncer(sections.Output)
 	a.finishRender()
-	return output
+	return sections.StaticOutput + sections.Output
 }
 
 // RenderSplitOnce renders the current tree into dynamic and static sections.
@@ -158,23 +189,81 @@ func (a *App) RenderSplitOnce() (output string, staticOutput string) {
 		sections = renderer.RenderWithLayoutSectionsMode(node, a.width, a.height, a.shouldRenderANSI())
 	}
 
+	sections.Output = a.appendRuntimeAnnouncer(sections.Output)
 	a.finishRender()
 	return sections.Output, sections.StaticOutput
 }
 
 // RenderRuntimeOnce renders the current tree into dynamic output plus newly appended static delta.
 func (a *App) RenderRuntimeOnce(previousStaticCounts []int) (output string, staticDelta string, nextStaticCounts []int) {
+	sections, _ := a.renderRuntimeOnceWithCache(previousStaticCounts, nil)
+	return sections.Output, sections.StaticDeltaOutput, sections.StaticCounts
+}
+
+// renderRuntimeOnceWithCache mirrors RenderRuntimeOnce but consults an
+// optional cache before invoking the renderer. The bool reports whether a
+// fresh render happened (true) or the cache was reused (false). When cache
+// is nil this is identical to RenderRuntimeOnce.
+//
+// Building the vnode and running effects still happens unconditionally —
+// only the renderer-side work (SyncComputedLayout + RenderRuntimeSectionsMode)
+// is cached, since component bodies and effects can have observable side
+// effects that callers depend on.
+func (a *App) renderRuntimeOnceWithCache(previousStaticCounts []int, cache *renderTracker) (renderer.RenderSections, bool) {
 	node := a.renderVNode()
 	if node == nil {
 		a.finishRender()
-		return "", "", nil
+		if cache != nil {
+			cache.Reset()
+		}
+		return renderer.RenderSections{}, true
 	}
 
 	validatePublicComponentTree(node)
-	renderer.SyncComputedLayout(node, a.width, a.height)
-	sections := renderer.RenderRuntimeSectionsMode(node, a.width, a.height, previousStaticCounts, a.IsScreenReaderEnabled(), a.shouldRenderANSI())
+
+	ctx := sectionsCacheContext{
+		width:                a.width,
+		height:               a.height,
+		screenReader:         a.IsScreenReaderEnabled(),
+		ansi:                 a.shouldRenderANSI(),
+		previousStaticCounts: previousStaticCounts,
+	}
+
+	doRender := func(node *vdom.Node) renderer.RenderSections {
+		renderer.SyncComputedLayout(node, a.width, a.height)
+		return renderer.RenderRuntimeSectionsMode(node, a.width, a.height, previousStaticCounts, a.IsScreenReaderEnabled(), a.shouldRenderANSI())
+	}
+
+	sections, fresh := cache.RenderSections(node, ctx, doRender)
+	// Apply the runtime announcer queue *after* the cache so a tree that
+	// diffs to zero patches still re-emits any new announcements queued
+	// since the last frame. The cached sections themselves remain stable
+	// (the announcer text is grafted on, not stored), which keeps the
+	// section cache's tree-equality semantics simple.
+	sections.Output = a.appendRuntimeAnnouncer(sections.Output)
 	a.finishRender()
-	return sections.Output, sections.StaticDeltaOutput, sections.StaticCounts
+	return sections, fresh
+}
+
+// appendRuntimeAnnouncer joins any active announcements onto a rendered
+// output string when screen-reader mode is enabled. The block format mirrors
+// renderer.renderAnnouncerRegions ("[assertive] msg" and "[polite] msg"
+// lines) so consumers cannot tell at a glance whether a given announcement
+// came from a static aria-live region or the runtime channel.
+func (a *App) appendRuntimeAnnouncer(output string) string {
+	if !a.IsScreenReaderEnabled() {
+		return output
+	}
+
+	announcer := a.announcer.renderToText()
+	if announcer == "" {
+		return output
+	}
+
+	if output != "" && !strings.HasSuffix(output, "\n") {
+		return output + "\n" + announcer
+	}
+	return output + announcer
 }
 
 // GetVNode renders the component and returns the virtual DOM node.
@@ -320,6 +409,10 @@ func (a *App) WriteStderr(data string) (int, error) {
 
 // IsRawModeSupported reports whether the configured stdin can be placed into raw mode.
 func (a *App) IsRawModeSupported() bool {
+	if ttyStream, ok := a.stdin.(ttyAwareWriter); ok {
+		return ttyStream.IsTTY()
+	}
+
 	fd, ok := streamFD(a.stdin)
 	if !ok {
 		return false
@@ -330,6 +423,10 @@ func (a *App) IsRawModeSupported() bool {
 
 // SetRawMode toggles raw mode on the configured stdin stream.
 func (a *App) SetRawMode(enabled bool) error {
+	if !a.IsRawModeSupported() {
+		return errors.New("raw mode is not supported on the configured stdin")
+	}
+
 	if !enabled {
 		if a.rawModeUsers > 0 {
 			a.rawModeUsers--
@@ -348,19 +445,21 @@ func (a *App) SetRawMode(enabled bool) error {
 		return nil
 	}
 
-	if !a.IsRawModeSupported() {
-		return nil
-	}
-
 	if a.rawState != nil {
 		a.rawModeUsers++
 		return nil
 	}
 
-	fd, _ := streamFD(a.stdin)
-	state, err := terminal.MakeRaw(fd)
-	if err != nil {
-		return err
+	var state *terminal.State
+	fd, ok := streamFD(a.stdin)
+	if ok && terminal.IsTerminal(fd) {
+		var err error
+		state, err = terminal.MakeRaw(fd)
+		if err != nil {
+			return err
+		}
+	} else {
+		state = &terminal.State{}
 	}
 
 	a.rawState = state
@@ -405,6 +504,22 @@ func (a *App) CursorPosition() *CursorPosition {
 
 	copy := *a.cursorPosition
 	return &copy
+}
+
+// Announcer returns the session-scoped runtime aria-live channel. The
+// announcer is created alongside the app and shared by every UseAnnounce
+// caller in the tree, so multiple components dispatching at different
+// depths funnel into a single per-frame queue.
+func (a *App) Announcer() *Announcer {
+	return a.announcer
+}
+
+func (a *App) scheduleRuntimeWork(work func()) {
+	if work == nil || a.hooksCtx == nil {
+		return
+	}
+
+	a.hooksCtx.ScheduleWork(work)
 }
 
 // SetScreenReaderEnabled updates the screen-reader mode flag.
@@ -475,6 +590,10 @@ func (a *App) blurFocus() bool {
 		return false
 	}
 
+	return a.clearFocus()
+}
+
+func (a *App) clearFocus() bool {
 	manager := a.focusManager()
 	if !manager.HasFocus() {
 		return false

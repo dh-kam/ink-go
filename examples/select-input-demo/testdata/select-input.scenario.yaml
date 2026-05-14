@@ -1,0 +1,78 @@
+schemaVersion: goink.tuitest/v1alpha1
+name: select-input-demo/navigation
+app: select-input-demo
+viewport:
+  width: 100
+  height: 30
+environment:
+  TERM: tmux-256color
+  COLORTERM: ""
+  FORCE_COLOR: "1"
+capture:
+  mode: plain
+steps:
+  - name: initial
+    expect:
+      text: |-
+        Select a color:
+        > Red
+          Green
+          Blue
+          Yellow
+          Magenta
+          Cyan
+  - name: down-01
+    input:
+      key: down
+    expect:
+      text: |-
+        Select a color:
+          Red
+        > Green
+          Blue
+          Yellow
+          Magenta
+          Cyan
+  - name: down-02
+    input:
+      key: down
+    expect:
+      text: |-
+        Select a color:
+          Red
+          Green
+        > Blue
+          Yellow
+          Magenta
+          Cyan
+  - name: up-01
+    input:
+      key: up
+    expect:
+      text: |-
+        Select a color:
+          Red
+        > Green
+          Blue
+          Yellow
+          Magenta
+          Cyan
+  - name: down-03
+    input:
+      key: down
+    expect:
+      text: |-
+        Select a color:
+          Red
+          Green
+        > Blue
+          Yellow
+          Magenta
+          Cyan
+  - name: ctrl-c-exit
+    input:
+      key: ctrl-c
+    exit:
+      within: 5s
+    expect:
+      sameAsPrevious: true

@@ -384,6 +384,38 @@
     "output": "deep"
   },
   {
+    "name": "text/grapheme-combining-mark-fixed-width",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "é|"
+  },
+  {
+    "name": "text/osc8-hyperlink-preserved",
+    "columns": 40,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\u001b]8;;https://example.com\u0007Example\u001b]8;;\u0007"
+  },
+  {
+    "name": "text/ansi-osc8-hyperlink-preserved",
+    "columns": 40,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "\u001b]8;;https://example.com\u0007Example\u001b]8;;\u0007"
+  },
+  {
+    "name": "text/zwj-family-fixed-width-between-siblings",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "[👨‍👩‍👧‍👦]"
+  },
+  {
     "name": "text/mixed-case",
     "columns": 100,
     "screenReader": false,
@@ -544,6 +576,38 @@
     "output": "Strike"
   },
   {
+    "name": "text/ansi-style-gray",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "\u001b[90mGray\u001b[39m"
+  },
+  {
+    "name": "text/ansi-style-grey",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "\u001b[90mGrey\u001b[39m"
+  },
+  {
+    "name": "text/ansi-style-green-bright",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "\u001b[92mBright\u001b[39m"
+  },
+  {
+    "name": "text/ansi-style-background-blue-bright",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "\u001b[104mBright BG\u001b[49m"
+  },
+  {
     "name": "text/style-color-background-combo",
     "columns": 100,
     "screenReader": false,
@@ -600,6 +664,22 @@
     "output": "Hello\nWorld"
   },
   {
+    "name": "text/wrap-preserves-leading-and-trailing-spaces",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\nalpha\n beta\n"
+  },
+  {
+    "name": "text/wrap-preserves-leading-separator-when-it-fits",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": " alpha\n beta"
+  },
+  {
     "name": "text/wrap-enough-space",
     "columns": 100,
     "screenReader": false,
@@ -641,6 +721,22 @@
   },
   {
     "name": "text/truncate text in the end",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Hello …"
+  },
+  {
+    "name": "text/truncate-end-explicit-mode",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Hello …"
+  },
+  {
+    "name": "text/truncate-end-explicit-text-wrap",
     "columns": 100,
     "screenReader": false,
     "ansi": false,
@@ -2056,6 +2152,38 @@
     "output": "button: spoken value"
   },
   {
+    "name": "transform/ansi-link-wrapper",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "<Example>"
+  },
+  {
+    "name": "transform/multiline-width-change",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "[0: a]\n[1: bb]\n[2: ccc]"
+  },
+  {
+    "name": "transform/parent-text-color-continuation",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "\u001b[32mpre MID post\u001b[39m"
+  },
+  {
+    "name": "transform/inside-bordered-box",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭──────────╮\n│HELLO     │\n│WORLD     │\n╰──────────╯"
+  },
+  {
     "name": "box/row-basic-two",
     "columns": 100,
     "screenReader": false,
@@ -2102,6 +2230,14 @@
     "ansi": false,
     "mode": "",
     "output": "Doggo"
+  },
+  {
+    "name": "box/position-absolute-does-not-consume-column-space",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "ABSe 1\nLine 2"
   },
   {
     "name": "box/row-reverse-basic-two",
@@ -2336,7 +2472,23 @@
     "output": "   ABC"
   },
   {
+    "name": "box/row - align text to center",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "   Test"
+  },
+  {
     "name": "box/justify-center-row-two",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "    AB"
+  },
+  {
+    "name": "box/row - align multiple text nodes to center",
     "columns": 100,
     "screenReader": false,
     "ansi": false,
@@ -2352,12 +2504,36 @@
     "output": "      ABC"
   },
   {
+    "name": "box/row - align text to right",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "      Test"
+  },
+  {
     "name": "box/justify-end-row-two",
     "columns": 100,
     "screenReader": false,
     "ansi": false,
     "mode": "",
     "output": "        AB"
+  },
+  {
+    "name": "box/row - align multiple text nodes to right",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "        AB"
+  },
+  {
+    "name": "box/row - align colored text node when text is squashed",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "mode": "",
+    "output": "    \u001b[32mX\u001b[39m"
   },
   {
     "name": "box/justify-between-row-two",
@@ -2368,7 +2544,31 @@
     "output": "A   B"
   },
   {
+    "name": "box/row - align two text nodes on the edges",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A  B"
+  },
+  {
+    "name": "box/row - space evenly two text nodes",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "  A   B"
+  },
+  {
     "name": "box/justify-around-row-two",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A  B"
+  },
+  {
+    "name": "box/row - align two text nodes with equal space around them",
     "columns": 100,
     "screenReader": false,
     "ansi": false,
@@ -2392,6 +2592,14 @@
     "output": "\nA\n"
   },
   {
+    "name": "box/column - align text to center",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\nTest\n"
+  },
+  {
     "name": "box/justify-center-column-two",
     "columns": 100,
     "screenReader": false,
@@ -2408,6 +2616,14 @@
     "output": "\n\nA"
   },
   {
+    "name": "box/column - align text to bottom",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\n\nTest"
+  },
+  {
     "name": "box/justify-end-column-two",
     "columns": 100,
     "screenReader": false,
@@ -2417,6 +2633,14 @@
   },
   {
     "name": "box/justify-between-column-two",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A\n\n\nB"
+  },
+  {
+    "name": "box/column - align two text nodes on the edges",
     "columns": 100,
     "screenReader": false,
     "ansi": false,
@@ -2648,7 +2872,23 @@
     "output": "A   B"
   },
   {
+    "name": "box/grow equally",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A  B"
+  },
+  {
     "name": "box/flex-grow-one",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A    B"
+  },
+  {
+    "name": "box/grow one element",
     "columns": 100,
     "screenReader": false,
     "ansi": false,
@@ -2672,7 +2912,23 @@
     "output": "A     B     C"
   },
   {
+    "name": "box/dont shrink",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A     B     C"
+  },
+  {
     "name": "box/flex-shrink-equal",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A    B   C"
+  },
+  {
+    "name": "box/shrink equally",
     "columns": 100,
     "screenReader": false,
     "ansi": false,
@@ -2800,6 +3056,30 @@
     "output": "AB CD EFGH"
   },
   {
+    "name": "box/flex-shrink-redistributes-after-min-width",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "AAABB\nA  BB"
+  },
+  {
+    "name": "box/flex-shrink-2-1",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "AAABBBB\nAAABB"
+  },
+  {
+    "name": "box/flex-shrink-clamped-by-min-width-percent",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "AAAABBBB\nAA  BB"
+  },
+  {
     "name": "box/overflow-x-hidden-single-text",
     "columns": 100,
     "screenReader": false,
@@ -2872,12 +3152,44 @@
     "output": "Hello"
   },
   {
+    "name": "box/border-negative-margin-child-draw-order",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "EDGE───╮\n│      │\n│      │\n╰──────╯"
+  },
+  {
+    "name": "box/overflow-hidden-border-container-negative-child",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭──────╮\n│BBBBB │\n│CCCCC │\n╰──────╯"
+  },
+  {
     "name": "box/border-round-full-width",
     "columns": 100,
     "screenReader": false,
     "ansi": false,
     "mode": "",
     "output": "╭──────────────────────────────────────────────────────────────────────────────────────────────────╮\n│Hello World                                                                                       │\n╰──────────────────────────────────────────────────────────────────────────────────────────────────╯"
+  },
+  {
+    "name": "box/border-classic-fixed-width",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "+-----+\n|Hi   |\n+-----+"
+  },
+  {
+    "name": "box/border-arrow-fixed-width",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "↘↓↓↓↓↓↙\n→Hi   ←\n↗↑↑↑↑↑↖"
   },
   {
     "name": "box/single node - full width box",
@@ -4024,7 +4336,23 @@
     "output": "A  B"
   },
   {
+    "name": "box/set flex basis with flexDirection=\"row\" container",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A  B"
+  },
+  {
     "name": "box/flex-basis-row-percent",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A  B"
+  },
+  {
+    "name": "box/set flex basis in percent with flexDirection=\"row\" container",
     "columns": 100,
     "screenReader": false,
     "ansi": false,
@@ -4040,7 +4368,23 @@
     "output": "A\n\n\nB\n\n"
   },
   {
+    "name": "box/set flex basis with flexDirection=\"column\" container",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A\n\n\nB\n\n"
+  },
+  {
     "name": "box/flex-basis-column-percent",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A\n\n\nB\n\n"
+  },
+  {
+    "name": "box/set flex basis in percent with flexDirection=\"column\" container",
     "columns": 100,
     "screenReader": false,
     "ansi": false,
@@ -4286,6 +4630,14 @@
     "ansi": false,
     "mode": "",
     "output": "🍔|\n⏳|"
+  },
+  {
+    "name": "box/emoji-zwj-width-fixed-box",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "👨‍👩‍👧‍👦|"
   },
   {
     "name": "box/wide characters do not add extra space inside fixed-width Box",
@@ -5352,6 +5704,222 @@
     "output": "listbox: listbox: (multiselectable) Options"
   },
   {
+    "name": "box/screen-reader-arbitrary-state-key",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "textbox: (invalid) Email"
+  },
+  {
+    "name": "box/screen-reader-arbitrary-state-key-without-role",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "(invalid) Email"
+  },
+  {
+    "name": "box/screen-reader-aria-labelledby-missing-falls-back",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "fallback content"
+  },
+  {
+    "name": "box/screen-reader-aria-describedby-missing-no-op",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "",
+    "output": "only content"
+  },
+  {
+    "name": "box/overflow-hidden-border-top-left-text-overflow",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭────╮\n│BBB │\n│CCC │\n╰────╯"
+  },
+  {
+    "name": "box/overflow-hidden-nested-borders",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭──────╮\n│╭────╮│\n││AAAA││\n│╰────╯│\n╰──────╯"
+  },
+  {
+    "name": "box/overflow-hidden-border-bottom-right-text-overflow",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭────╮\n│    │\n│    │\n╰────╯"
+  },
+  {
+    "name": "box/default-flex-shrink-text-box-text-tight",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "AAABBCCC\nA  BBC"
+  },
+  {
+    "name": "box/default-flex-shrink-flex-basis-row",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "AAABBBCCCC\nA"
+  },
+  {
+    "name": "box/default-flex-shrink-bordered-children-row",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭──╮╭──╮╭──╮\n│AB││CD││EF│\n╰──╯╰──╯╰──╯"
+  },
+  {
+    "name": "box/yoga-flex-grow-proportional-3-1",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A     B"
+  },
+  {
+    "name": "box/yoga-flex-grow-2-1",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A     B"
+  },
+  {
+    "name": "box/yoga-flex-grow-fractional",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A   B"
+  },
+  {
+    "name": "box/yoga-flex-grow-zero-with-grow-sibling",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "AB"
+  },
+  {
+    "name": "box/yoga-flex-grow-with-flex-basis",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A      B"
+  },
+  {
+    "name": "box/yoga-flex-grow-with-margin",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "  A   B"
+  },
+  {
+    "name": "box/yoga-column-flex-grow-3-1",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A\n\n\n\n\n\nB\n"
+  },
+  {
+    "name": "box/yoga-column-fractional-grow",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A\n\nB\n\n\n\n"
+  },
+  {
+    "name": "box/yoga-negative-gap",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "ABC"
+  },
+  {
+    "name": "box/yoga-min-width-larger-than-width",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A    B"
+  },
+  {
+    "name": "box/yoga-min-width-and-percent-width",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A   B"
+  },
+  {
+    "name": "box/yoga-flex-shrink-zero-in-row",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "AAAAABBB\n     BB"
+  },
+  {
+    "name": "box/yoga-display-none-with-grow-sibling",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Visibl\ne"
+  },
+  {
+    "name": "box/yoga-absolute-with-flex-grow-siblings",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Z   B"
+  },
+  {
+    "name": "box/yoga-absolute-with-margin",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Base\n    Z\n"
+  },
+  {
+    "name": "box/yoga-align-self-stretch-overrides-align-items",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "┌─┐Y\n│X│\n└─┘\n"
+  },
+  {
+    "name": "box/yoga-min-height-percent",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "A\n\n\nB\n\n"
+  },
+  {
     "name": "static/simple-0",
     "columns": 100,
     "screenReader": false,
@@ -5646,5 +6214,81 @@
     "ansi": false,
     "mode": "managed-frames",
     "contains": []
+  },
+  {
+    "name": "static/screen-reader-runtime-static-delta",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "mode": "managed-frames",
+    "contains": [
+      "Static A\n",
+      "status: One pending",
+      "Static B\n",
+      "status: Done"
+    ]
+  },
+  {
+    "name": "measure/measure element",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "runtime-measure-element",
+    "writes": [
+      "Width: 0",
+      "Width: 100"
+    ]
+  },
+  {
+    "name": "measure/calculate layout while rendering is throttled",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "runtime-measure-element-throttled",
+    "writes": [
+      "\u001b[?2026h",
+      "\u001b[?25l",
+      "Width: 100\n",
+      "\u001b[?2026l"
+    ]
+  },
+  {
+    "name": "render/throttle renders to maxFps",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "runtime-throttle-maxfps",
+    "writes": [
+      "Hello\n",
+      "\u001b[2K\u001b[1A\u001b[2K\u001b[GWorld\n"
+    ]
+  },
+  {
+    "name": "render/no bsu/esu when output is unchanged",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "runtime-throttle-tty-unchanged",
+    "writes": []
+  },
+  {
+    "name": "render/no bsu/esu when output and cursor are unchanged",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "runtime-throttle-tty-unchanged-cursor",
+    "writes": []
+  },
+  {
+    "name": "render/bsu/esu wraps throttledLog trailing call",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "runtime-throttle-tty-trailing",
+    "writes": [
+      "\u001b[?2026h",
+      "\u001b[2K\u001b[1A\u001b[2K\u001b[GWorld\n",
+      "\u001b[?2026l"
+    ]
   }
 ]

@@ -375,7 +375,7 @@ func TestFocusRuntimeMissingTargetKeepsCurrentFocusAndDoesNotRequestRerender(t *
 	}
 }
 
-func TestFocusRuntimeEscapeDoesNotBlurWhileDisabled(t *testing.T) {
+func TestFocusRuntimeEscapeBlursWhileFocusManagementDisabled(t *testing.T) {
 	stdout := &recordingWriter{}
 
 	instance, err := MountWithOptions(func() *vdom.Node {
@@ -406,8 +406,8 @@ func TestFocusRuntimeEscapeDoesNotBlurWhileDisabled(t *testing.T) {
 	if !strings.Contains(joined, "first") {
 		t.Fatalf("expected initial focused output before disabled escape input, got %q", joined)
 	}
-	if strings.Contains(joined, "none") {
-		t.Fatalf("expected disabled focus management to ignore escape blur, got %q", joined)
+	if !strings.Contains(joined, "none") {
+		t.Fatalf("expected escape to blur even when focus management is disabled, got %q", joined)
 	}
 }
 

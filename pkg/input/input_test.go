@@ -1268,3 +1268,62 @@ func TestNormalizeHookInputKeepsBackspaceAndDeleteDistinct(t *testing.T) {
 		})
 	}
 }
+
+// TestNormalizeHookInputNumpadSS3MatchesUpstream documents goink's behavior
+// for the numpad-specific SS3 sequences emitted by terminals in DECPAM
+// (application keypad) mode: \x1bOM (numpad enter), \x1bOj (multiply),
+// \x1bOk (plus), \x1bOl (comma), \x1bOm (minus), \x1bOn (period),
+// \x1bOo (divide), and \x1bOp..\x1bOy (digits 0-9).
+//
+// Upstream Ink's parse-keypress.ts matches \x1bO<letter> with its fnKeyRe but
+// has no entries in keyName for any of these, so key.name is undefined and
+// the useInput hook receives the bare letter pair (e.g. "OM") as `input`
+// with all key flags false. Goink mirrors that behavior verbatim, which is
+// what this test pins down — if a future change starts mapping numpad enter
+// to "return" or numpad digits to "number", upstream parity will need a
+// matching change first. See parse-keypress.ts line 9-92 (keyName map).
+func TestNormalizeHookInputNumpadSS3MatchesUpstream(t *testing.T) {
+	cases := []struct {
+		raw      string
+		wantText string
+	}{
+		{"\x1bOM", "OM"}, // numpad enter
+		{"\x1bOj", "Oj"}, // numpad *
+		{"\x1bOk", "Ok"}, // numpad +
+		{"\x1bOl", "Ol"}, // numpad ,
+		{"\x1bOm", "Om"}, // numpad -
+		{"\x1bOn", "On"}, // numpad .
+		{"\x1bOo", "Oo"}, // numpad /
+		{"\x1bOp", "Op"}, // numpad 0
+		{"\x1bOq", "Oq"}, // numpad 1
+		{"\x1bOr", "Or"}, // numpad 2
+		{"\x1bOs", "Os"}, // numpad 3
+		{"\x1bOt", "Ot"}, // numpad 4
+		{"\x1bOu", "Ou"}, // numpad 5
+		{"\x1bOv", "Ov"}, // numpad 6
+		{"\x1bOw", "Ow"}, // numpad 7
+		{"\x1bOx", "Ox"}, // numpad 8
+		{"\x1bOy", "Oy"}, // numpad 9
+	}
+
+	for _, tc := range cases {
+		t.Run(tc.raw, func(t *testing.T) {
+			text, key, keys, err := input.NormalizeHookInput(tc.raw)
+			if err != nil {
+				t.Fatalf("NormalizeHookInput(%q) failed: %v", tc.raw, err)
+			}
+			if text != tc.wantText {
+				t.Fatalf("expected input text %q, got %q", tc.wantText, text)
+			}
+			if len(keys) != 0 {
+				t.Fatalf("expected no key names for unmapped numpad SS3 (parity with upstream), got %v", keys)
+			}
+			if key.Return || key.Tab || key.Backspace || key.Delete ||
+				key.UpArrow || key.DownArrow || key.LeftArrow || key.RightArrow ||
+				key.Home || key.End || key.PageUp || key.PageDown ||
+				key.Ctrl || key.Shift || key.Meta {
+				t.Fatalf("expected zero key flags for unmapped numpad SS3 (parity with upstream), got %+v", key)
+			}
+		})
+	}
+}

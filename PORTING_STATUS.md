@@ -23,6 +23,25 @@ Verified after import:
 - `Static`
 - `Spacer` (basic Ink-compatible form via `flexGrow`)
 - `Transform` (basic text-output transform support)
+- `Border` (single, double, rounded, bold)
+- `TextInput` / `PasswordInput` (controlled, with `TextInputState` controller)
+- `ProgressBar`
+- `Spinner`
+- `Table`
+- `Select` + `SelectState` (controlled list with windowed scrolling)
+- `Divider` (horizontal rule with optional centered title)
+- `Alert` (info / success / warning / error variants with colored icons)
+- `Confirm` (yes/no prompt with controlled state and configurable accept/reject keys)
+- `MultiSelect` (multi-pick list with windowed scrolling and toggle controller)
+- `Tabs` + `TabsState` (focusable tab strip with `Next` / `Prev` / `SetActive` controller)
+- `QuickSearch` (filter-as-you-type list with fuzzy matching and selection callback)
+- `Link` (OSC 8 hyperlink wrapper around inline `Text`)
+- `Gradient` (per-character RGB interpolation across one or more stops)
+- `BigText` (figlet-style headline with `Block` and `Tiny` built-in fonts)
+- `Syntax` (inline source highlighter with `Go` and `JSON` tokenizers)
+- `Image` (ANSI half-block image rendering for raw RGBA data)
+- `ErrorBoundary` (panic-recovery wrapper with default red bordered fallback and `OnError` hook)
+- `Form` (multi-field controller with per-field validation, focus traversal, and submit/cancel callbacks)
 
 ### Hooks / State
 
@@ -33,6 +52,9 @@ Verified after import:
 - `UseMemo`
 - `UseCallback`
 - `UseRef`
+- `UseReducer` (generic Redux-style state, stable dispatch identity)
+- `UseContext` (generic provider/consumer via `pkg/context`)
+- `UseMouse` (SGR 1006 mouse events with multi-subscriber fan-out)
 - `UseApp`
 - `UseStdin`
 - `UseStdout`
@@ -46,12 +68,15 @@ Verified after import:
 ### Runtime / Infra
 
 - virtual DOM
-- reconciler scaffolding
+- reconciler — `pkg/reconciler.Diff` + `Patch`/`ApplyAll` with LIS-based keyed children diff and a `Tracker` that short-circuits identical-tree renders
 - simple renderer
 - flex layout engine
-- input handling
+- input handling — keyboard plus SGR 1006 and legacy X10 mouse routing wired into the mounted session input loop, with `routeMouseInput` delivering parsed `MouseEvent`s to subscribers scoped to the mounted app instance
+- terminal mouse mode (DECSET 1000/1006 enable/disable)
+- legacy X10 mouse parser (`pkg/input.ParseX10Mouse` / `IsX10MouseSequence`) for older terminals that only emit `\x1b[M` six-byte frames
 - focus manager
 - render loop
+- testing utilities — `pkg/renderer.Render` / `Instance` capture every frame, `MatchSnapshot` golden-file comparison with `UPDATE_SNAPSHOTS=1`, optional fake stdin via `WithStdin()` exposing `Instance.Stdin()` + `SubscribeInput(...)` for driving `UseInput` / `UseMouse` without a real TTY, plus opt-in `WithStdoutCapture()` / `WithStderrCapture()` writers exposing `StdoutFrames()` / `StderrFrames()` for ink-testing-library-style out-of-band output assertions
 
 ## Compatibility Notes
 
@@ -63,7 +88,7 @@ Implemented recently:
 - `Spacer` now works in row/column layouts through `flexGrow`
 - `Transform` can modify rendered text output in the renderer
 - upstream parity harness compares this port against goldens generated from `../ink`
-- upstream parity coverage is now 706 cases total, including 412 `Box` cases, 145 `Text` cases, 45 `Transform` cases, 37 `Static` cases, 33 `Newline` cases, and 34 `Spacer` cases
+- upstream parity coverage is now 784 cases total, including 467 `Box` cases, 157 `Text` cases, 49 `Transform` cases, 38 `Static` cases, 33 `Newline` cases, 34 `Spacer` cases, 2 runtime `Measure` cases, and 4 runtime `Render` cases
 - component helpers now expose richer Ink-like builders for nested `Text`, repeated `Newline`, and item-rendered `Static`
 - `Box` parity now also covers `margin`, `alignItems`, and `justifyContent="space-evenly"`
 - `Box` parity now also covers `display="none"`, `row-reverse` / `column-reverse`, `justifyContent="space-around"`, and multi-text `alignSelf` row cases
@@ -105,7 +130,7 @@ Implemented recently:
 - mounted focus runtime now also mirrors upstream `Esc` behavior by blurring the currently focused component and rerendering the live tree when focus management is enabled
 - mounted focus runtime tests now also cover `shift-tab` wraparound, and focus-manager tests now lock the upstream unregister semantics where re-registering an already mounted component does not reapply `autoFocus`
 - a session-based runtime API now exists through `Mount` and `MountWithOptions`, with `Rerender`, `Clear`, `Unmount`, and `WaitUntilExit`
-- standard render output now tracks cursor-only updates, restores the terminal cursor on unmount, and preserves direct `UseStdout().Write()` output ahead of the managed Ink block
+- standard render output now tracks cursor-only updates, restores the terminal cursor on TTY unmount, and preserves direct `UseStdout().Write()` output ahead of the managed Ink block
 - `RenderWithOptions` now reuses mounted instances per stdout target, matching upstream `render()` more closely
 - `pkg/ink` now exports wrappers for `UseInput`, `UseFocus`, `UseEffect`, `UseMemo`, `UseCallback`, and `UseRef`
 - `RenderOptions` now supports `Debug` and `IncrementalRendering`, and the output layer has basic parity for append-only debug mode plus surgical incremental updates
@@ -143,7 +168,7 @@ Implemented recently:
 - upstream golden parity now also covers more `borders.tsx` and `background.tsx` cases, including full-width round borders, centered/bottom-aligned bordered content, long wrapped text inside bordered boxes, nested bordered boxes, nested row borders with wide/emoji content, extra ANSI background inheritance variants, RGB box backgrounds, and the remaining screen-reader null-child case from `screen-reader.tsx`
 - upstream golden parity now also covers direct upstream cases for colored leading whitespace, single-node wide/emoji fit-content round borders, column-stacked bordered wide/emoji content, single-child `flexGrow`, styled `justifyContent="flex-end"` alignment, and plain `overflowY` multi-box/top-intersection clipping
 - screen-reader role suppression now matches upstream direct-parent semantics, so neutral wrappers no longer hide nested same-role narration from accessibility output
-- upstream golden parity now also covers additional direct upstream accessibility/layout cases, including `screen-reader` nested same-role wrappers, `Static` plus screen-reader parent-role behavior, the previously added `Transform` accessibility labels, empty-content role/state narration spacing, ordered multi-state narration, newline/wrapped-text padding and margin cases, the remaining direct `minWidth="50%"` case from `width-height.tsx`, the remaining fit-content colorful multi-node border case from `borders.tsx`, a direct alias for the `borders.tsx` fit-content variation-selector emoji round-border fixture, direct `undefined` / `null` / single-empty-text child cases from `text.tsx` and `components.tsx`, the direct `text with component` / `text with fragment` / `fragment` cases from `components.tsx`, the direct `text with variable` / `number` cases from `components.tsx`, direct aliases for `Transform` children/squashing fixtures plus the direct `Newline` and `Spacer` component fixtures from `components.tsx`, direct aliases for the upstream `text.tsx` color/background/inversion fixtures, direct aliases for the upstream `screen-reader.tsx` baseline plus aria-state/multiline/listbox/select-input cases, direct aliases for the upstream `components.tsx` basic text plus `width-height.tsx` width/min-height cases, a broader block of direct `borders.tsx` aliases for single-node, multi-node, and nested round-border fixtures, the remaining direct `components.tsx` text aliases for variable/component/fragment children, wrap behavior, truncation, and empty-text handling, plus exact-name aliases for the upstream `display.tsx`, `gap.tsx`, `flex-direction.tsx`, `flex-wrap.tsx`, `padding.tsx`, `margin.tsx`, `text-width.tsx`, `screen-reader.tsx`, and `width-height.tsx` fixture titles where the rendered output is already covered, along with the remaining parity-safe concurrent exact-title aliases from `components.tsx`, `text.tsx`, `width-height.tsx`, and `borders.tsx`, the exact-title alias for `gap - concurrent`, and the final failure/runtime fixture titles now handled directly in the parity harness through `mode: "error"` and `mode: "managed-frames"`, bringing the suite to 706 cases total with 412 `Box` cases, 145 `Text` cases, 45 `Transform` cases, 37 `Static` cases, 33 `Newline` cases, and 34 `Spacer` cases
+- upstream golden parity now also covers additional direct upstream accessibility/layout cases, including `screen-reader` nested same-role wrappers, `Static` plus screen-reader parent-role behavior, the previously added `Transform` accessibility labels, empty-content role/state narration spacing, ordered multi-state narration, newline/wrapped-text padding and margin cases, the remaining direct `minWidth="50%"` case from `width-height.tsx`, the remaining fit-content colorful multi-node border case from `borders.tsx`, a direct alias for the `borders.tsx` fit-content variation-selector emoji round-border fixture, direct `undefined` / `null` / single-empty-text child cases from `text.tsx` and `components.tsx`, the direct `text with component` / `text with fragment` / `fragment` cases from `components.tsx`, the direct `text with variable` / `number` cases from `components.tsx`, direct aliases for `Transform` children/squashing fixtures plus the direct `Newline` and `Spacer` component fixtures from `components.tsx`, direct aliases for the upstream `text.tsx` color/background/inversion fixtures, direct aliases for the upstream `screen-reader.tsx` baseline plus aria-state/multiline/listbox/select-input cases, direct aliases for the upstream `components.tsx` basic text plus `width-height.tsx` width/min-height cases, a broader block of direct `borders.tsx` aliases for single-node, multi-node, and nested round-border fixtures, the remaining direct `components.tsx` text aliases for variable/component/fragment children, wrap behavior, truncation, and empty-text handling, plus exact-name aliases for the upstream `display.tsx`, `gap.tsx`, `flex-direction.tsx`, `flex-wrap.tsx`, `padding.tsx`, `margin.tsx`, `text-width.tsx`, `screen-reader.tsx`, and `width-height.tsx` fixture titles where the rendered output is already covered, along with the remaining parity-safe concurrent exact-title aliases from `components.tsx`, `text.tsx`, `width-height.tsx`, and `borders.tsx`, direct aliases for upstream flex shrink/basis and column justify-content fixtures, the exact-title alias for `gap - concurrent`, and the final failure/runtime fixture titles now handled directly in the parity harness through `mode: "error"`, `mode: "managed-frames"`, runtime measurement modes, and runtime render modes, bringing the suite to 784 cases total with 467 `Box` cases, 157 `Text` cases, 49 `Transform` cases, 38 `Static` cases, 33 `Newline` cases, 34 `Spacer` cases, 2 `Measure` cases, and 4 `Render` cases
 - mounted runtime now matches upstream `render all frames if CI environment variable equals false` behavior more closely by disabling synchronized redraw semantics in CI, skipping managed resize subscriptions there, streaming static output immediately, and emitting only the final dynamic frame on unmount
 - public `components.Box` / `components.Text` trees now enforce the upstream invalid-text fixture semantics at render time, and the upstream parity harness now understands those failure cases directly through `mode: "error"` plus the remaining CI=false multi-frame runtime case through `mode: "managed-frames"`
 - render-phase panic recovery now covers both the initial mount and subsequent managed rerenders, so thrown render errors surface through `WaitUntilExit()` instead of escaping the process
@@ -159,6 +184,14 @@ Implemented recently:
 - ANSI styled-text rendering now also treats variation selectors and other zero-width code points as display width `0`, keeping emoji sequences stable during styled wrapping and truncation
 - `MeasureText` and text-node `MeasureElement` fallback now also treat emoji modifier presentation clusters such as `✌🏽` as width `2`, and ignore OSC hyperlink `ST` escape sequences in width calculations
 - screen-reader rendering now treats a default `Box` as row-oriented output, joining sibling content with spaces unless `flexDirection` explicitly switches it to a column
+- renderer text layout and terminal writes now operate on grapheme clusters for width-sensitive paths, preserving combining marks, variation selectors, ZWJ emoji clusters, and OSC hyperlink sequences through plain and ANSI rendering
+- screen-reader runtime `Static` deltas now append the same newline boundary as upstream, so newly appended static lines do not concatenate with the live region
+- `UseMouse` dispatch is now scoped per mounted app instance while preserving the package-global hooks compatibility API for low-level tests
+- legacy X10 mouse frames now drive mounted `UseMouse` subscribers through the same app-scoped runtime path as SGR 1006 reports
+- reconciler keyed diff now falls back to positional diff when duplicate sibling keys are present, avoiding map overwrite behavior for invalid-but-possible input trees
+- upstream golden parity now includes Node-generated `measureElement` runtime fixtures for the direct debug flow and the throttled `render(null) -> rerender(<Test />)` flow; throttled pending renders now settle effect-driven state changes before committing stale intermediate frames
+- upstream golden parity now includes a Node-generated non-TTY `render()` maxFps throttle write sequence, and terminal output now matches upstream by skipping initial cursor hide on non-TTY streams and emitting `ESC[G` for column-zero cursor movement
+- upstream golden parity now also covers TTY throttled render no-op behavior for unchanged output/cursor state and synchronized `bsu`/`esu` wrapping for trailing throttled writes
 
 Public export audit against `../ink/src/index.ts`:
 
@@ -169,22 +202,54 @@ Public export audit against `../ink/src/index.ts`:
 - `DOMElement` now exists as a minimal Go-level ref handle backed by the rendered `vdom.Node`
 - full ref parity and broader state-driven rerender behavior still differ from upstream Ink
 
+Recently closed gaps (parallel-agent sweep on 2026-04-25):
+
+- accessibility: `aria-state` arbitrary truthy keys with `accessibilityStateOrder` precedence and alphabetical fallback, `aria-state.checked="mixed"`, top-level shorthand props (`aria-busy`/`aria-checked`/`aria-disabled`/`aria-expanded`/`aria-readonly`/`aria-required`/`aria-selected`), `aria-level` heading narration (int/float forms), and `aria-live="off"` subtree suppression
+- DOM ref / `measureElement`: new methods on `*vdom.Node` (`GetAttribute`, `Style`, `InternalStatic`, `ElementChildren`, `OwnerRoot`, `Position`) plus `pkg/ink.MeasureElementPosition` returning computed `(left, top)`
+- `useInput`: bracketed-paste detection and split (`\x1b[200~ ... \x1b[201~`) including coalesced leading/trailing keypress chunks and embedded CR/LF/NUL/tab/UTF-8/emoji payloads, full F1-F12 dispatch matrix coverage (SS3/CSI/Cygwin variants with ctrl/shift/meta modifiers), full ctrl+letter (a-z) matrix coverage, and `isActive: true → false → true` lifecycle re-registration with raw-mode refcount
+- `useFocus`: parity-correct `UseFocusOpts(...FocusOptions) FocusState` returning `{IsFocused, Focus, Blur}` while keeping the legacy 3-tuple form for back-compat; `disable()` now preserves focus state and re-enable rejoins, `focus(missingID)` is silent no-op
+- `render()`: debug-mode short-circuit precedence over screen-reader, debug rerenders emit append even on identical output, `staticOutput == "\n"` no longer triggers a rewrite of the dynamic block, incremental `Clear()` is idempotent
+- Box/Text styles: ten new parity cases across Transform / overflow-with-border / default-flexShrink, plus a renderer fix that clips `textWidth` to actual ancestor-allotted width when a flex container shrinks (`childWidthConstraintWithLayout` + `horizontalPaddingInsets`)
+
+Closed in second parallel-agent sweep:
+
+- Yoga layout: 17 new parity cases covering proportional `flex-grow` (3:1, 2:1, 0.5:1), `min-width`/`min-height` interaction with `width`/`flex-grow`, negative-gap clamping, `display:none` siblings, `position:"absolute"` + `flex-grow`/`margin`, `align-self="stretch"` overriding `align-items`. `pkg/layout` now clamps negative `gap`/`rowGap`/`columnGap` to zero (Yoga spec)
+- Aria ID resolution: `aria-labelledby` / `aria-describedby` resolved against an indexed id-map built from the full tree (including hidden subtrees), with cycle-safe `visited` set. `aria-labelledby` substitutes the host's narration with the joined narration of each referenced node (precedence: labelledby > aria-label > children); `aria-describedby` appends after the host narration before role/state decoration. Self-references resolve to "" without recursion
+- Aria live announcer: `aria-live="polite"`/`"assertive"` regions are duplicated into a dedicated announcer block at the end of `Output`, prefixed `[polite]`/`[assertive]`, with assertive ordered before polite
+- Cell-level dirty-rect repaints: opt-in `RenderOptions.CellLevelDiff` adds a `[][]renderedCell` parser plus per-cell diff write path that emits `cursorTo(x, y)` + SGR transition + cell text only for changed cells. Falls back safely to line/column diff on parse error, frame-size change, row width drift, identical output, or first paint
+- Form validation: `FormFieldConfirm` + `FormFieldMultiSelect` field kinds with kind-aware "is-present" semantics for `Required`. New `FormState.OrderedErrors() []error` / `FieldError(name)` / `HasErrors()` accessors, plus `ErrorOverviewFromForm(state, runtime...)` helper that pipes Form errors directly into `ErrorOverviewGroup`
+- Cross-chunk bracketed paste: stateful `Instance.pendingPaste` buffer holds payloads when `\x1b[200~` arrives without a matching `\x1b[201~`; subsequent chunks append until the end marker (handled even when split across chunks) then dispatch as a single paste event. Buffer cleared on unmount
+- Newline edge cases: `count=0` emits empty, negative counts clamp to 0 (documented divergence — upstream RangeError-throws), large counts pass through. Parity harness `Count` field migrated to `*int` to round-trip explicit zeros and negatives
+- BigText: `FontSlim` (4×3 hand-drawn box-drawing glyphs) + `FontOutline` (5×5 algorithmically derived from Block via 4-neighbour rewrite producing `▀`/`▄`/`▒`)
+- Syntax: `SyntaxPython` (keywords + decorators + triple-quoted strings + f/r/b prefixes), `SyntaxRust` (lifetimes + attributes + char literals + underscore-numeric literals), `SyntaxSQL` (case-insensitive 60+ keyword set with original casing preserved + `''`-escaped strings + `--`/`/* */` comments)
+- proportional `flex-shrink` with non-1 weights + text wrapping: `layout.Node` now exposes a `SetMeasureSizeFunc` callback that returns both the floored wrap-budget width and the resulting wrapped height. The shrink-time remeasure pass records the floored width as `measuredWidth` on the node, and the renderer honors it via `ShouldHonorMeasuredWidth` (gated on `parent.sizeAdjusted`) so an inner text inside a fractionally-shrunk box wraps at the same budget upstream Yoga's `getMaxWidth(yogaNode)` flow uses. Parity cases `box/flex-shrink-2-1` and `box/flex-shrink-clamped-by-min-width-percent` now match upstream. The directly-shrunk text-pair case (e.g., "Hello "+"World") deliberately keeps the existing ceil-based textLike rounding via the `parent.sizeAdjusted` gate, since goink does not iterate the Yoga measure-and-redistribute pass that upstream uses to reclaim trailing-space slack.
+
+Closed in third parallel-agent sweep:
+
+- runtime aria-live announcer + `UseAnnounce()`: session-scoped `Announcer` with `BeginRender`/`Active`/`Pending` rotation; polite/assertive announcements duplicated into screen-reader output as `[polite]`/`[assertive]` blocks; cache-compatible
+- minimal SGR diff in `CellLevelDiff`: `parseSGR` + `sgrTransition` emit only flipped attributes; adjacent same-style cells share one SGR setup (~50-62% byte reduction)
+- reconciler caches: `vdom.Node` carries `transformCache` + `cachedStaticOutput`/`staticDirty`; `applyNodeTransform`/`applyLineTransform` and `RenderWithLayoutSectionsMode` consult them; `SetAttribute`/`SetNodeValue` walk static ancestors and invalidate
+- wide-rune correctness: cluster-aware `wrapLine`/`truncateEnd`/`truncateStart`/`truncateMiddle` keep ZWJ families intact at wrap points and clip wide runes correctly at fixed-box boundaries; CJK + ANSI styling preserves style across both columns
+- `FormFieldTab` + `FormFieldQuickSearch` field kinds plus `FormWizard` controller (Next/Prev/Submit with validation gates, `ErrorOverviewFromWizard` aggregation, `examples/wizard-demo`)
+
+Closed in current sweep:
+
+- renderer OSC preservation: ANSI text collection now parses raw ANSI/OSC sequences in text nodes, so OSC 8 hyperlinks survive the ANSI layout renderer instead of being counted as visible columns
+- upstream golden coverage now includes explicit plain and ANSI OSC 8 hyperlink fixtures generated by Node Ink
+- border / negative-margin draw order: box borders are painted before descendants, while `overflow: "hidden"` clips descendants to the inner border box, matching the upstream negative-margin border fixture
+- wrap-ansi leading/trailing space parity: plain wrapping now preserves upstream blank-line and separator behavior for `text/wrap-preserves-leading-and-trailing-spaces`
+- fixed-width ZWJ emoji parity: plain buffer writes now operate on grapheme clusters, so `box/emoji-zwj-width-fixed-box` preserves the full family emoji before adjacent siblings
+- upstream parity skip list is now empty; all 784 generated upstream golden cases are active
+
 Still incomplete compared with upstream Ink:
 
-- broader accessibility parity beyond the currently supported `aria-label`, `aria-hidden`, `aria-role`, and `aria-state` subset
-- full `measureElement` parity beyond the current minimal explicit-ref flow
-- broader DOM-like element ref/measurement parity beyond the current minimal handle
-- the remaining `useInput` edge cases around the full upstream key matrix and deeper stdin/raw-mode lifecycle behavior
-- the remaining `useFocus` surface differences around the exact public options shape
-- full Box/Text style parity with upstream Ink, including the remaining arbitrary `Transform` ANSI edge cases that intentionally mutate embedded ANSI sequences, broader overflow-with-border edge cases, and the remaining upstream default `flexShrink` behavior for more complex text/box combinations
-- full App lifecycle parity with upstream static-output edge cases and the remaining debug/incremental edge cases
-- broader layout parity with Yoga
+- iterative Yoga shrink-and-redistribute pass for directly-shrunk text-only sibling rows (ceil-based textLike rounding currently masks this for 1:1 siblings; `parent.sizeAdjusted` gate dodges fractional cases)
+- no generated upstream golden cases are currently skipped via `knownDeferredParityCases` in `tests/upstream_parity_test.go`
+- remaining risk is mostly coverage breadth: more real-project runtime patterns under `tests/project_upstream`, more terminal edge cases, and more external `ink-*` component compatibility targets
 
 ## Suggested Next Steps
 
-1. Port the remaining `render()` behavior: static-output edge cases and the remaining debug/incremental edge cases.
-2. Expand the remaining `useInput` edge cases across the broader upstream key matrix and raw-stdin lifecycle behavior.
-3. Tighten the remaining `useFocus` public-surface parity gaps.
-4. Expand the DOM-like ref surface beyond `MeasureElement`, including better parity for element refs.
-5. Expand accessibility parity and remaining screen-reader edge cases.
-6. Expand Box/Text prop compatibility against `../ink/src/components/*.tsx`.
+1. Add more Node-generated runtime goldens for real upstream project usages under `tests/project_upstream`.
+2. Iterative shrink-and-redistribute pass for directly-shrunk text leaves (Yoga's measure-and-redistribute behavior).
+3. Continue expanding component coverage to upstream `ink-*` parity targets (more `BigText` fonts and `Syntax` languages).
+4. Promote the `examples/` demos into a curated documentation site.

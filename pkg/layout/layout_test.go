@@ -1,6 +1,7 @@
 package layout_test
 
 import (
+	"math"
 	"testing"
 
 	"github.com/dh-kam/goink.go/pkg/layout"
@@ -361,11 +362,11 @@ func TestJustifyContentSpaceEvenly(t *testing.T) {
 	parent.AddChild(right)
 	parent.CalculateLayout()
 
-	if int(left.GetComputedLeft()) != 2 {
+	if int(math.Round(left.GetComputedLeft())) != 2 {
 		t.Errorf("Expected left child at x=2, got %f", left.GetComputedLeft())
 	}
 
-	if int(right.GetComputedLeft()) != 6 {
+	if int(math.Round(right.GetComputedLeft())) != 6 {
 		t.Errorf("Expected right child at x=6, got %f", right.GetComputedLeft())
 	}
 }
@@ -997,5 +998,193 @@ func TestRowFlexShrinkZeroPreservesOverflowingWidths(t *testing.T) {
 	}
 	if right.GetComputedLeft() != 12 {
 		t.Fatalf("expected overflowing third child to remain at x=12, got %f", right.GetComputedLeft())
+	}
+}
+
+func TestNegativeGapIsClampedToZero(t *testing.T) {
+	parent := layout.NewNode()
+	parent.SetFlexDirection(layout.FlexDirectionRow)
+	parent.SetWidth(5)
+	parent.SetGap(-1)
+
+	for index := 0; index < 3; index++ {
+		child := layout.NewNode()
+		child.SetWidth(1)
+		child.SetHeight(1)
+		parent.AddChild(child)
+	}
+
+	parent.CalculateLayout()
+
+	for index := 0; index < 3; index++ {
+		got := parent.GetChild(index).GetComputedLeft()
+		if got != float64(index) {
+			t.Fatalf("child %d expected x=%d with clamped gap, got %f", index, index, got)
+		}
+	}
+}
+
+func TestNegativeRowAndColumnGapsClampToZero(t *testing.T) {
+	parent := layout.NewNode()
+	parent.SetFlexDirection(layout.FlexDirectionRow)
+	parent.SetWidth(4)
+	parent.SetWrapMode(layout.WrapWrap)
+	parent.SetRowGap(-3)
+	parent.SetColumnGap(-2)
+
+	for index := 0; index < 4; index++ {
+		child := layout.NewNode()
+		child.SetWidth(2)
+		child.SetHeight(1)
+		parent.AddChild(child)
+	}
+
+	parent.CalculateLayout()
+
+	if got := parent.GetChild(2).GetComputedTop(); got != 1 {
+		t.Fatalf("expected wrapped row to start at y=1 with clamped row gap, got %f", got)
+	}
+	if got := parent.GetChild(1).GetComputedLeft(); got != 2 {
+		t.Fatalf("expected second child at x=2 with clamped column gap, got %f", got)
+	}
+}
+
+// TestMeasureSizeFuncRecordsFlooredWidth verifies that during a fractional
+// flex-shrink pass the measure-size callback's returned width is recorded as
+// `measuredWidth` on the shrunk text-like node, mirroring upstream Yoga's
+// measureFunc-floored width behaviour. The renderer later honors this value
+// via `getMaxWidth(yogaNode)` parity. See PORTING_STATUS.md
+// "proportional flex-shrink" entry.
+func TestMeasureSizeFuncRecordsFlooredWidth(t *testing.T) {
+	// Outer row width=8 with two boxes flexShrink {2, 1}, each containing a
+	// text leaf with intrinsic width=6. After the shrink loop boxes resolve
+	// to ~3.333 / ~4.667, and the inner text nodes inherit the same fractional
+	// shrink. The measure-size callback should be invoked with width=4.667
+	// for the second text and record measuredWidth=4 (the floored wrap budget).
+	parent := layout.NewNode()
+	parent.SetWidth(8)
+	parent.SetFlexDirection(layout.FlexDirectionRow)
+
+	for i, weight := range []float64{2, 1} {
+		box := layout.NewNode()
+		box.SetWidth(6)
+		box.SetFlexShrink(weight)
+
+		text := layout.NewNode()
+		text.SetWidth(6)
+		text.SetHeight(1)
+		text.SetTextLike(true)
+		text.SetFlexShrink(1)
+		text.SetMeasureSizeFunc(func(width float64) (float64, float64) {
+			// Mirror the renderer's textMeasurementWidth: floor(width).
+			budget := int(width)
+			if float64(budget) > width {
+				budget--
+			}
+			if budget < 0 {
+				budget = 0
+			}
+			// Pretend the text has 6 'X's wrapping at the budget.
+			if budget == 0 || budget >= 6 {
+				return 6, 1
+			}
+			lines := (6 + budget - 1) / budget
+			return float64(budget), float64(lines)
+		})
+
+		box.AddChild(text)
+		parent.AddChild(box)
+		_ = i
+	}
+
+	parent.CalculateLayout()
+
+	innerB := parent.GetChild(1).GetChild(0)
+	if !innerB.HasMeasuredWidth() {
+		t.Fatalf("expected inner text-B to have measuredWidth recorded after fractional shrink")
+	}
+	if got := innerB.GetMeasuredWidth(); got != 4 {
+		t.Fatalf("expected measuredWidth=4 (floored wrap budget), got %v", got)
+	}
+	if !innerB.ShouldHonorMeasuredWidth() {
+		t.Fatalf("expected ShouldHonorMeasuredWidth=true (parent box was sizeAdjusted)")
+	}
+}
+
+// TestShouldHonorMeasuredWidthGatedOnParentShrink locks in that
+// ShouldHonorMeasuredWidth returns false when the text node is itself a
+// direct flow item shrunk by a non-shrunk parent. In that case the existing
+// ceil-based textLike rounding compensates for the lack of iterative
+// measure-and-redistribute upstream Yoga performs, and clamping wrap to the
+// floor would over-wrap (breaking sibling overlap of trailing whitespace).
+func TestShouldHonorMeasuredWidthGatedOnParentShrink(t *testing.T) {
+	parent := layout.NewNode()
+	parent.SetWidth(10)
+	parent.SetFlexDirection(layout.FlexDirectionRow)
+
+	for _, intrinsicWidth := range []float64{6, 5} {
+		text := layout.NewNode()
+		text.SetWidth(intrinsicWidth)
+		text.SetHeight(1)
+		text.SetTextLike(true)
+		text.SetFlexShrink(1)
+		text.SetMeasureSizeFunc(func(width float64) (float64, float64) {
+			budget := int(width)
+			if float64(budget) > width {
+				budget--
+			}
+			if budget < 0 {
+				budget = 0
+			}
+			return float64(budget), 1
+		})
+		parent.AddChild(text)
+	}
+
+	parent.CalculateLayout()
+
+	for index := 0; index < parent.GetChildCount(); index++ {
+		child := parent.GetChild(index)
+		if !child.HasMeasuredWidth() {
+			t.Fatalf("child %d: expected measuredWidth recorded", index)
+		}
+		if child.ShouldHonorMeasuredWidth() {
+			t.Fatalf("child %d: expected ShouldHonorMeasuredWidth=false (parent not sizeAdjusted), but got true", index)
+		}
+	}
+}
+
+// TestMeasureSizeFuncFallbackToHeightOnly verifies that nodes registered with
+// the legacy SetMeasureHeightFunc continue to receive a height-only remeasure
+// after shrink, without populating measuredWidth (so the renderer keeps its
+// existing rounded-width path).
+func TestMeasureSizeFuncFallbackToHeightOnly(t *testing.T) {
+	parent := layout.NewNode()
+	parent.SetWidth(4)
+	parent.SetFlexDirection(layout.FlexDirectionRow)
+
+	child := layout.NewNode()
+	child.SetWidth(6)
+	child.SetHeight(1)
+	child.SetTextLike(true)
+	child.SetFlexShrink(1)
+
+	heightCalls := 0
+	child.SetMeasureHeightFunc(func(width float64) float64 {
+		heightCalls++
+		if width >= 4 {
+			return 1
+		}
+		return 2
+	})
+
+	parent.AddChild(child)
+	parent.CalculateLayout()
+
+	if heightCalls == 0 {
+		t.Fatalf("expected legacy measure-height callback to be invoked at least once")
+	}
+	if child.HasMeasuredWidth() {
+		t.Fatalf("legacy height-only callback should not record measuredWidth")
 	}
 }

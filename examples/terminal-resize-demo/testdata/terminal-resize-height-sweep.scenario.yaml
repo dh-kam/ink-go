@@ -1,0 +1,119 @@
+schemaVersion: goink.tuitest/v1alpha1
+name: terminal-resize-demo/height-sweep
+app: terminal-resize-demo
+viewport:
+  width: 70
+  height: 20
+environment:
+  TERM: tmux-256color
+  COLORTERM: ""
+  FORCE_COLOR: "1"
+capture:
+  mode: screen
+steps:
+  - name: height-20
+    expect:
+      file: terminal-resize-sweep-height-20.screen.golden
+  - name: height-19
+    resize:
+      width: 70
+      height: 19
+    expect:
+      file: terminal-resize-sweep-height-19.screen.golden
+  - name: height-18
+    resize:
+      width: 70
+      height: 18
+    expect:
+      file: terminal-resize-sweep-height-18.screen.golden
+  - name: height-17
+    resize:
+      width: 70
+      height: 17
+    expect:
+      file: terminal-resize-sweep-height-17.screen.golden
+  - name: height-16
+    resize:
+      width: 70
+      height: 16
+    expect:
+      file: terminal-resize-sweep-height-16.screen.golden
+  - name: height-15
+    resize:
+      width: 70
+      height: 15
+    expect:
+      file: terminal-resize-sweep-height-15.screen.golden
+  - name: height-14
+    resize:
+      width: 70
+      height: 14
+    expect:
+      file: terminal-resize-sweep-height-14.screen.golden
+  - name: height-13
+    resize:
+      width: 70
+      height: 13
+    expect:
+      file: terminal-resize-sweep-height-13.screen.golden
+  - name: height-12
+    resize:
+      width: 70
+      height: 12
+    expect:
+      file: terminal-resize-sweep-height-12.screen.golden
+  - name: height-11
+    resize:
+      width: 70
+      height: 11
+    expect:
+      file: terminal-resize-sweep-height-11.screen.golden
+  - name: height-10
+    resize:
+      width: 70
+      height: 10
+    expect:
+      file: terminal-resize-sweep-height-10.screen.golden
+  - name: height-9
+    resize:
+      width: 70
+      height: 9
+    expect:
+      file: terminal-resize-sweep-height-9.screen.golden
+  - name: height-8
+    resize:
+      width: 70
+      height: 8
+    expect:
+      file: terminal-resize-sweep-height-8.screen.golden
+  - name: height-7
+    resize:
+      width: 70
+      height: 7
+    expect:
+      file: terminal-resize-sweep-height-7.screen.golden
+  - name: height-6
+    resize:
+      width: 70
+      height: 6
+    expect:
+      file: terminal-resize-sweep-height-6.screen.golden
+  - name: height-5
+    resize:
+      width: 70
+      height: 5
+    expect:
+      file: terminal-resize-sweep-height-5.screen.golden
+  - name: height-4
+    resize:
+      width: 70
+      height: 4
+    expect:
+      file: terminal-resize-sweep-height-4.screen.golden
+  - name: ctrl-c-exit
+    input:
+      key: ctrl-c
+    exit:
+      within: 5s
+    expect:
+      sameAsPrevious: true

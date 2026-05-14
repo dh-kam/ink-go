@@ -1,0 +1,52 @@
+schemaVersion: goink.tuitest/v1alpha1
+name: select-input-demo/wrap-down
+app: select-input-demo
+viewport:
+  width: 100
+  height: 30
+environment:
+  TERM: tmux-256color
+  COLORTERM: ""
+  FORCE_COLOR: "1"
+capture:
+  mode: plain
+steps:
+  - name: initial
+  - name: down-01
+    input:
+      key: down
+  - name: down-02
+    input:
+      key: down
+  - name: down-03
+    input:
+      key: down
+  - name: down-04
+    input:
+      key: down
+  - name: down-05
+    input:
+      key: down
+  - name: down-06
+    input:
+      key: down
+  - name: down-07
+    input:
+      key: down
+  - name: down-08
+    input:
+      key: down
+    expect:
+      file: select-input-down-08.screen.golden
+  - name: down-09
+    input:
+      key: down
+    expect:
+      file: select-input-down-09.screen.golden
+  - name: ctrl-c-exit
+    input:
+      key: ctrl-c
+    exit:
+      within: 5s
+    expect:
+      sameAsPrevious: true

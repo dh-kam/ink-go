@@ -16,6 +16,20 @@ func boolPtr(value bool) *bool {
 	return &value
 }
 
+type viewportWriter struct {
+	bytes.Buffer
+	columns int
+	rows    int
+}
+
+func (writer *viewportWriter) Columns() int {
+	return writer.columns
+}
+
+func (writer *viewportWriter) Rows() int {
+	return writer.rows
+}
+
 func assertPanic(t *testing.T, name string, fn func()) {
 	t.Helper()
 
@@ -466,6 +480,26 @@ func TestComponentFuncType(t *testing.T) {
 	}
 }
 
+func TestRootPackageExportsCoreComponents(t *testing.T) {
+	app := ink.NewApp(func() *vdom.Node {
+		return ink.Box(nil,
+			ink.Text(
+				"A",
+				ink.Newline(),
+				ink.Transform(func(children string, index int) string {
+					return strings.ToLower(children)
+				}, ink.Text("B")),
+			),
+			ink.Spacer(),
+		)
+	})
+
+	output := app.RenderOnce()
+	if !strings.Contains(output, "A\nb") {
+		t.Fatalf("expected root component wrappers to render, got %q", output)
+	}
+}
+
 func TestNewAppWithOptions(t *testing.T) {
 	stdin := strings.NewReader("stdin")
 	stdout := &bytes.Buffer{}
@@ -499,6 +533,78 @@ func TestNewAppWithOptions(t *testing.T) {
 	}
 	if !app.IsScreenReaderEnabled() {
 		t.Error("Expected screen reader mode to be enabled")
+	}
+}
+
+func TestNewAppWithOptionsUsesStdoutViewportDefaults(t *testing.T) {
+	stdout := &viewportWriter{columns: 123, rows: 37}
+
+	app := ink.NewAppWithOptions(func() *vdom.Node {
+		return vdom.CreateTextNode("configured")
+	}, ink.AppOptions{
+		Stdout: stdout,
+	})
+
+	if app.Width() != 123 {
+		t.Fatalf("expected width from stdout viewport, got %d", app.Width())
+	}
+
+	if app.Height() != 37 {
+		t.Fatalf("expected height from stdout viewport, got %d", app.Height())
+	}
+}
+
+func TestNewAppUsesScreenReaderEnvironmentDefault(t *testing.T) {
+	t.Setenv("INK_SCREEN_READER", "true")
+
+	app := ink.NewApp(func() *vdom.Node {
+		return vdom.CreateTextNode("accessible")
+	})
+
+	if !app.IsScreenReaderEnabled() {
+		t.Fatal("Expected INK_SCREEN_READER=true to enable screen reader mode by default")
+	}
+}
+
+func TestRenderOnceUsesScreenReaderOutputWhenEnabled(t *testing.T) {
+	app := ink.NewAppWithOptions(func() *vdom.Node {
+		return components.Box(vdom.Props{"flexDirection": "column", "gap": 1.0},
+			components.Text("--- Screen Reader (ARIA) Test ---"),
+			components.Text("Enable screen reader mode (INK_SCREEN_READER=true) to see alternate text."),
+			components.Box(vdom.Props{"aria-label": "Aria Container"},
+				components.Text(vdom.Props{"aria-label": "Accessible Hello"}, "Hi"),
+			),
+			components.Box(nil,
+				components.Text("Standard Text"),
+			),
+		)
+	}, ink.AppOptions{ScreenReaderEnabled: true})
+
+	expected := strings.Join([]string{
+		"--- Screen Reader (ARIA) Test ---",
+		"Enable screen reader mode (INK_SCREEN_READER=true) to see alternate text.",
+		"Aria Container",
+		"Standard Text",
+	}, "\n")
+	if output := app.RenderOnce(); output != expected {
+		t.Fatalf("expected screen-reader output without layout gaps:\n%q\ngot:\n%q", expected, output)
+	}
+}
+
+func TestRenderOnceIncludesStaticOutput(t *testing.T) {
+	app := ink.NewApp(func() *vdom.Node {
+		return components.Box(vdom.Props{"flexDirection": "column"},
+			components.Static(vdom.Props{"flexDirection": "column"},
+				components.Text("static one"),
+				components.Text("static two"),
+			),
+			components.Text("dynamic"),
+		)
+	})
+
+	expected := "static one\nstatic two\ndynamic"
+	if output := app.RenderOnce(); output != expected {
+		t.Fatalf("expected one-shot render to include static output %q, got %q", expected, output)
 	}
 }
 
@@ -543,8 +649,24 @@ func TestUseStdinContext(t *testing.T) {
 	if rawSupported {
 		t.Error("Expected non-terminal stdin to report raw mode unsupported")
 	}
-	if rawErr != nil {
-		t.Errorf("Expected SetRawMode to be a no-op for unsupported stdin, got %v", rawErr)
+	if rawErr == nil {
+		t.Fatal("Expected SetRawMode to return an error for unsupported stdin")
+	}
+}
+
+func TestUseStdinSetRawModeFalseErrorsWhenUnsupported(t *testing.T) {
+	stdin := strings.NewReader("stdin")
+	var rawErr error
+
+	app := ink.NewAppWithOptions(func() *vdom.Node {
+		rawErr = ink.UseStdin().SetRawMode(false)
+		return vdom.CreateTextNode("stdin")
+	}, ink.AppOptions{Stdin: stdin})
+
+	app.RenderOnce()
+
+	if rawErr == nil {
+		t.Fatal("Expected SetRawMode(false) to return an error for unsupported stdin")
 	}
 }
 

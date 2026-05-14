@@ -1,0 +1,27 @@
+schemaVersion: goink.tuitest/v1alpha1
+name: use-input-demo/arrows
+app: use-input-demo
+viewport:
+  width: 100
+  height: 30
+capture:
+  mode: plain
+steps:
+  - name: initial
+  - name: right
+    input:
+      key: right
+  - name: down
+    input:
+      key: down
+  - name: left
+    input:
+      key: left
+  - name: up
+    input:
+      key: up
+  - name: quit
+    input:
+      text: q
+    exit:
+      within: 5s

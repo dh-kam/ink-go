@@ -1,0 +1,92 @@
+schemaVersion: goink.tuitest/v1alpha1
+name: cursor-ime-demo/korean-editing
+app: cursor-ime-demo
+viewport:
+  width: 80
+  height: 12
+capture:
+  mode: screen
+environment:
+  TERM: "tmux-256color"
+  COLORTERM: ""
+  FORCE_COLOR: "1"
+steps:
+  - name: initial
+    waitFor:
+      text: "Type Korean"
+      within: 10s
+    expect:
+      file: cursor-ime-initial.screen.golden
+  - name: type-ascii-prefix
+    input:
+      text: "hello world "
+    expect:
+      file: cursor-ime-ascii-prefix.screen.golden
+  - name: split-ga-byte-1
+    input:
+      hex: "ea"
+    expect:
+      sameAsPrevious: true
+  - name: split-ga-byte-rest
+    input:
+      hex: "b0 80"
+    expect:
+      file: cursor-ime-with-ga.screen.golden
+  - name: type-rest-korean
+    input:
+      text: "나다라마바사"
+    expect:
+      file: cursor-ime-full-korean.screen.golden
+  - name: backspace-01
+    input:
+      key: backspace
+    expect:
+      file: cursor-ime-backspace-01.screen.golden
+  - name: backspace-02
+    input:
+      key: backspace
+    expect:
+      file: cursor-ime-backspace-02.screen.golden
+  - name: backspace-03
+    input:
+      key: backspace
+    expect:
+      file: cursor-ime-backspace-03.screen.golden
+  - name: backspace-04
+    input:
+      key: backspace
+    expect:
+      file: cursor-ime-backspace-04.screen.golden
+  - name: backspace-05
+    input:
+      key: backspace
+    expect:
+      file: cursor-ime-backspace-05.screen.golden
+  - name: type-abc
+    input:
+      text: "abc"
+    expect:
+      file: cursor-ime-after-abc.screen.golden
+  - name: split-da-byte-1
+    input:
+      hex: "eb"
+    expect:
+      sameAsPrevious: true
+  - name: split-da-byte-rest
+    input:
+      hex: "8b a4"
+    expect:
+      file: cursor-ime-after-split-da.screen.golden
+  - name: type-final-korean
+    input:
+      text: "라마바사"
+    expect:
+      file: cursor-ime-final.screen.golden
+  - name: ctrl-c-exit
+    input:
+      key: ctrl-c
+    exit:
+      within: 5s
+      noExtraWrites: true
+    expect:
+      sameAsPrevious: true

@@ -1,0 +1,6 @@
+[XY                  ] flex-start
+[                  XY] flex-end
+[         XY         ] center
+[    X         Y     ] space-around
+[X                  Y] space-between
+[      X      Y      ] space-evenly

@@ -1,0 +1,7 @@
+
+ === Terminal Resize Test ===
+ Type something and then resize your terminal (drag the edge or press
+ Cmd/Ctrl -/+)
+ Input: ""
+
+ Press Ctrl+C to exit

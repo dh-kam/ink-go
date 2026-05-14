@@ -1,6 +1,9 @@
 package ink
 
-import "testing"
+import (
+	"strings"
+	"testing"
+)
 
 func TestCursorPositionChanged(t *testing.T) {
 	if cursorPositionChanged(nil, nil) {
@@ -45,15 +48,48 @@ func TestBuildCursorSuffix(t *testing.T) {
 	}
 }
 
+func TestBuildCursorSuffixAtLastVisibleLine(t *testing.T) {
+	result := buildCursorSuffix(3, &CursorPosition{X: 0, Y: 3})
+	expected := "\x1b[G" + showCursorEscape
+
+	if result != expected {
+		t.Fatalf("expected %q, got %q", expected, result)
+	}
+}
+
+func TestBuildCursorSuffixAtFirstLineOfSingleLineOutput(t *testing.T) {
+	result := buildCursorSuffix(1, &CursorPosition{X: 4, Y: 0})
+	expected := "\x1b[1A\x1b[5G" + showCursorEscape
+
+	if result != expected {
+		t.Fatalf("expected %q, got %q", expected, result)
+	}
+}
+
 func TestBuildCursorSuffixWithoutCursor(t *testing.T) {
 	if buildCursorSuffix(3, nil) != "" {
 		t.Fatal("expected empty cursor suffix without a cursor position")
 	}
 }
 
+func TestBuildReturnToBottomWithoutPreviousCursor(t *testing.T) {
+	if buildReturnToBottom(4, nil) != "" {
+		t.Fatal("expected empty return-to-bottom sequence without previous cursor")
+	}
+}
+
 func TestBuildReturnToBottom(t *testing.T) {
 	result := buildReturnToBottom(4, &CursorPosition{X: 5, Y: 0})
-	expected := "\x1b[3B\x1b[1G"
+	expected := "\x1b[3B\x1b[G"
+
+	if result != expected {
+		t.Fatalf("expected %q, got %q", expected, result)
+	}
+}
+
+func TestBuildReturnToBottomAlreadyAtBottom(t *testing.T) {
+	result := buildReturnToBottom(4, &CursorPosition{X: 0, Y: 3})
+	expected := "\x1b[G"
 
 	if result != expected {
 		t.Fatalf("expected %q, got %q", expected, result)
@@ -69,9 +105,32 @@ func TestBuildCursorOnlySequence(t *testing.T) {
 		&CursorPosition{X: 3, Y: 0},
 	)
 
-	expected := hideCursorEscape + "\x1b[1B\x1b[1G" + "\x1b[1A\x1b[4G" + showCursorEscape
+	expected := hideCursorEscape + "\x1b[1B\x1b[G" + "\x1b[1A\x1b[4G" + showCursorEscape
 	if result != expected {
 		t.Fatalf("expected %q, got %q", expected, result)
+	}
+}
+
+func TestBuildCursorOnlySequenceWithoutPreviouslyShownCursor(t *testing.T) {
+	result := buildCursorOnlySequence(
+		false,
+		0,
+		nil,
+		1,
+		&CursorPosition{X: 3, Y: 0},
+	)
+
+	if strings.HasPrefix(result, hideCursorEscape) {
+		t.Fatalf("expected no hide prefix, got %q", result)
+	}
+	if !strings.Contains(result, showCursorEscape) {
+		t.Fatalf("expected cursor show suffix, got %q", result)
+	}
+}
+
+func TestBuildReturnToBottomPrefixWithoutShownCursor(t *testing.T) {
+	if buildReturnToBottomPrefix(false, 4, &CursorPosition{X: 0, Y: 0}) != "" {
+		t.Fatal("expected empty return-to-bottom prefix when cursor was not shown")
 	}
 }
 
@@ -86,7 +145,7 @@ func TestBuildReturnToBottomPrefixWithoutPreviousCursorPosition(t *testing.T) {
 
 func TestAnsiEraseLines(t *testing.T) {
 	result := ansiEraseLines(2)
-	expected := "\x1b[2K\x1b[1A\x1b[2K\x1b[1G"
+	expected := "\x1b[2K\x1b[1A\x1b[2K\x1b[G"
 
 	if result != expected {
 		t.Fatalf("expected %q, got %q", expected, result)

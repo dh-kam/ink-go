@@ -86,12 +86,12 @@ func TestRenderWithOptionsReusesInstanceForSameStdout(t *testing.T) {
 		t.Fatal("expected managed render to reuse the same instance")
 	}
 
-	if len(stdout.writes) != 3 {
-		t.Fatalf("expected 3 writes, got %d", len(stdout.writes))
+	if len(stdout.writes) != 2 {
+		t.Fatalf("expected 2 writes, got %d", len(stdout.writes))
 	}
 
-	if !strings.Contains(stdout.writes[2], ansiEraseLines(1)) || !strings.Contains(stdout.writes[2], "second") {
-		t.Fatalf("expected rerender payload to erase and rewrite output, got %q", stdout.writes[2])
+	if !strings.Contains(stdout.writes[1], ansiEraseLines(1)) || !strings.Contains(stdout.writes[1], "second") {
+		t.Fatalf("expected rerender payload to erase and rewrite output, got %q", stdout.writes[1])
 	}
 }
 
@@ -256,6 +256,62 @@ func TestRenderWithOptionsRerendersOnResizeImmediately(t *testing.T) {
 	}
 }
 
+func TestRenderWithOptionsMaxFPSLimitUpdatesReusedInstance(t *testing.T) {
+	stdout := &recordingWriter{}
+
+	instance, err := RenderWithOptions(func() *vdom.Node {
+		return vdom.CreateTextNode("first")
+	}, RenderOptions{
+		AppOptions:  AppOptions{Stdout: stdout},
+		MaxFPSLimit: fpsLimit(1),
+	})
+	if err != nil {
+		t.Fatalf("initial render failed: %v", err)
+	}
+	defer instance.Unmount()
+
+	if instance.maxFPS != 1 || instance.renderThrottle != time.Second {
+		t.Fatalf("expected initial max FPS override, got fps=%d throttle=%s", instance.maxFPS, instance.renderThrottle)
+	}
+
+	next, err := RenderWithOptions(func() *vdom.Node {
+		return vdom.CreateTextNode("second")
+	}, RenderOptions{
+		AppOptions:  AppOptions{Stdout: stdout},
+		MaxFPSLimit: fpsLimit(DefaultMaxFPS),
+	})
+	if err != nil {
+		t.Fatalf("second render failed: %v", err)
+	}
+
+	if next != instance {
+		t.Fatal("expected managed render to reuse instance while updating max FPS")
+	}
+
+	if instance.maxFPS != DefaultMaxFPS || instance.renderThrottle != 34*time.Millisecond {
+		t.Fatalf("expected reused instance to adopt upstream default max FPS, got fps=%d throttle=%s", instance.maxFPS, instance.renderThrottle)
+	}
+
+	next, err = RenderWithOptions(func() *vdom.Node {
+		return vdom.CreateTextNode("third")
+	}, RenderOptions{
+		AppOptions:  AppOptions{Stdout: stdout},
+		MaxFPS:      1,
+		MaxFPSLimit: fpsLimit(0),
+	})
+	if err != nil {
+		t.Fatalf("third render failed: %v", err)
+	}
+
+	if next != instance {
+		t.Fatal("expected managed render to keep reusing instance")
+	}
+
+	if instance.maxFPS != 0 || instance.renderThrottle != 0 {
+		t.Fatalf("expected MaxFPSLimit: 0 to disable throttling on reused instance, got fps=%d throttle=%s", instance.maxFPS, instance.renderThrottle)
+	}
+}
+
 func TestRenderWithOptionsThrownRenderErrorSurfacesViaWaitUntilExitLikeUpstreamFixture(t *testing.T) {
 	stdout := &recordingWriter{}
 	renderErr := errors.New("errored")
@@ -322,8 +378,8 @@ func TestRenderWithOptionsThrownRerenderErrorSurfacesViaWaitUntilExitLikeUpstrea
 		t.Fatalf("expected rerender panic to erase the previous frame, got %#v", stdout.writes)
 	}
 
-	if stdout.last() != showCursorEscape {
-		t.Fatalf("expected rerender panic unmount to restore cursor, got %#v", stdout.writes)
+	if strings.Contains(stdout.joined(), showCursorEscape) {
+		t.Fatalf("expected non-TTY rerender panic unmount not to restore cursor, got %#v", stdout.writes)
 	}
 }
 

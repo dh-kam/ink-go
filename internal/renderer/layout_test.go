@@ -473,6 +473,51 @@ func TestRenderJustifySpaceAround(t *testing.T) {
 	}
 }
 
+func TestRenderJustifySpaceEvenlyRoundsStartLikeYoga(t *testing.T) {
+	container := vdom.CreateElement("box", vdom.Props{
+		"justifyContent": "space-evenly",
+		"width":          10.0,
+	}, components.Text("A"), components.Text("B"))
+
+	output := renderer.RenderWithLayout(container, 20, 20)
+	expected := "  A   B"
+
+	if output != expected {
+		t.Errorf("Expected %q, got %q", expected, output)
+	}
+}
+
+func TestRenderBorderJustifyCenterRoundsStartLikeYoga(t *testing.T) {
+	container := vdom.CreateElement("box", vdom.Props{
+		"borderStyle":    "round",
+		"justifyContent": "center",
+		"width":          20.0,
+	}, components.Text("Hello World"))
+
+	output := renderer.RenderWithLayout(container, 30, 10)
+	expected := "╭──────────────────╮\n│   Hello World    │\n╰──────────────────╯"
+
+	if output != expected {
+		t.Errorf("Expected %q, got %q", expected, output)
+	}
+}
+
+func TestRenderBorderAlignCenterRoundsStartLikeYoga(t *testing.T) {
+	container := vdom.CreateElement("box", vdom.Props{
+		"alignItems":  "center",
+		"alignSelf":   "flex-start",
+		"borderStyle": "round",
+		"height":      20.0,
+	}, components.Text("Hello World"))
+
+	output := renderer.RenderWithLayout(container, 30, 30)
+	expected := "╭───────────╮\n│           │\n│           │\n│           │\n│           │\n│           │\n│           │\n│           │\n│           │\n│Hello World│\n│           │\n│           │\n│           │\n│           │\n│           │\n│           │\n│           │\n│           │\n│           │\n╰───────────╯"
+
+	if output != expected {
+		t.Errorf("Expected %q, got %q", expected, output)
+	}
+}
+
 func TestRenderRootUsesAvailableWidthForJustifyContent(t *testing.T) {
 	container := vdom.CreateElement("box", vdom.Props{
 		"justifyContent": "center",
@@ -532,6 +577,21 @@ func TestRenderWidthPercentRow(t *testing.T) {
 	}
 }
 
+func TestRenderWidthPercentRoundsHalfColumnLikeYoga(t *testing.T) {
+	container := components.Box(vdom.Props{"flexDirection": "column"},
+		components.Box(vdom.Props{
+			"width":       "50%",
+			"borderStyle": "single",
+		}, components.Text("X")),
+	)
+
+	output := renderer.RenderWithLayout(container, 127, 20)
+	topBorder := strings.Split(output, "\n")[0]
+	if got := len([]rune(topBorder)); got != 64 {
+		t.Fatalf("expected 50%% of 127 columns to render as 64 columns like Yoga, got %d in %q", got, topBorder)
+	}
+}
+
 func TestRenderPaddingAppliesToTextWithNewlines(t *testing.T) {
 	container := vdom.CreateElement("box", vdom.Props{
 		"padding": 1.0,
@@ -539,6 +599,20 @@ func TestRenderPaddingAppliesToTextWithNewlines(t *testing.T) {
 
 	output := renderer.RenderWithLayout(container, 20, 20)
 	expected := "\n Hello\n World\n"
+
+	if output != expected {
+		t.Errorf("Expected %q, got %q", expected, output)
+	}
+}
+
+func TestRenderPaddingEdgeOverridesShorthandLikeYoga(t *testing.T) {
+	container := vdom.CreateElement("box", vdom.Props{
+		"padding":     1.0,
+		"paddingLeft": 3.0,
+	}, components.Text("X"))
+
+	output := renderer.RenderWithLayout(container, 20, 20)
+	expected := "\n   X\n"
 
 	if output != expected {
 		t.Errorf("Expected %q, got %q", expected, output)
@@ -1023,6 +1097,51 @@ func TestRenderOverflowYHiddenWithBorder(t *testing.T) {
 
 	if output != expected {
 		t.Errorf("Expected %q, got %q", expected, output)
+	}
+}
+
+func TestRenderBorderDrawsBeforeNegativeMarginChild(t *testing.T) {
+	container := components.Box(vdom.Props{
+		"width":       6.0,
+		"borderStyle": "round",
+	}, components.Box(vdom.Props{
+		"marginLeft": -1.0,
+		"width":      4.0,
+		"height":     1.0,
+		"flexShrink": 0.0,
+	}, components.Text("ABCD")))
+
+	expected := "╭────╮\nABCD │\n╰────╯"
+	assertLayoutAndANSIOutput(t, container, expected)
+}
+
+func TestRenderOverflowHiddenWithBorderClipsChildrenToContent(t *testing.T) {
+	container := components.Box(vdom.Props{
+		"width":       6.0,
+		"height":      3.0,
+		"overflow":    "hidden",
+		"borderStyle": "round",
+	}, components.Box(vdom.Props{
+		"marginLeft": -1.0,
+		"marginTop":  -1.0,
+		"width":      6.0,
+		"height":     3.0,
+		"flexShrink": 0.0,
+	}, components.Text("AAAAAA\nBBBBBB\nCCCCCC")))
+
+	expected := "╭────╮\n│BBBB│\n╰────╯"
+	assertLayoutAndANSIOutput(t, container, expected)
+}
+
+func assertLayoutAndANSIOutput(t *testing.T, node *vdom.Node, expected string) {
+	t.Helper()
+
+	if output := renderer.RenderWithLayout(node, 40, 20); output != expected {
+		t.Fatalf("RenderWithLayout expected %q, got %q", expected, output)
+	}
+
+	if output := renderer.RenderWithLayoutANSI(node, 40, 20); output != expected {
+		t.Fatalf("RenderWithLayoutANSI expected %q, got %q", expected, output)
 	}
 }
 

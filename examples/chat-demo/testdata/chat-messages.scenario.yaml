@@ -1,0 +1,71 @@
+schemaVersion: goink.tuitest/v1alpha1
+name: chat-demo/messages
+app: chat-demo
+viewport:
+  width: 80
+  height: 24
+environment:
+  TERM: tmux-256color
+  COLORTERM: ""
+  FORCE_COLOR: "1"
+capture:
+  mode: screen
+steps:
+  - name: initial
+    expect:
+      file: chat-initial.screen.golden
+  - name: type-hello-world
+    input:
+      text: Hello world!
+    waitFor:
+      text: "Enter your message: Hello world!"
+      within: 5s
+    expect:
+      file: chat-type-hello-world.screen.golden
+  - name: submit-hello-world
+    input:
+      key: enter
+    waitFor:
+      text: "User: Hello world!"
+      within: 5s
+    expect:
+      file: chat-submit-hello-world.screen.golden
+  - name: type-thanks
+    input:
+      text: Thanks
+    waitFor:
+      text: "Enter your message: Thanks"
+      within: 5s
+    expect:
+      file: chat-type-thanks.screen.golden
+  - name: submit-thanks
+    input:
+      key: enter
+    waitFor:
+      text: "User: Thanks"
+      within: 5s
+    expect:
+      file: chat-submit-thanks.screen.golden
+  - name: type-exit
+    input:
+      text: exit
+    waitFor:
+      text: "Enter your message: exit"
+      within: 5s
+    expect:
+      file: chat-type-exit.screen.golden
+  - name: submit-exit
+    input:
+      key: enter
+    waitFor:
+      text: "User: exit"
+      within: 5s
+    expect:
+      file: chat-submit-exit.screen.golden
+  - name: ctrl-c-exit
+    input:
+      key: ctrl-c
+    exit:
+      within: 5s
+    expect:
+      sameAsPrevious: true

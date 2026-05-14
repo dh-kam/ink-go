@@ -55,6 +55,7 @@ func Box(props vdom.Props, children ...*vdom.Node) *vdom.Node {
 //
 // Supported arguments:
 //   - string values, which are converted to text nodes
+//   - numeric values, which are rendered like React text children
 //   - *vdom.Node children, including nested text nodes
 //   - vdom.Props, in any position
 //
@@ -62,6 +63,10 @@ func Box(props vdom.Props, children ...*vdom.Node) *vdom.Node {
 // upstream-like nested text trees such as Text(props, child1, child2).
 func Text(args ...any) *vdom.Node {
 	props, children := collectNodeArgs("Text", args...)
+	if len(children) == 0 && !hasScreenReaderTextFallback(props) {
+		return nil
+	}
+
 	return vdom.CreateElement("text", markPublicComponentProps(props), children...)
 }
 
@@ -69,16 +74,19 @@ func Text(args ...any) *vdom.Node {
 // When count is provided and greater than zero, that many newline characters are emitted.
 func Newline(count ...int) *vdom.Node {
 	lines := 1
-	if len(count) > 0 && count[0] > 0 {
+	if len(count) > 0 {
 		lines = count[0]
 	}
+	if lines < 0 {
+		lines = 0
+	}
 
-	return vdom.CreateTextNode(strings.Repeat("\n", lines))
+	return Text(strings.Repeat("\n", lines))
 }
 
 // Space creates a space text node
 func Space() *vdom.Node {
-	return vdom.CreateTextNode(" ")
+	return Text(" ")
 }
 
 // Spacer creates a flexible box that expands along the main axis.
@@ -94,10 +102,12 @@ func Border(borderProps BorderProps, props vdom.Props, children ...*vdom.Node) *
 
 	// Merge border props into element props
 	props["borderStyle"] = string(borderProps.Style)
-	props["borderTop"] = borderProps.Top
-	props["borderBottom"] = borderProps.Bottom
-	props["borderLeft"] = borderProps.Left
-	props["borderRight"] = borderProps.Right
+	if borderProps.Top || borderProps.Bottom || borderProps.Left || borderProps.Right {
+		props["borderTop"] = borderProps.Top
+		props["borderBottom"] = borderProps.Bottom
+		props["borderLeft"] = borderProps.Left
+		props["borderRight"] = borderProps.Right
+	}
 
 	// Handle label/title
 	label := borderProps.Label
@@ -108,7 +118,7 @@ func Border(borderProps BorderProps, props vdom.Props, children ...*vdom.Node) *
 		props["borderLabel"] = label
 	}
 
-	return vdom.CreateElement("border", props, children...)
+	return Box(props, children...)
 }
 
 // Static creates a static component.
@@ -158,8 +168,16 @@ func StaticText(content string) *vdom.Node {
 }
 
 // Transform creates a text-like node that transforms its rendered output.
-func Transform(transform TransformFunc, children ...*vdom.Node) *vdom.Node {
-	props := vdom.Props{"transform": transform}
+func Transform(transform TransformFunc, args ...any) *vdom.Node {
+	props, children := collectNodeArgs("Transform", args...)
+	if len(children) == 0 {
+		return nil
+	}
+	if props == nil {
+		props = make(vdom.Props)
+	}
+
+	props["transform"] = transform
 	return vdom.CreateElement("transform", props, children...)
 }
 
@@ -207,6 +225,12 @@ func collectNodeArgs(componentName string, args ...any) (vdom.Props, []*vdom.Nod
 			for _, value := range typed {
 				children = append(children, vdom.CreateTextNode(value))
 			}
+		case bool:
+			continue
+		case int, int8, int16, int32, int64,
+			uint, uint8, uint16, uint32, uint64, uintptr,
+			float32, float64:
+			children = append(children, vdom.CreateTextNode(fmt.Sprint(typed)))
 		default:
 			panic(fmt.Sprintf("%s does not support argument type %T", componentName, arg))
 		}
@@ -251,6 +275,19 @@ func cloneProps(props vdom.Props) vdom.Props {
 	}
 
 	return cloned
+}
+
+func hasScreenReaderTextFallback(props vdom.Props) bool {
+	if props == nil {
+		return false
+	}
+
+	if label, _ := props["aria-label"].(string); label != "" {
+		return true
+	}
+
+	label, _ := props["accessibilityLabel"].(string)
+	return label != ""
 }
 
 func isStaticItemsInvocation(items any, render any) bool {

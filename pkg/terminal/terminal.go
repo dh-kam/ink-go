@@ -5,62 +5,69 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+
+	"golang.org/x/term"
 )
 
 // State holds the terminal state
 type State struct {
-	oldState *State
+	oldState *term.State
 	fd       int
 }
 
 // IsTerminal checks if the given file descriptor is a terminal
 func IsTerminal(fd int) bool {
-	// In a real implementation, this would use isatty
-	// For now, we'll assume stdin is a terminal
-	return fd == 0
+	return term.IsTerminal(fd)
 }
 
 // MakeRaw puts the terminal into raw mode
-// This is a simplified version - in production you'd use golang.org/x/term
 func MakeRaw(fd int) (*State, error) {
-	if !IsTerminal(fd) {
-		return nil, fmt.Errorf("not a terminal")
+	restoreOutputMode, restoreOutputModeErr := captureOutputMode(fd)
+	oldState, err := term.MakeRaw(fd)
+	if err != nil {
+		return nil, fmt.Errorf("make raw: %w", err)
+	}
+	if restoreOutputModeErr == nil {
+		if err := restoreOutputMode(); err != nil {
+			_ = term.Restore(fd, oldState)
+			return nil, fmt.Errorf("restore output mode: %w", err)
+		}
 	}
 
-	// Store old state for restoration
 	state := &State{
-		fd: fd,
+		oldState: oldState,
+		fd:       fd,
 	}
-
-	// In a real implementation with golang.org/x/term:
-	// oldState, err := term.MakeRaw(fd)
-	// state.oldState = oldState
 
 	return state, nil
 }
 
 // Restore restores the terminal to its original state
 func (s *State) Restore() error {
-	// In a real implementation with golang.org/x/term:
-	// return term.Restore(s.fd, s.oldState)
-	return nil
+	if s == nil || s.oldState == nil {
+		return nil
+	}
+
+	return term.Restore(s.fd, s.oldState)
 }
 
 // GetSize returns the terminal dimensions
 func GetSize(fd int) (width, height int, err error) {
-	// In a real implementation with golang.org/x/term:
-	// width, height, err = term.GetSize(fd)
-	// For now, return defaults
-	return 80, 24, nil
+	width, height, err = term.GetSize(fd)
+	if err != nil {
+		return 80, 24, nil
+	}
+
+	return width, height, nil
 }
 
 // SetupSignalHandler sets up signal handlers for graceful shutdown
 func SetupSignalHandler() chan os.Signal {
 	sigChan := make(chan os.Signal, 1)
 	signal.Notify(sigChan,
-		syscall.SIGINT,  // Ctrl+C
-		syscall.SIGTERM, // kill
-		syscall.SIGQUIT, // Ctrl+\
+		syscall.SIGINT,   // Ctrl+C
+		syscall.SIGTERM,  // kill
+		syscall.SIGQUIT,  // Ctrl+\
 		syscall.SIGWINCH, // Window resize
 	)
 	return sigChan

@@ -1,0 +1,201 @@
+schemaVersion: goink.tuitest.runtime/v1alpha1
+runtimes:
+  upstream-ink-node:
+    environment:
+      NODE_NO_WARNINGS: "1"
+      CI: "false"
+    apps:
+      aria-demo:
+        command: bash
+        args:
+          - -lc
+          - node --loader=ts-node/esm examples/aria/index.ts
+        cwd: ../../../ink
+      border-demo:
+        command: bash
+        args:
+          - -lc
+          - node --loader=ts-node/esm examples/borders/index.ts
+        cwd: ../../../ink
+      box-backgrounds-demo:
+        command: bash
+        args:
+          - -lc
+          - node --loader=ts-node/esm examples/box-backgrounds/index.ts
+        cwd: ../../../ink
+      chat-demo:
+        command: bash
+        args:
+          - -lc
+          - node --loader=ts-node/esm examples/chat/index.ts
+        cwd: ../../../ink
+      counter-demo:
+        command: bash
+        args:
+          - -lc
+          - node --loader=ts-node/esm examples/counter/index.ts
+        cwd: ../../../ink
+      cursor-ime-demo:
+        command: bash
+        args:
+          - -lc
+          - node --loader=ts-node/esm examples/cursor-ime/index.ts
+        cwd: ../../../ink
+      justify-content-demo:
+        command: bash
+        args:
+          - -lc
+          - node --loader=ts-node/esm examples/justify-content/index.ts
+        cwd: ../../../ink
+      select-input-demo:
+        command: bash
+        args:
+          - -lc
+          - node --loader=ts-node/esm examples/select-input/index.ts
+        cwd: ../../../ink
+      static-demo:
+        command: bash
+        args:
+          - -lc
+          - node --loader=ts-node/esm examples/static/index.ts
+        cwd: ../../../ink
+      table-demo:
+        command: bash
+        args:
+          - -lc
+          - node --loader=ts-node/esm --input-type=module -e "import {faker} from './node_modules/@faker-js/faker/dist/index.js'; faker.seed(123); await import('./examples/table/index.ts');"
+        cwd: ../../../ink
+      terminal-resize-demo:
+        command: bash
+        args:
+          - -lc
+          - node --loader=ts-node/esm examples/terminal-resize/index.ts
+        cwd: ../../../ink
+      use-input-demo:
+        command: bash
+        args:
+          - -lc
+          - node --loader=ts-node/esm examples/use-input/index.ts
+        cwd: ../../../ink
+      use-stdout-demo:
+        command: bash
+        args:
+          - -lc
+          - node --loader=ts-node/esm examples/use-stdout/index.ts
+        cwd: ../../../ink
+      use-stderr-demo:
+        command: bash
+        args:
+          - -lc
+          - node --loader=ts-node/esm examples/use-stderr/index.ts
+        cwd: ../../../ink
+      use-focus-demo:
+        command: bash
+        args:
+          - -lc
+          - node --loader=ts-node/esm examples/use-focus/index.ts
+        cwd: ../../../ink
+      use-focus-with-id-demo:
+        command: bash
+        args:
+          - -lc
+          - node --loader=ts-node/esm examples/use-focus-with-id/index.ts
+        cwd: ../../../ink
+  goink-go:
+    apps:
+      aria-demo:
+        command: go
+        args:
+          - run
+          - ./examples/aria-demo
+        cwd: ../..
+      border-demo:
+        command: go
+        args:
+          - run
+          - ./examples/border-demo
+        cwd: ../..
+      box-backgrounds-demo:
+        command: go
+        args:
+          - run
+          - ./examples/box-backgrounds-demo
+        cwd: ../..
+      chat-demo:
+        command: bash
+        args:
+          - -lc
+          - mkdir -p .tmp/tui && go build -o .tmp/tui/chat-demo ./examples/chat-demo && .tmp/tui/chat-demo
+        cwd: ../..
+      counter-demo:
+        command: go
+        args:
+          - run
+          - ./examples/counter
+        cwd: ../..
+      cursor-ime-demo:
+        command: bash
+        args:
+          - -lc
+          - mkdir -p .tmp/tui && go build -o .tmp/tui/cursor-ime-demo ./examples/cursor-ime-demo && .tmp/tui/cursor-ime-demo
+        cwd: ../..
+      justify-content-demo:
+        command: go
+        args:
+          - run
+          - ./examples/justify-content-demo
+        cwd: ../..
+      select-input-demo:
+        command: bash
+        args:
+          - -lc
+          - mkdir -p .tmp/tui && go build -o .tmp/tui/select-input-demo ./examples/select-input-demo && .tmp/tui/select-input-demo
+        cwd: ../..
+      static-demo:
+        command: go
+        args:
+          - run
+          - ./examples/static-demo
+        cwd: ../..
+      table-demo:
+        command: bash
+        args:
+          - -lc
+          - mkdir -p .tmp/tui && go build -o .tmp/tui/table-demo ./examples/table-demo && .tmp/tui/table-demo
+        cwd: ../..
+      terminal-resize-demo:
+        command: bash
+        args:
+          - -lc
+          - mkdir -p .tmp/tui && go build -o .tmp/tui/terminal-resize-demo ./examples/terminal-resize-demo && .tmp/tui/terminal-resize-demo
+        cwd: ../..
+      use-input-demo:
+        command: bash
+        args:
+          - -lc
+          - mkdir -p .tmp/tui && go build -o .tmp/tui/use-input-demo ./examples/use-input-demo && .tmp/tui/use-input-demo
+        cwd: ../..
+      use-stdout-demo:
+        command: bash
+        args:
+          - -lc
+          - mkdir -p .tmp/tui && go build -o .tmp/tui/use-stdout-demo ./examples/use-stdout-demo && .tmp/tui/use-stdout-demo
+        cwd: ../..
+      use-stderr-demo:
+        command: bash
+        args:
+          - -lc
+          - mkdir -p .tmp/tui && go build -o .tmp/tui/use-stderr-demo ./examples/use-stderr-demo && .tmp/tui/use-stderr-demo
+        cwd: ../..
+      use-focus-demo:
+        command: bash
+        args:
+          - -lc
+          - mkdir -p .tmp/tui && go build -o .tmp/tui/use-focus-demo ./examples/use-focus-demo && .tmp/tui/use-focus-demo
+        cwd: ../..
+      use-focus-with-id-demo:
+        command: bash
+        args:
+          - -lc
+          - mkdir -p .tmp/tui && go build -o .tmp/tui/use-focus-with-id-demo ./examples/use-focus-with-id-demo && .tmp/tui/use-focus-with-id-demo
+        cwd: ../..

@@ -395,6 +395,18 @@ func TestRenderWithLayoutWrapsTextToBoxWidth(t *testing.T) {
 	}
 }
 
+func TestRenderWithLayoutWrapsTextLikeInkTrimFalse(t *testing.T) {
+	root := components.Box(vdom.Props{"width": 70.0, "padding": 1.0, "flexDirection": "column"},
+		components.Text("Type something and then resize your terminal (drag the edge or press Cmd/Ctrl -/+)"),
+	)
+
+	output := renderer.RenderWithLayout(root, 70, 20)
+	expected := "\n Type something and then resize your terminal (drag the edge or press\n  Cmd/Ctrl -/+)\n"
+	if output != expected {
+		t.Fatalf("expected Ink trim=false wrapping, got %q", output)
+	}
+}
+
 func TestRenderWithLayoutTruncatesTextToBoxWidth(t *testing.T) {
 	root := components.Box(vdom.Props{"width": 7.0},
 		components.Text(vdom.Props{"wrap": "truncate"}, "Hello World"),

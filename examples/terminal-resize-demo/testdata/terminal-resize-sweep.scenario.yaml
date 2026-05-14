@@ -1,0 +1,119 @@
+schemaVersion: goink.tuitest/v1alpha1
+name: terminal-resize-demo/width-sweep
+app: terminal-resize-demo
+viewport:
+  width: 100
+  height: 40
+environment:
+  TERM: tmux-256color
+  COLORTERM: ""
+  FORCE_COLOR: "1"
+capture:
+  mode: screen
+steps:
+  - name: width-100
+    expect:
+      file: terminal-resize-sweep-width-100.screen.golden
+  - name: width-95
+    resize:
+      width: 95
+      height: 40
+    expect:
+      file: terminal-resize-sweep-width-95.screen.golden
+  - name: width-90
+    resize:
+      width: 90
+      height: 40
+    expect:
+      file: terminal-resize-sweep-width-90.screen.golden
+  - name: width-85
+    resize:
+      width: 85
+      height: 40
+    expect:
+      file: terminal-resize-sweep-width-85.screen.golden
+  - name: width-80
+    resize:
+      width: 80
+      height: 40
+    expect:
+      file: terminal-resize-sweep-width-80.screen.golden
+  - name: width-75
+    resize:
+      width: 75
+      height: 40
+    expect:
+      file: terminal-resize-sweep-width-75.screen.golden
+  - name: width-70
+    resize:
+      width: 70
+      height: 40
+    expect:
+      file: terminal-resize-sweep-width-70.screen.golden
+  - name: width-65
+    resize:
+      width: 65
+      height: 40
+    expect:
+      file: terminal-resize-sweep-width-65.screen.golden
+  - name: width-60
+    resize:
+      width: 60
+      height: 40
+    expect:
+      file: terminal-resize-sweep-width-60.screen.golden
+  - name: width-55
+    resize:
+      width: 55
+      height: 40
+    expect:
+      file: terminal-resize-sweep-width-55.screen.golden
+  - name: width-50
+    resize:
+      width: 50
+      height: 40
+    expect:
+      file: terminal-resize-sweep-width-50.screen.golden
+  - name: width-45
+    resize:
+      width: 45
+      height: 40
+    expect:
+      file: terminal-resize-sweep-width-45.screen.golden
+  - name: width-40
+    resize:
+      width: 40
+      height: 40
+    expect:
+      file: terminal-resize-sweep-width-40.screen.golden
+  - name: width-35
+    resize:
+      width: 35
+      height: 40
+    expect:
+      file: terminal-resize-sweep-width-35.screen.golden
+  - name: width-30
+    resize:
+      width: 30
+      height: 40
+    expect:
+      file: terminal-resize-sweep-width-30.screen.golden
+  - name: width-25
+    resize:
+      width: 25
+      height: 40
+    expect:
+      file: terminal-resize-sweep-width-25.screen.golden
+  - name: width-20
+    resize:
+      width: 20
+      height: 40
+    expect:
+      file: terminal-resize-sweep-width-20.screen.golden
+  - name: ctrl-c-exit
+    input:
+      key: ctrl-c
+    exit:
+      within: 5s
+    expect:
+      sameAsPrevious: true

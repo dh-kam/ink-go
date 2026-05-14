@@ -6,8 +6,11 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"slices"
 	"strings"
+	"sync"
 	"testing"
+	"time"
 
 	"github.com/dh-kam/goink.go/internal/renderer"
 	"github.com/dh-kam/goink.go/pkg/components"
@@ -34,9 +37,12 @@ type upstreamNodeSpec struct {
 	Props    map[string]interface{} `json:"props,omitempty"`
 	Children []upstreamNodeSpec     `json:"children,omitempty"`
 	Preset   string                 `json:"preset,omitempty"`
-	Count    int                    `json:"count,omitempty"`
-	Items    []string               `json:"items,omitempty"`
-	Template *upstreamNodeSpec      `json:"template,omitempty"`
+	// Count is a pointer so the parity harness can distinguish absent
+	// (default to 1 for newline) from an explicit 0 or negative value
+	// supplied by the case generator to exercise edge cases.
+	Count    *int              `json:"count,omitempty"`
+	Items    []string          `json:"items,omitempty"`
+	Template *upstreamNodeSpec `json:"template,omitempty"`
 }
 
 func (spec *upstreamNodeSpec) UnmarshalJSON(data []byte) error {
@@ -46,7 +52,7 @@ func (spec *upstreamNodeSpec) UnmarshalJSON(data []byte) error {
 		Props    json.RawMessage    `json:"props,omitempty"`
 		Children []upstreamNodeSpec `json:"children,omitempty"`
 		Preset   string             `json:"preset,omitempty"`
-		Count    int                `json:"count,omitempty"`
+		Count    *int               `json:"count,omitempty"`
 		Items    []string           `json:"items,omitempty"`
 		Template *upstreamNodeSpec  `json:"template,omitempty"`
 	}
@@ -189,6 +195,7 @@ type upstreamGolden struct {
 	Output       string   `json:"output,omitempty"`
 	Error        string   `json:"error,omitempty"`
 	Contains     []string `json:"contains,omitempty"`
+	Writes       []string `json:"writes,omitempty"`
 }
 
 func TestUpstreamGoldenParity(t *testing.T) {
@@ -204,9 +211,17 @@ func TestUpstreamGoldenParity(t *testing.T) {
 		goldenByName[golden.Name] = golden
 	}
 
+	// Escape hatch for documented upstream fixtures that are intentionally
+	// tracked in cases.json/goldens.json before the renderer catches up.
+	// Keep this empty when the full generated suite is active.
+	knownDeferredParityCases := map[string]string{}
+
 	for _, testCase := range cases {
 		testCase := testCase
 		t.Run(testCase.Name, func(t *testing.T) {
+			if reason, deferred := knownDeferredParityCases[testCase.Name]; deferred {
+				t.Skipf("deferred parity case: %s", reason)
+			}
 			expected, ok := goldenByName[testCase.Name]
 			if !ok {
 				t.Fatalf("missing golden for case %q", testCase.Name)
@@ -253,6 +268,60 @@ func TestUpstreamGoldenParity(t *testing.T) {
 				}
 
 				assertContainsInOrder(t, actual, expected.Contains)
+			case "runtime-measure-element":
+				actual, err := renderUpstreamMeasureElement(testCase, false)
+				if err != nil {
+					t.Fatalf("render measure element: %v", err)
+				}
+
+				if !slices.Equal(actual, expected.Writes) {
+					t.Fatalf("measure writes mismatch\nexpected: %#v\nactual:   %#v", expected.Writes, actual)
+				}
+			case "runtime-measure-element-throttled":
+				actual, err := renderUpstreamMeasureElement(testCase, true)
+				if err != nil {
+					t.Fatalf("render throttled measure element: %v", err)
+				}
+
+				if !slices.Equal(actual, expected.Writes) {
+					t.Fatalf("measure writes mismatch\nexpected: %#v\nactual:   %#v", expected.Writes, actual)
+				}
+			case "runtime-throttle-maxfps":
+				actual, err := renderUpstreamThrottleMaxFPS(testCase)
+				if err != nil {
+					t.Fatalf("render throttle max fps: %v", err)
+				}
+
+				if !slices.Equal(actual, expected.Writes) {
+					t.Fatalf("throttle writes mismatch\nexpected: %#v\nactual:   %#v", expected.Writes, actual)
+				}
+			case "runtime-throttle-tty-unchanged":
+				actual, err := renderUpstreamThrottleTTY(testCase, "unchanged")
+				if err != nil {
+					t.Fatalf("render unchanged TTY throttle: %v", err)
+				}
+
+				if !slices.Equal(actual, expected.Writes) {
+					t.Fatalf("throttle writes mismatch\nexpected: %#v\nactual:   %#v", expected.Writes, actual)
+				}
+			case "runtime-throttle-tty-unchanged-cursor":
+				actual, err := renderUpstreamThrottleTTY(testCase, "unchanged-cursor")
+				if err != nil {
+					t.Fatalf("render unchanged cursor TTY throttle: %v", err)
+				}
+
+				if !slices.Equal(actual, expected.Writes) {
+					t.Fatalf("throttle writes mismatch\nexpected: %#v\nactual:   %#v", expected.Writes, actual)
+				}
+			case "runtime-throttle-tty-trailing":
+				actual, err := renderUpstreamThrottleTTY(testCase, "trailing")
+				if err != nil {
+					t.Fatalf("render trailing TTY throttle: %v", err)
+				}
+
+				if !slices.Equal(actual, expected.Writes) {
+					t.Fatalf("throttle writes mismatch\nexpected: %#v\nactual:   %#v", expected.Writes, actual)
+				}
 			default:
 				t.Fatalf("unknown case mode %q", testCase.Mode)
 			}
@@ -262,12 +331,14 @@ func TestUpstreamGoldenParity(t *testing.T) {
 
 func TestUpstreamCoverageCounts(t *testing.T) {
 	targets := map[string]int{
-		"box":       243,
+		"box":       467,
+		"measure":   2,
 		"newline":   30,
+		"render":    4,
 		"spacer":    30,
 		"static":    32,
-		"text":      62,
-		"transform": 35,
+		"text":      157,
+		"transform": 49,
 	}
 
 	counts := make(map[string]int, len(targets))
@@ -349,11 +420,16 @@ func renderUpstreamParityError(node *vdom.Node) (string, bool) {
 }
 
 type parityRuntimeWriter struct {
+	mu      sync.Mutex
 	writes  []string
 	columns int
+	tty     bool
 }
 
 func (writer *parityRuntimeWriter) Write(data []byte) (int, error) {
+	writer.mu.Lock()
+	defer writer.mu.Unlock()
+
 	writer.writes = append(writer.writes, string(data))
 	return len(data), nil
 }
@@ -362,8 +438,59 @@ func (writer *parityRuntimeWriter) Columns() int {
 	return writer.columns
 }
 
+func (writer *parityRuntimeWriter) Rows() int {
+	return 24
+}
+
+func (writer *parityRuntimeWriter) IsTTY() bool {
+	return writer.tty
+}
+
 func (writer *parityRuntimeWriter) joined() string {
+	writer.mu.Lock()
+	defer writer.mu.Unlock()
+
 	return strings.Join(writer.writes, "")
+}
+
+func (writer *parityRuntimeWriter) snapshot() []string {
+	writer.mu.Lock()
+	defer writer.mu.Unlock()
+
+	snapshot := make([]string, len(writer.writes))
+	copy(snapshot, writer.writes)
+	return snapshot
+}
+
+func (writer *parityRuntimeWriter) reset() {
+	writer.mu.Lock()
+	defer writer.mu.Unlock()
+
+	writer.writes = nil
+}
+
+func (writer *parityRuntimeWriter) last() string {
+	writer.mu.Lock()
+	defer writer.mu.Unlock()
+
+	if len(writer.writes) == 0 {
+		return ""
+	}
+
+	return writer.writes[len(writer.writes)-1]
+}
+
+func (writer *parityRuntimeWriter) containsWrite(needle string) bool {
+	writer.mu.Lock()
+	defer writer.mu.Unlock()
+
+	for _, write := range writer.writes {
+		if strings.Contains(write, needle) {
+			return true
+		}
+	}
+
+	return false
 }
 
 func renderUpstreamManagedFrames(spec upstreamCaseSpec) (string, error) {
@@ -411,6 +538,182 @@ func renderUpstreamManagedFrames(spec upstreamCaseSpec) (string, error) {
 	return stdout.joined(), nil
 }
 
+func renderUpstreamMeasureElement(spec upstreamCaseSpec, throttled bool) ([]string, error) {
+	stdout := &parityRuntimeWriter{columns: spec.Columns, tty: throttled}
+
+	if throttled {
+		maxFPS := ink.DefaultMaxFPS
+		instance, err := ink.RenderWithOptions(nil, ink.RenderOptions{
+			AppOptions: ink.AppOptions{
+				Width:  spec.Columns,
+				Stdout: stdout,
+			},
+			MaxFPSLimit: &maxFPS,
+		})
+		if err != nil {
+			return nil, err
+		}
+		defer instance.Unmount()
+
+		if err := instance.Rerender(buildMeasureElementFixture); err != nil {
+			return nil, err
+		}
+
+		if !waitForRuntimeWriteContaining(stdout, "Width: 100\n", 300*time.Millisecond) {
+			return stdout.snapshot(), fmt.Errorf("expected throttled writes to contain %q, got %#v", "Width: 100\n", stdout.snapshot())
+		}
+
+		return stdout.snapshot(), nil
+	}
+
+	instance, err := ink.RenderWithOptions(buildMeasureElementFixture, ink.RenderOptions{
+		AppOptions: ink.AppOptions{
+			Width:  spec.Columns,
+			Stdout: stdout,
+		},
+		Debug: true,
+	})
+	if err != nil {
+		return nil, err
+	}
+	defer instance.Unmount()
+
+	if !waitForRuntimeWrite(stdout, "Width: 100", 300*time.Millisecond) {
+		return stdout.snapshot(), fmt.Errorf("expected final write %q, got %#v", "Width: 100", stdout.snapshot())
+	}
+
+	return stdout.snapshot(), nil
+}
+
+func renderUpstreamThrottleMaxFPS(spec upstreamCaseSpec) ([]string, error) {
+	stdout := &parityRuntimeWriter{columns: spec.Columns}
+	maxFPS := 20
+
+	instance, err := ink.RenderWithOptions(func() *vdom.Node {
+		return components.Text("Hello")
+	}, ink.RenderOptions{
+		AppOptions: ink.AppOptions{
+			Width:  spec.Columns,
+			Stdout: stdout,
+		},
+		MaxFPSLimit: &maxFPS,
+	})
+	if err != nil {
+		return nil, err
+	}
+	defer instance.Unmount()
+
+	if err := instance.Rerender(func() *vdom.Node {
+		return components.Text("World")
+	}); err != nil {
+		return nil, err
+	}
+
+	if !waitForRuntimeWriteContaining(stdout, "World\n", 200*time.Millisecond) {
+		return stdout.snapshot(), fmt.Errorf("expected throttled writes to contain %q, got %#v", "World\n", stdout.snapshot())
+	}
+
+	return stdout.snapshot(), nil
+}
+
+func renderUpstreamThrottleTTY(spec upstreamCaseSpec, scenario string) ([]string, error) {
+	stdout := &parityRuntimeWriter{columns: spec.Columns, tty: true}
+	maxFPS := 20
+	render := buildThrottleTextFixture("Hello", scenario == "unchanged-cursor")
+
+	instance, err := ink.RenderWithOptions(render, ink.RenderOptions{
+		AppOptions: ink.AppOptions{
+			Width:  spec.Columns,
+			Stdout: stdout,
+		},
+		MaxFPSLimit: &maxFPS,
+	})
+	if err != nil {
+		return nil, err
+	}
+	defer instance.Unmount()
+
+	stdout.reset()
+
+	nextText := "Hello"
+	if scenario == "trailing" {
+		nextText = "World"
+	}
+
+	if err := instance.Rerender(buildThrottleTextFixture(nextText, scenario == "unchanged-cursor")); err != nil {
+		return nil, err
+	}
+
+	if scenario == "trailing" {
+		if !waitForRuntimeWriteContaining(stdout, "World\n", 200*time.Millisecond) {
+			return stdout.snapshot(), fmt.Errorf("expected throttled writes to contain %q, got %#v", "World\n", stdout.snapshot())
+		}
+
+		return stdout.snapshot(), nil
+	}
+
+	time.Sleep(80 * time.Millisecond)
+	return stdout.snapshot(), nil
+}
+
+func buildThrottleTextFixture(text string, cursor bool) func() *vdom.Node {
+	return func() *vdom.Node {
+		if cursor {
+			ink.UseCursor().SetCursorPosition(&ink.CursorPosition{X: 0, Y: 0})
+		}
+
+		return components.Text(text)
+	}
+}
+
+func buildMeasureElementFixture() *vdom.Node {
+	widthValue, setWidth := ink.UseState(0)
+	ref := ink.UseRef((*ink.DOMElement)(nil))
+
+	ink.UseEffect(func() func() {
+		current, _ := ref.Current().(*ink.DOMElement)
+		if current != nil {
+			setWidth(ink.MeasureElement(current).Width)
+		}
+
+		return nil
+	}, []interface{}{})
+
+	return components.Box(vdom.Props{"ref": ref},
+		components.Text(fmt.Sprintf("Width: %d", widthValue.(int))),
+	)
+}
+
+func waitForRuntimeWrite(stdout *parityRuntimeWriter, want string, timeout time.Duration) bool {
+	deadline := time.Now().Add(timeout)
+	for {
+		if stdout.last() == want {
+			return true
+		}
+
+		if time.Now().After(deadline) {
+			return false
+		}
+
+		time.Sleep(5 * time.Millisecond)
+	}
+}
+
+func waitForRuntimeWriteContaining(stdout *parityRuntimeWriter, want string, timeout time.Duration) bool {
+	deadline := time.Now().Add(timeout)
+	for {
+		if stdout.containsWrite(want) {
+			return true
+		}
+
+		if time.Now().After(deadline) {
+			return false
+		}
+
+		time.Sleep(5 * time.Millisecond)
+	}
+}
+
 func assertContainsInOrder(t *testing.T, actual string, expected []string) {
 	t.Helper()
 
@@ -432,9 +735,13 @@ func buildUpstreamNode(spec upstreamNodeSpec) (*vdom.Node, error) {
 	case "empty":
 		return nil, nil
 	case "newline":
-		count := spec.Count
-		if count <= 0 {
-			count = 1
+		// Default count is 1 to match upstream's <Newline> default. An
+		// explicit count of 0 or negative is honored verbatim — count=0
+		// renders as the empty string (matching JS '\n'.repeat(0)) and
+		// negative counts clamp to zero inside components.Newline.
+		count := 1
+		if spec.Count != nil {
+			count = *spec.Count
 		}
 
 		return components.Newline(count), nil

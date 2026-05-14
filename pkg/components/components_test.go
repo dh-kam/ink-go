@@ -41,6 +41,28 @@ func TestText(t *testing.T) {
 	}
 }
 
+func TestTextConvertsNumericChildren(t *testing.T) {
+	text := components.Text("Value: ", 42)
+
+	if text == nil {
+		t.Fatal("Text should render numeric children")
+	}
+
+	if len(text.Children) != 2 {
+		t.Fatalf("Expected 2 children, got %d", len(text.Children))
+	}
+
+	if text.Children[1].Text != "42" {
+		t.Errorf("Expected numeric child to render as %q, got %q", "42", text.Children[1].Text)
+	}
+}
+
+func TestTextWithoutChildrenReturnsNil(t *testing.T) {
+	if text := components.Text(nil); text != nil {
+		t.Fatalf("Expected nil text node for nil children, got %#v", text)
+	}
+}
+
 func TestTextWithPropsAndChildren(t *testing.T) {
 	text := components.Text(
 		vdom.Props{"color": "green"},
@@ -77,36 +99,99 @@ func TestTextWithPropsAndChildren(t *testing.T) {
 func TestNewline(t *testing.T) {
 	nl := components.Newline()
 
-	if nl.Type != vdom.TextNode {
-		t.Error("Newline should create a text node")
+	if nl.Type != vdom.ElementNode {
+		t.Error("Newline should create a text element")
 	}
 
-	if nl.Text != "\n" {
-		t.Errorf("Expected newline character, got %q", nl.Text)
+	if nl.ElementType != "text" {
+		t.Errorf("Expected newline element type %q, got %q", "text", nl.ElementType)
+	}
+
+	if len(nl.Children) != 1 || nl.Children[0].Text != "\n" {
+		t.Errorf("Expected newline character, got %#v", nl.Children)
 	}
 }
 
 func TestNewlineCount(t *testing.T) {
 	nl := components.Newline(3)
 
-	if nl.Type != vdom.TextNode {
-		t.Error("Newline should create a text node")
+	if nl.Type != vdom.ElementNode {
+		t.Error("Newline should create a text element")
 	}
 
-	if nl.Text != "\n\n\n" {
-		t.Errorf("Expected three newline characters, got %q", nl.Text)
+	if len(nl.Children) != 1 || nl.Children[0].Text != "\n\n\n" {
+		t.Errorf("Expected three newline characters, got %#v", nl.Children)
+	}
+}
+
+func TestNewlineZeroCount(t *testing.T) {
+	nl := components.Newline(0)
+
+	if nl.Type != vdom.ElementNode {
+		t.Error("Newline should create a text element")
+	}
+
+	if len(nl.Children) != 1 || nl.Children[0].Text != "" {
+		t.Errorf("Expected no newline characters, got %#v", nl.Children)
+	}
+}
+
+// TestNewlineNegativeCount verifies that a negative count clamps to zero —
+// upstream Ink calls '\n'.repeat(count) which would throw RangeError for a
+// negative value, but goink's variadic int signature can't surface that
+// cleanly in Go callers, so we treat negative counts as a no-op (empty
+// payload), matching the count=0 case.
+func TestNewlineNegativeCount(t *testing.T) {
+	cases := []int{-1, -3, -1000}
+	for _, count := range cases {
+		nl := components.Newline(count)
+		if nl.Type != vdom.ElementNode {
+			t.Errorf("count=%d: Newline should create a text element, got %v", count, nl.Type)
+		}
+		if len(nl.Children) != 1 || nl.Children[0].Text != "" {
+			t.Errorf("count=%d: expected empty text for negative count, got %#v", count, nl.Children)
+		}
+	}
+}
+
+// TestNewlineLargeCount verifies that very large counts emit the requested
+// number of newline characters with no cap — matching upstream's
+// '\n'.repeat(count) which has no upper bound short of v8's string-length
+// limit. This pins down behavior so a future "safety cap" cannot be added
+// without breaking parity.
+func TestNewlineLargeCount(t *testing.T) {
+	const count = 1000
+	nl := components.Newline(count)
+	if nl.Type != vdom.ElementNode {
+		t.Fatalf("expected text element, got %v", nl.Type)
+	}
+	if len(nl.Children) != 1 {
+		t.Fatalf("expected one text child, got %#v", nl.Children)
+	}
+	text := nl.Children[0].Text
+	if len(text) != count {
+		t.Fatalf("expected %d newline characters, got %d", count, len(text))
+	}
+	for i, r := range text {
+		if r != '\n' {
+			t.Fatalf("expected '\\n' at position %d, got %q", i, r)
+		}
 	}
 }
 
 func TestSpace(t *testing.T) {
 	space := components.Space()
 
-	if space.Type != vdom.TextNode {
-		t.Error("Space should create a text node")
+	if space.Type != vdom.ElementNode {
+		t.Error("Space should create a text element")
 	}
 
-	if space.Text != " " {
-		t.Errorf("Expected space character, got %q", space.Text)
+	if space.ElementType != "text" {
+		t.Errorf("Expected space element type %q, got %q", "text", space.ElementType)
+	}
+
+	if len(space.Children) != 1 || space.Children[0].Text != " " {
+		t.Errorf("Expected space character, got %#v", space.Children)
 	}
 }
 
@@ -144,6 +229,28 @@ func TestTransform(t *testing.T) {
 	}
 }
 
+func TestTransformWithProps(t *testing.T) {
+	transform := components.Transform(
+		func(children string, index int) string {
+			return children
+		},
+		vdom.Props{"accessibilityLabel": "spoken"},
+		vdom.CreateTextNode("visual"),
+	)
+
+	if transform.Props["accessibilityLabel"] != "spoken" {
+		t.Errorf("Expected accessibilityLabel prop, got %v", transform.Props["accessibilityLabel"])
+	}
+}
+
+func TestTransformWithoutChildrenReturnsNil(t *testing.T) {
+	if transform := components.Transform(func(children string, index int) string {
+		return children
+	}); transform != nil {
+		t.Fatalf("Expected nil transform for nil children, got %#v", transform)
+	}
+}
+
 // TestBorder tests Border component
 func TestBorder(t *testing.T) {
 	borderProps := components.BorderProps{
@@ -161,8 +268,8 @@ func TestBorder(t *testing.T) {
 		t.Error("Border should create an element node")
 	}
 
-	if border.ElementType != "border" {
-		t.Errorf("Expected element type 'border', got %q", border.ElementType)
+	if border.ElementType != "box" {
+		t.Errorf("Expected element type 'box', got %q", border.ElementType)
 	}
 
 	// Check props
@@ -172,6 +279,14 @@ func TestBorder(t *testing.T) {
 
 	if border.Props["borderTop"] != true {
 		t.Error("Border top prop not set correctly")
+	}
+}
+
+func TestBorderDefaultsToAllSides(t *testing.T) {
+	border := components.Border(components.BorderProps{Style: components.BorderSingle}, nil)
+
+	if _, ok := border.Props["borderTop"]; ok {
+		t.Fatal("Expected default border to omit side overrides")
 	}
 }
 

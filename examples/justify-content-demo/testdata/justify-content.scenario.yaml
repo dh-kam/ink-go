@@ -1,0 +1,12 @@
+schemaVersion: goink.tuitest/v1alpha1
+name: justify-content-demo/static
+app: justify-content-demo
+viewport:
+  width: 100
+  height: 20
+capture:
+  mode: plain
+steps:
+  - name: render
+    expect:
+      file: justify-content.golden

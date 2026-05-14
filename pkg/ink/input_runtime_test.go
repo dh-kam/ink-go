@@ -96,7 +96,100 @@ func TestHandleInputProvidesClearModifierMatrix(t *testing.T) {
 	}
 }
 
-func TestHandleInputPassesCtrlCToUseInputHooks(t *testing.T) {
+func TestHandleInputExitsOnCtrlCByDefault(t *testing.T) {
+	stdout := &recordingWriter{}
+	called := false
+
+	instance, err := MountWithOptions(func() *vdom.Node {
+		UseInput(func(input string, key InputKey) {
+			called = true
+		})
+
+		return components.Text("Input")
+	}, RenderOptions{
+		AppOptions: AppOptions{Stdout: stdout},
+	})
+	if err != nil {
+		t.Fatalf("mount failed: %v", err)
+	}
+
+	if err := instance.HandleInput("\x03"); err != nil {
+		t.Fatalf("handle input failed: %v", err)
+	}
+
+	if called {
+		t.Fatal("expected default Ctrl+C handling to suppress useInput callbacks")
+	}
+	if !instance.unmounted {
+		t.Fatal("expected default Ctrl+C handling to unmount the instance")
+	}
+}
+
+func TestHandleInputCtrlCLeavesLastFrameLikeUpstream(t *testing.T) {
+	stdout := &recordingWriter{}
+
+	instance, err := MountWithOptions(func() *vdom.Node {
+		UseInput(func(input string, key InputKey) {})
+		return components.Text("Input")
+	}, RenderOptions{
+		AppOptions: AppOptions{Stdout: stdout},
+	})
+	if err != nil {
+		t.Fatalf("mount failed: %v", err)
+	}
+
+	writeCount := len(stdout.writes)
+	if err := instance.HandleInput("\x03"); err != nil {
+		t.Fatalf("handle input failed: %v", err)
+	}
+
+	if !instance.unmounted {
+		t.Fatal("expected Ctrl+C to unmount the instance")
+	}
+	if len(stdout.writes) != writeCount {
+		t.Fatalf("expected Ctrl+C exit to leave last frame intact, got writes %#v", stdout.writes)
+	}
+	if strings.Contains(stdout.joined(), ansiEraseLines(2)) {
+		t.Fatalf("expected Ctrl+C exit not to clear the last frame, got %#v", stdout.writes)
+	}
+}
+
+func TestUseInputExitLeavesLastFrameLikeUpstream(t *testing.T) {
+	stdout := &recordingWriter{}
+
+	instance, err := MountWithOptions(func() *vdom.Node {
+		app := UseApp()
+		UseInput(func(input string, key InputKey) {
+			if input == "q" {
+				app.Exit()
+			}
+		})
+
+		return components.Text("Input")
+	}, RenderOptions{
+		AppOptions: AppOptions{Stdout: stdout},
+	})
+	if err != nil {
+		t.Fatalf("mount failed: %v", err)
+	}
+
+	writeCount := len(stdout.writes)
+	if err := instance.HandleInput("q"); err != nil {
+		t.Fatalf("handle input failed: %v", err)
+	}
+
+	if !instance.unmounted {
+		t.Fatal("expected useInput exit to unmount the instance")
+	}
+	if len(stdout.writes) != writeCount {
+		t.Fatalf("expected useInput exit to leave last frame intact, got writes %#v", stdout.writes)
+	}
+	if strings.Contains(stdout.joined(), ansiEraseLines(2)) {
+		t.Fatalf("expected useInput exit not to clear the last frame, got %#v", stdout.writes)
+	}
+}
+
+func TestHandleInputPassesCtrlCToUseInputHooksWhenExitDisabled(t *testing.T) {
 	stdout := &recordingWriter{}
 	var modernInput string
 	var modernKey InputKey
@@ -116,7 +209,8 @@ func TestHandleInputPassesCtrlCToUseInputHooks(t *testing.T) {
 
 		return components.Text("Input")
 	}, RenderOptions{
-		AppOptions: AppOptions{Stdout: stdout},
+		AppOptions:  AppOptions{Stdout: stdout},
+		ExitOnCtrlC: boolPtr(false),
 	})
 	if err != nil {
 		t.Fatalf("mount failed: %v", err)

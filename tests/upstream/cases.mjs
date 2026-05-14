@@ -61,13 +61,31 @@ const namedManagedFramesCase = (
 	name,
 	frames,
 	columns = 100,
-	env = undefined,
-) => ({
+	options = undefined,
+) => {
+	const normalizedOptions =
+		options &&
+		("env" in options || "screenReader" in options || "expectedContains" in options)
+			? options
+			: {env: options};
+
+	return {
+		name,
+		columns,
+		mode: "managed-frames",
+		...(normalizedOptions?.screenReader ? {screenReader: true} : {}),
+		...(normalizedOptions?.env && Object.keys(normalizedOptions.env).length > 0 ? {env: normalizedOptions.env} : {}),
+		...(normalizedOptions?.expectedContains?.length > 0
+			? {expectedContains: normalizedOptions.expectedContains}
+			: {}),
+		frames,
+	};
+};
+
+const namedRuntimeCase = (name, mode, columns = 100) => ({
 	name,
 	columns,
-	mode: "managed-frames",
-	...(env && Object.keys(env).length > 0 ? {env} : {}),
-	frames,
+	mode,
 });
 
 const buildTextCases = () => [
@@ -131,6 +149,28 @@ const buildTextCases = () => [
 	namedCase("text/empty-raw-between", text([raw("A"), raw(""), raw("B")])),
 	namedCase("text/raw-nested-raw", text([raw("A"), text([raw("B")]), raw("C")])),
 	namedCase("text/triple-nested", text([text([text([raw("deep")])])])),
+	namedCase(
+		"text/grapheme-combining-mark-fixed-width",
+		box({}, [box({width: 1}, [textValue("e\u0301")]), textValue("|")]),
+	),
+	namedCase(
+		"text/osc8-hyperlink-preserved",
+		text([raw("\u001B]8;;https://example.com\u0007Example\u001B]8;;\u0007")]),
+		40,
+	),
+	namedAnsiCase(
+		"text/ansi-osc8-hyperlink-preserved",
+		text([raw("\u001B]8;;https://example.com\u0007Example\u001B]8;;\u0007")]),
+		40,
+	),
+	namedCase(
+		"text/zwj-family-fixed-width-between-siblings",
+		box({}, [
+			textValue("["),
+			box({width: 2}, [textValue("👨‍👩‍👧‍👦")]),
+			textValue("]"),
+		]),
+	),
 	namedCase("text/mixed-case", text([raw("GoLang Ink PORT")])),
 	namedCase("text/emoji", text([raw("go 🚀")])),
 	namedCase("text/cjk", text([raw("한글 테스트")])),
@@ -160,6 +200,10 @@ const buildTextCases = () => [
 	namedCase("text/style-underline", text([raw("Underline")], {underline: true})),
 	namedCase("text/style-inverse", text([raw("Inverse")], {inverse: true})),
 	namedCase("text/style-strikethrough", text([raw("Strike")], {strikethrough: true})),
+	namedAnsiCase("text/ansi-style-gray", text([raw("Gray")], {color: "gray"})),
+	namedAnsiCase("text/ansi-style-grey", text([raw("Grey")], {color: "grey"})),
+	namedAnsiCase("text/ansi-style-green-bright", text([raw("Bright")], {color: "greenBright"})),
+	namedAnsiCase("text/ansi-style-background-blue-bright", text([raw("Bright BG")], {backgroundColor: "blueBright"})),
 	namedCase(
 		"text/style-color-background-combo",
 		text([raw("Combo")], {color: "yellow", backgroundColor: "blue", bold: true}),
@@ -192,6 +236,14 @@ const buildTextCases = () => [
 		box({width: 7}, [text([raw("Hello World")], {wrap: "wrap"})]),
 	),
 	namedCase(
+		"text/wrap-preserves-leading-and-trailing-spaces",
+		box({width: 5}, [text([raw("   alpha beta   ")], {wrap: "wrap"})]),
+	),
+	namedCase(
+		"text/wrap-preserves-leading-separator-when-it-fits",
+		box({width: 6}, [text([raw(" alpha beta ")], {wrap: "wrap"})]),
+	),
+	namedCase(
 		"text/wrap-enough-space",
 		box({width: 20}, [text([raw("Hello World")], {wrap: "wrap"})]),
 	),
@@ -214,6 +266,14 @@ const buildTextCases = () => [
 	namedCase(
 		"text/truncate text in the end",
 		box({width: 7}, [text([raw("Hello World")], {wrap: "truncate"})]),
+	),
+	namedCase(
+		"text/truncate-end-explicit-mode",
+		box({width: 7}, [text([raw("Hello World")], {wrap: "truncate-end"})]),
+	),
+	namedCase(
+		"text/truncate-end-explicit-text-wrap",
+		box({width: 7}, [text([raw("Hello World")], {wrap: "truncate-end", textWrap: "truncate-end"})]),
 	),
 	namedCase(
 		"text/truncate-middle",
@@ -560,6 +620,39 @@ const buildTransformCases = () => {
 		),
 	);
 
+	// Box+Text style parity gap-fillers below: ANSI mutation, multi-line width
+	// changes, and parent-style continuation through transforms.
+	cases.push(
+		namedCase(
+			"transform/ansi-link-wrapper",
+			transform("angle", [textValue("Example")]),
+		),
+	);
+	cases.push(
+		namedCase(
+			"transform/multiline-width-change",
+			transform("bracket_index", [textValue("a\nbb\nccc")]),
+		),
+	);
+	cases.push(
+		namedAnsiCase(
+			"transform/parent-text-color-continuation",
+			text(
+				[raw("pre "), transform("upper", [textValue("mid")]), raw(" post")],
+				{color: "green"},
+			),
+		),
+	);
+	cases.push(
+		namedCase(
+			"transform/inside-bordered-box",
+			box(
+				{borderStyle: "round", width: 12},
+				[transform("upper", [textValue("hello world")])],
+			),
+		),
+	);
+
 	return cases;
 };
 
@@ -575,6 +668,14 @@ const buildBoxCases = () => [
 	namedCase(
 		"box/display none",
 		box({flexDirection: "column"}, [box({display: "none"}, [textValue("Kitty!")]), textValue("Doggo")]),
+	),
+	namedCase(
+		"box/position-absolute-does-not-consume-column-space",
+		box({flexDirection: "column"}, [
+			textValue("Line 1"),
+			box({position: "absolute"}, [textValue("ABS")]),
+			textValue("Line 2"),
+		]),
 	),
 	namedCase("box/row-reverse-basic-two", box({flexDirection: "row-reverse", width: 4}, [textValue("A"), textValue("B")])),
 	namedCase("box/gap-wrap", box({gap: 1, width: 3, flexWrap: "wrap"}, [textValue("A"), textValue("B"), textValue("C")])),
@@ -647,11 +748,19 @@ const buildBoxCases = () => [
 		box({flexDirection: "column"}, [textValue("A"), textValue("B")]),
 	),
 	namedCase("box/justify-center-row-one", box({width: 9, justifyContent: "center"}, [textValue("ABC")])),
+	namedCase("box/row - align text to center", box({width: 10, justifyContent: "center"}, [textValue("Test")])),
 	namedCase("box/justify-center-row-two", box({width: 10, justifyContent: "center"}, [textValue("A"), textValue("B")])),
+	namedCase("box/row - align multiple text nodes to center", box({width: 10, justifyContent: "center"}, [textValue("A"), textValue("B")])),
 	namedCase("box/justify-end-row-one", box({width: 9, justifyContent: "flex-end"}, [textValue("ABC")])),
+	namedCase("box/row - align text to right", box({width: 10, justifyContent: "flex-end"}, [textValue("Test")])),
 	namedCase("box/justify-end-row-two", box({width: 10, justifyContent: "flex-end"}, [textValue("A"), textValue("B")])),
+	namedCase("box/row - align multiple text nodes to right", box({width: 10, justifyContent: "flex-end"}, [textValue("A"), textValue("B")])),
+	namedAnsiCase("box/row - align colored text node when text is squashed", box({justifyContent: "flex-end", width: 5}, [text([raw("X")], {color: "green"})])),
 	namedCase("box/justify-between-row-two", box({width: 5, justifyContent: "space-between"}, [textValue("A"), textValue("B")])),
+	namedCase("box/row - align two text nodes on the edges", box({width: 4, justifyContent: "space-between"}, [textValue("A"), textValue("B")])),
+	namedCase("box/row - space evenly two text nodes", box({width: 10, justifyContent: "space-evenly"}, [textValue("A"), textValue("B")])),
 	namedCase("box/justify-around-row-two", box({width: 5, justifyContent: "space-around"}, [textValue("A"), textValue("B")])),
+	namedCase("box/row - align two text nodes with equal space around them", box({width: 5, justifyContent: "space-around"}, [textValue("A"), textValue("B")])),
 	namedCase(
 		"box/justify-between-row-three",
 		box({width: 7, justifyContent: "space-between"}, [textValue("A"), textValue("B"), textValue("C")]),
@@ -659,6 +768,10 @@ const buildBoxCases = () => [
 	namedCase(
 		"box/justify-center-column-one",
 		box({flexDirection: "column", height: 3, justifyContent: "center"}, [textValue("A")]),
+	),
+	namedCase(
+		"box/column - align text to center",
+		box({flexDirection: "column", height: 3, justifyContent: "center"}, [textValue("Test")]),
 	),
 	namedCase(
 		"box/justify-center-column-two",
@@ -669,11 +782,19 @@ const buildBoxCases = () => [
 		box({flexDirection: "column", height: 3, justifyContent: "flex-end"}, [textValue("A")]),
 	),
 	namedCase(
+		"box/column - align text to bottom",
+		box({flexDirection: "column", height: 3, justifyContent: "flex-end"}, [textValue("Test")]),
+	),
+	namedCase(
 		"box/justify-end-column-two",
 		box({flexDirection: "column", height: 4, justifyContent: "flex-end"}, [textValue("A"), textValue("B")]),
 	),
 	namedCase(
 		"box/justify-between-column-two",
+		box({flexDirection: "column", height: 4, justifyContent: "space-between"}, [textValue("A"), textValue("B")]),
+	),
+	namedCase(
+		"box/column - align two text nodes on the edges",
 		box({flexDirection: "column", height: 4, justifyContent: "space-between"}, [textValue("A"), textValue("B")]),
 	),
 	namedCase(
@@ -717,7 +838,15 @@ const buildBoxCases = () => [
 		box({width: 8}, [box({flexGrow: 1}, [textValue("A")]), box({flexGrow: 1}, [textValue("B")])]),
 	),
 	namedCase(
+		"box/grow equally",
+		box({width: 6}, [box({flexGrow: 1}, [textValue("A")]), box({flexGrow: 1}, [textValue("B")])]),
+	),
+	namedCase(
 		"box/flex-grow-one",
+		box({width: 6}, [box({flexGrow: 1}, [textValue("A")]), textValue("B")]),
+	),
+	namedCase(
+		"box/grow one element",
 		box({width: 6}, [box({flexGrow: 1}, [textValue("A")]), textValue("B")]),
 	),
 	namedCase(
@@ -739,7 +868,29 @@ const buildBoxCases = () => [
 		),
 	),
 	namedCase(
+		"box/dont shrink",
+		box(
+			{width: 16},
+			[
+				box({flexShrink: 0, width: 6}, [textValue("A")]),
+				box({flexShrink: 0, width: 6}, [textValue("B")]),
+				box({width: 6}, [textValue("C")]),
+			],
+		),
+	),
+	namedCase(
 		"box/flex-shrink-equal",
+		box(
+			{width: 10},
+			[
+				box({flexShrink: 1, width: 6}, [textValue("A")]),
+				box({flexShrink: 1, width: 6}, [textValue("B")]),
+				textValue("C"),
+			],
+		),
+	),
+	namedCase(
+		"box/shrink equally",
 		box(
 			{width: 10},
 			[
@@ -828,6 +979,36 @@ const buildBoxCases = () => [
 		box({width: 10}, [textValue("AB "), textValue("CD "), textValue("EFGH")]),
 	),
 	namedCase(
+		"box/flex-shrink-redistributes-after-min-width",
+		box(
+			{width: 5},
+			[
+				box({width: 4, minWidth: 3, flexShrink: 1}, [textValue("AAAA")]),
+				box({width: 4, flexShrink: 1}, [textValue("BBBB")]),
+			],
+		),
+	),
+	namedCase(
+		"box/flex-shrink-2-1",
+		box(
+			{width: 8},
+			[
+				box({flexShrink: 2, width: 6}, [textValue("AAAAAA")]),
+				box({flexShrink: 1, width: 6}, [textValue("BBBBBB")]),
+			],
+		),
+	),
+	namedCase(
+		"box/flex-shrink-clamped-by-min-width-percent",
+		box(
+			{width: 8},
+			[
+				text([raw("AAAAAA")], {minWidth: "50%"}),
+				textValue("BBBBBB"),
+			],
+		),
+	),
+	namedCase(
 		"box/overflow-x-hidden-single-text",
 		box(
 			{width: 6, overflowX: "hidden"},
@@ -893,8 +1074,35 @@ const buildBoxCases = () => [
 		),
 	),
 	namedCase(
+		"box/border-negative-margin-child-draw-order",
+		box(
+			{width: 8, height: 4, borderStyle: "round"},
+			[box({marginTop: -1, marginLeft: -1, width: 4, flexShrink: 0}, [textValue("EDGE")])],
+		),
+	),
+	namedCase(
+		"box/overflow-hidden-border-container-negative-child",
+		box(
+			{width: 8, height: 4, overflow: "hidden", borderStyle: "round"},
+			[
+				box(
+					{marginTop: -1, marginLeft: -1, width: 8, height: 3, flexShrink: 0},
+					[text([raw("AAAAAA\nBBBBBB\nCCCCCC")])],
+				),
+			],
+		),
+	),
+	namedCase(
 		"box/border-round-full-width",
 		box({borderStyle: "round"}, [textValue("Hello World")]),
+	),
+	namedCase(
+		"box/border-classic-fixed-width",
+		box({width: 7, height: 3, borderStyle: "classic"}, [textValue("Hi")]),
+	),
+	namedCase(
+		"box/border-arrow-fixed-width",
+		box({width: 7, height: 3, borderStyle: "arrow"}, [textValue("Hi")]),
 	),
 	namedCase(
 		"box/single node - full width box",
@@ -1754,7 +1962,15 @@ const buildBoxCases = () => [
 		box({width: 6}, [box({flexBasis: 3}, [textValue("A")]), textValue("B")]),
 	),
 	namedCase(
+		"box/set flex basis with flexDirection=\"row\" container",
+		box({width: 6}, [box({flexBasis: 3}, [textValue("A")]), textValue("B")]),
+	),
+	namedCase(
 		"box/flex-basis-row-percent",
+		box({width: 6}, [box({flexBasis: "50%"}, [textValue("A")]), textValue("B")]),
+	),
+	namedCase(
+		"box/set flex basis in percent with flexDirection=\"row\" container",
 		box({width: 6}, [box({flexBasis: "50%"}, [textValue("A")]), textValue("B")]),
 	),
 	namedCase(
@@ -1762,7 +1978,15 @@ const buildBoxCases = () => [
 		box({flexDirection: "column", height: 6}, [box({flexBasis: 3}, [textValue("A")]), textValue("B")]),
 	),
 	namedCase(
+		"box/set flex basis with flexDirection=\"column\" container",
+		box({flexDirection: "column", height: 6}, [box({flexBasis: 3}, [textValue("A")]), textValue("B")]),
+	),
+	namedCase(
 		"box/flex-basis-column-percent",
+		box({flexDirection: "column", height: 6}, [box({flexBasis: "50%"}, [textValue("A")]), textValue("B")]),
+	),
+	namedCase(
+		"box/set flex basis in percent with flexDirection=\"column\" container",
 		box({flexDirection: "column", height: 6}, [box({flexBasis: "50%"}, [textValue("A")]), textValue("B")]),
 	),
 	namedCase(
@@ -1893,6 +2117,10 @@ const buildBoxCases = () => [
 				box({}, [box({width: 2}, [textValue("⏳")]), textValue("|")]),
 			],
 		),
+	),
+	namedCase(
+		"box/emoji-zwj-width-fixed-box",
+		box({}, [box({width: 2}, [textValue("👨‍👩‍👧‍👦")]), textValue("|")]),
 	),
 	namedCase(
 		"box/wide characters do not add extra space inside fixed-width Box",
@@ -2842,6 +3070,290 @@ const buildBoxCases = () => [
 		100,
 		true,
 	),
+	// Upstream's renderNodeToScreenReaderOutput uses
+	// Object.keys(state).filter(key => state[key]), so any truthy aria-state
+	// key (not just the documented set) is announced. These cases pin down
+	// that behaviour with a single arbitrary key (insertion-order ambiguity
+	// is avoided so the golden is stable across renderers).
+	namedCase(
+		"box/screen-reader-arbitrary-state-key",
+		box({"aria-role": "textbox", "aria-state": {invalid: true}}, [textValue("Email")]),
+		100,
+		true,
+	),
+	namedCase(
+		"box/screen-reader-arbitrary-state-key-without-role",
+		box({"aria-state": {invalid: true}}, [textValue("Email")]),
+		100,
+		true,
+	),
+	// goink-specific parity gap-fillers for aria-labelledby / aria-describedby.
+	// Upstream Ink does not yet implement these props, so the cases below
+	// pin only the *fallback* behaviour that both renderers share: when the
+	// referenced id does not exist in the tree, the host's own children are
+	// narrated unchanged. Cases where an id resolves are pinned by the Go
+	// renderer tests instead because they would diverge from upstream output.
+	namedCase(
+		"box/screen-reader-aria-labelledby-missing-falls-back",
+		box({"aria-labelledby": "no-such-id"}, [textValue("fallback content")]),
+		100,
+		true,
+	),
+	namedCase(
+		"box/screen-reader-aria-describedby-missing-no-op",
+		box({"aria-describedby": "no-such-id"}, [textValue("only content")]),
+		100,
+		true,
+	),
+	// Box+Text style parity gap-fillers: overflow-with-border corner cases and
+	// default-flexShrink interactions that were missing relative to upstream.
+	namedCase(
+		"box/overflow-hidden-border-top-left-text-overflow",
+		box(
+			{width: 6, height: 4, overflow: "hidden", borderStyle: "round"},
+			[
+				box(
+					{marginTop: -1, marginLeft: -1, width: 6, height: 4, flexShrink: 0},
+					[text([raw("AAAA\nBBBB\nCCCC\nDDDD")])],
+				),
+			],
+		),
+	),
+	namedCase(
+		"box/overflow-hidden-nested-borders",
+		box(
+			{width: 8, height: 5, overflow: "hidden", borderStyle: "round"},
+			[
+				box(
+					{width: 6, height: 3, overflow: "hidden", borderStyle: "round", flexShrink: 0},
+					[text([raw("AAAA\nBBBB\nCCCC")])],
+				),
+			],
+		),
+	),
+	namedCase(
+		"box/overflow-hidden-border-bottom-right-text-overflow",
+		box(
+			{width: 6, height: 4, overflow: "hidden", borderStyle: "round"},
+			[
+				box(
+					{marginTop: 2, marginLeft: 2, width: 6, height: 4, flexShrink: 0},
+					[text([raw("AAAA\nBBBB\nCCCC\nDDDD")])],
+				),
+			],
+		),
+	),
+	namedCase(
+		"box/default-flex-shrink-text-box-text-tight",
+		box(
+			{width: 8},
+			[textValue("AAAA"), box({width: 4}, [textValue("BBBB")]), textValue("CCCC")],
+		),
+	),
+	namedCase(
+		"box/default-flex-shrink-flex-basis-row",
+		box(
+			{width: 10},
+			[
+				box({flexBasis: 4}, [textValue("AAAA")]),
+				textValue("BBBB"),
+				textValue("CCCC"),
+			],
+		),
+	),
+	namedCase(
+		"box/default-flex-shrink-bordered-children-row",
+		box(
+			{width: 12},
+			[
+				box({borderStyle: "round"}, [textValue("AB")]),
+				box({borderStyle: "round"}, [textValue("CD")]),
+				box({borderStyle: "round"}, [textValue("EF")]),
+			],
+		),
+	),
+	// Yoga parity: proportional and fractional flex-grow distribution.
+	namedCase(
+		"box/yoga-flex-grow-proportional-3-1",
+		box(
+			{width: 8},
+			[
+				box({flexGrow: 3}, [textValue("A")]),
+				box({flexGrow: 1}, [textValue("B")]),
+			],
+		),
+	),
+	namedCase(
+		"box/yoga-flex-grow-2-1",
+		box(
+			{width: 10},
+			[
+				box({flexGrow: 2}, [textValue("A")]),
+				box({flexGrow: 1}, [textValue("B")]),
+			],
+		),
+	),
+	namedCase(
+		"box/yoga-flex-grow-fractional",
+		box(
+			{width: 12},
+			[
+				box({flexGrow: 0.5}, [textValue("A")]),
+				box({flexGrow: 1}, [textValue("B")]),
+			],
+		),
+	),
+	namedCase(
+		"box/yoga-flex-grow-zero-with-grow-sibling",
+		box(
+			{width: 8},
+			[
+				box({flexGrow: 0}, [textValue("A")]),
+				box({flexGrow: 1}, [textValue("B")]),
+			],
+		),
+	),
+	namedCase(
+		"box/yoga-flex-grow-with-flex-basis",
+		box(
+			{width: 10},
+			[
+				box({flexGrow: 1, flexBasis: 4}, [textValue("A")]),
+				box({flexGrow: 1}, [textValue("B")]),
+			],
+		),
+	),
+	namedCase(
+		"box/yoga-flex-grow-with-margin",
+		box(
+			{width: 10},
+			[
+				box({flexGrow: 1, marginLeft: 2}, [textValue("A")]),
+				box({flexGrow: 1}, [textValue("B")]),
+			],
+		),
+	),
+	namedCase(
+		"box/yoga-column-flex-grow-3-1",
+		box(
+			{flexDirection: "column", height: 8},
+			[
+				box({flexGrow: 3}, [textValue("A")]),
+				box({flexGrow: 1}, [textValue("B")]),
+			],
+		),
+	),
+	namedCase(
+		"box/yoga-column-fractional-grow",
+		box(
+			{flexDirection: "column", height: 7},
+			[
+				box({flexGrow: 0.5}, [textValue("A")]),
+				box({flexGrow: 1.5}, [textValue("B")]),
+			],
+		),
+	),
+	// Yoga parity: negative gap clamps to zero.
+	namedCase(
+		"box/yoga-negative-gap",
+		box(
+			{gap: -1, width: 5},
+			[textValue("A"), textValue("B"), textValue("C")],
+		),
+	),
+	// Yoga parity: min-width semantics.
+	namedCase(
+		"box/yoga-min-width-larger-than-width",
+		box(
+			{},
+			[
+				box({width: 2, minWidth: 5}, [textValue("A")]),
+				textValue("B"),
+			],
+		),
+	),
+	namedCase(
+		"box/yoga-min-width-and-percent-width",
+		box(
+			{width: 8},
+			[
+				box({width: "25%", minWidth: 4}, [textValue("A")]),
+				textValue("B"),
+			],
+		),
+	),
+	// Yoga parity: flex-shrink with explicit zero shrink does not adjust width.
+	namedCase(
+		"box/yoga-flex-shrink-zero-in-row",
+		box(
+			{width: 8},
+			[
+				box({flexShrink: 0, width: 5}, [textValue("AAAAA")]),
+				box({flexShrink: 1, width: 5}, [textValue("BBBBB")]),
+			],
+		),
+	),
+	// Yoga parity: display:none child does not consume axis space.
+	namedCase(
+		"box/yoga-display-none-with-grow-sibling",
+		box(
+			{width: 6, flexDirection: "column"},
+			[
+				box({display: "none"}, [textValue("Hidden")]),
+				box({flexGrow: 1}, [textValue("Visible")]),
+			],
+		),
+	),
+	// Yoga parity: absolute-positioned child does not push siblings or consume row space.
+	namedCase(
+		"box/yoga-absolute-with-flex-grow-siblings",
+		box(
+			{width: 8},
+			[
+				box({flexGrow: 1}, [textValue("A")]),
+				box({position: "absolute"}, [textValue("Z")]),
+				box({flexGrow: 1}, [textValue("B")]),
+			],
+		),
+	),
+	namedCase(
+		"box/yoga-absolute-with-margin",
+		box(
+			{width: 10, height: 3},
+			[
+				textValue("Base"),
+				box(
+					{position: "absolute", marginLeft: 4, marginTop: 1},
+					[textValue("Z")],
+				),
+			],
+		),
+	),
+	// Yoga parity: align-self stretch overrides parent's alignItems flex-start.
+	namedCase(
+		"box/yoga-align-self-stretch-overrides-align-items",
+		box(
+			{flexDirection: "row", alignItems: "flex-start", height: 4},
+			[
+				box(
+					{alignSelf: "stretch", borderStyle: "single"},
+					[textValue("X")],
+				),
+				textValue("Y"),
+			],
+		),
+	),
+	// Yoga parity: minHeight as percentage resolves against parent height.
+	namedCase(
+		"box/yoga-min-height-percent",
+		box(
+			{flexDirection: "column", height: 6},
+			[
+				box({minHeight: "50%"}, [textValue("A")]),
+				textValue("B"),
+			],
+		),
+	),
 ];
 
 const indexedStaticTemplate = text([raw("[{{index}}] {{item}}")]);
@@ -2985,6 +3497,44 @@ const buildStaticCases = () => [
 		100,
 		{CI: "false"},
 	),
+	namedManagedFramesCase(
+		"static/screen-reader-runtime-static-delta",
+		[
+			box({flexDirection: "column"}, [
+				staticNode({items: ["A"], template: text([raw("Static {{item}}")])}),
+				box({"aria-role": "status"}, [textValue("One pending")]),
+			]),
+			box({flexDirection: "column"}, [
+				staticNode({items: ["A", "B"], template: text([raw("Static {{item}}")])}),
+				box({"aria-role": "status"}, [textValue("Done")]),
+			]),
+		],
+		100,
+		{
+			screenReader: true,
+			expectedContains: [
+				"Static A\n",
+				"status: One pending",
+				"Static B\n",
+				"status: Done",
+			],
+		},
+	),
+];
+
+const buildMeasureCases = () => [
+	namedRuntimeCase("measure/measure element", "runtime-measure-element"),
+	namedRuntimeCase(
+		"measure/calculate layout while rendering is throttled",
+		"runtime-measure-element-throttled",
+	),
+];
+
+const buildRenderCases = () => [
+	namedRuntimeCase("render/throttle renders to maxFps", "runtime-throttle-maxfps"),
+	namedRuntimeCase("render/no bsu/esu when output is unchanged", "runtime-throttle-tty-unchanged"),
+	namedRuntimeCase("render/no bsu/esu when output and cursor are unchanged", "runtime-throttle-tty-unchanged-cursor"),
+	namedRuntimeCase("render/bsu/esu wraps throttledLog trailing call", "runtime-throttle-tty-trailing"),
 ];
 
 const coverageTargets = {
@@ -2994,6 +3544,8 @@ const coverageTargets = {
 	transform: 33,
 	box: 209,
 	static: 31,
+	measure: 2,
+	render: 4,
 };
 
 const assertCoverage = cases => {
@@ -3020,6 +3572,8 @@ export const buildCases = () => {
 		...buildTransformCases(),
 		...buildBoxCases(),
 		...buildStaticCases(),
+		...buildMeasureCases(),
+		...buildRenderCases(),
 	];
 
 	assertCoverage(cases);

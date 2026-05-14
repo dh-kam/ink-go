@@ -33,6 +33,24 @@ func TestUseState(t *testing.T) {
 	}
 }
 
+func TestUseStateFunctionalUpdate(t *testing.T) {
+	ctx := hooks.NewContext()
+
+	_, setCount := hooks.UseState(ctx, 0)
+	setCount(func(previous int) int {
+		return previous + 1
+	})
+	setCount(func(previous int) int {
+		return previous + 1
+	})
+
+	ctx.Reset()
+	value, _ := hooks.UseState(ctx, 0)
+	if value != 2 {
+		t.Fatalf("expected functional updates to compose to 2, got %v", value)
+	}
+}
+
 // TestUseStateMultiple tests multiple state hooks
 func TestUseStateMultiple(t *testing.T) {
 	ctx := hooks.NewContext()

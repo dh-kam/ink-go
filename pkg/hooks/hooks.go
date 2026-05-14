@@ -19,24 +19,29 @@ const (
 
 // Context holds the state for hooks during a component render
 type Context struct {
-	states       []interface{}  // Stored state values
-	stateIdx     int            // Current state index for state hooks
-	inputs       []inputHook    // Input hooks
-	inputIdx     int            // Current index for input hooks
-	foci         []focusHook    // Focus hooks
-	focusIdx     int            // Current index for focus hooks
-	effects      []effectHook   // Effect hooks
-	memos        []memoHook     // Memo hooks
-	callbacks    []callbackHook // Callback hooks
-	refs         []refHook      // Ref hooks
-	effectIdx    int            // Current index for effect hooks
-	memoIdx      int            // Current index for memo hooks
-	callbackIdx  int            // Current index for callback hooks
-	refIdx       int            // Current index for ref hooks
-	focusManager *focus.FocusManager
-	focusEnabled bool
-	phase        hookPhase
-	stateChanged bool
+	states        []interface{}  // Stored state values
+	stateIdx      int            // Current state index for state hooks
+	inputs        []inputHook    // Input hooks
+	inputIdx      int            // Current index for input hooks
+	foci          []focusHook    // Focus hooks
+	focusIdx      int            // Current index for focus hooks
+	effects       []effectHook   // Effect hooks
+	memos         []memoHook     // Memo hooks
+	callbacks     []callbackHook // Callback hooks
+	refs          []refHook      // Ref hooks
+	transitions   []transitionHook
+	deferred      []deferredHook
+	effectIdx     int // Current index for effect hooks
+	memoIdx       int // Current index for memo hooks
+	callbackIdx   int // Current index for callback hooks
+	refIdx        int // Current index for ref hooks
+	transitionIdx int
+	deferredIdx   int
+	focusManager  *focus.FocusManager
+	focusEnabled  bool
+	phase         hookPhase
+	stateChanged  bool
+	scheduleWork  func(func())
 }
 
 // NewContext creates a new hooks context
@@ -49,6 +54,8 @@ func NewContext() *Context {
 		memos:        make([]memoHook, 0),
 		callbacks:    make([]callbackHook, 0),
 		refs:         make([]refHook, 0),
+		transitions:  make([]transitionHook, 0),
+		deferred:     make([]deferredHook, 0),
 		focusManager: focus.NewFocusManager(),
 		focusEnabled: true,
 		phase:        hookPhaseIdle,
@@ -64,6 +71,8 @@ func (c *Context) Reset() {
 	c.memoIdx = 0
 	c.callbackIdx = 0
 	c.refIdx = 0
+	c.transitionIdx = 0
+	c.deferredIdx = 0
 	c.phase = hookPhaseRender
 
 	for index := range c.inputs {
@@ -77,6 +86,14 @@ func (c *Context) Reset() {
 	for index := range c.effects {
 		c.effects[index].active = false
 		c.effects[index].pending = false
+	}
+
+	for index := range c.transitions {
+		c.transitions[index].active = false
+	}
+
+	for index := range c.deferred {
+		c.deferred[index].active = false
 	}
 }
 
@@ -115,6 +132,28 @@ func (c *Context) FinalizeRender() {
 		hook.deps = nil
 		hook.pending = false
 	}
+
+	for index := range c.transitions {
+		hook := &c.transitions[index]
+		if hook.active {
+			continue
+		}
+
+		hook.pending = false
+		hook.start = nil
+	}
+
+	for index := range c.deferred {
+		hook := &c.deferred[index]
+		if hook.active {
+			continue
+		}
+
+		hook.latest = nil
+		hook.current = nil
+		hook.hasValue = false
+		hook.pending = false
+	}
 }
 
 // FocusManager returns the focus manager associated with this hook context.
@@ -146,6 +185,30 @@ func (c *Context) RequestRerender() {
 	}
 }
 
+// SetWorkScheduler configures how deferred hook work is executed. Mounted Ink
+// sessions install a scheduler that runs work under the instance lock and then
+// flushes any requested render. Bare hook tests leave it unset, which makes
+// transition work run synchronously.
+func (c *Context) SetWorkScheduler(schedule func(func())) {
+	c.scheduleWork = schedule
+}
+
+// ScheduleWork schedules runtime work with the mounted renderer, when one is
+// installed. Without a mounted renderer the work runs synchronously, matching
+// bare hook tests and one-shot render calls.
+func (c *Context) ScheduleWork(work func()) {
+	c.scheduleDeferredWork(work)
+}
+
+func (c *Context) scheduleDeferredWork(work func()) {
+	if c.scheduleWork == nil {
+		work()
+		return
+	}
+
+	c.scheduleWork(work)
+}
+
 // SetStateFunc is a function to update state
 type SetStateFunc func(interface{})
 
@@ -164,15 +227,195 @@ func UseState(ctx *Context, initialValue interface{}) (interface{}, SetStateFunc
 
 	// Create setter function
 	setValue := func(newValue interface{}) {
-		if currentIdx < len(ctx.states) && reflect.DeepEqual(ctx.states[currentIdx], newValue) {
+		if currentIdx >= len(ctx.states) {
 			return
 		}
 
-		ctx.states[currentIdx] = newValue
+		nextValue := resolveStateUpdate(ctx.states[currentIdx], newValue)
+		if reflect.DeepEqual(ctx.states[currentIdx], nextValue) {
+			return
+		}
+
+		ctx.states[currentIdx] = nextValue
 		ctx.RequestRerender()
 	}
 
 	return value, setValue
+}
+
+func resolveStateUpdate(previous interface{}, update interface{}) interface{} {
+	if update == nil {
+		return nil
+	}
+
+	updateValue := reflect.ValueOf(update)
+	if updateValue.Kind() != reflect.Func {
+		return update
+	}
+
+	updateType := updateValue.Type()
+	if updateType.NumIn() != 1 || updateType.NumOut() != 1 {
+		return update
+	}
+
+	inputType := updateType.In(0)
+	var argument reflect.Value
+	if previous == nil {
+		argument = reflect.Zero(inputType)
+	} else {
+		previousValue := reflect.ValueOf(previous)
+		switch {
+		case previousValue.Type().AssignableTo(inputType):
+			argument = previousValue
+		case previousValue.Type().ConvertibleTo(inputType):
+			argument = previousValue.Convert(inputType)
+		default:
+			return update
+		}
+	}
+
+	return updateValue.Call([]reflect.Value{argument})[0].Interface()
+}
+
+// transitionHook stores the state for one useTransition call.
+type transitionHook struct {
+	active     bool
+	pending    bool
+	generation uint64
+	start      func(func())
+}
+
+// UseTransition mirrors React's useTransition shape. The returned start
+// function runs its callback through the context scheduler, so urgent state
+// changes made before startTransition can render before lower-priority work.
+func UseTransition(ctx *Context) (bool, func(func())) {
+	currentIdx := ctx.transitionIdx
+	ctx.transitionIdx++
+
+	hook := transitionHook{active: true}
+	if currentIdx >= len(ctx.transitions) {
+		ctx.transitions = append(ctx.transitions, hook)
+	} else {
+		hook = ctx.transitions[currentIdx]
+		hook.active = true
+	}
+
+	start := func(work func()) {
+		if work == nil {
+			return
+		}
+
+		hook := &ctx.transitions[currentIdx]
+		hook.generation++
+		generation := hook.generation
+		hook.pending = true
+		ctx.RequestRerender()
+
+		ctx.scheduleDeferredWork(func() {
+			if currentIdx >= len(ctx.transitions) {
+				return
+			}
+
+			hook := &ctx.transitions[currentIdx]
+			if hook.generation != generation {
+				return
+			}
+
+			work()
+
+			if hook.generation == generation {
+				hook.pending = false
+				ctx.RequestRerender()
+			}
+		})
+	}
+
+	hook.start = start
+	ctx.transitions[currentIdx] = hook
+
+	return hook.pending, start
+}
+
+// deferredHook stores the state for one useDeferredValue call.
+type deferredHook struct {
+	active     bool
+	current    interface{}
+	latest     interface{}
+	hasValue   bool
+	pending    bool
+	generation uint64
+}
+
+// UseDeferredValue returns a value that is allowed to lag one scheduler tick
+// behind the latest input value. If a newer value arrives before the pending
+// work runs, the older deferred update is ignored.
+func UseDeferredValue[T any](ctx *Context, value T) T {
+	currentIdx := ctx.deferredIdx
+	ctx.deferredIdx++
+
+	hook := deferredHook{
+		active:   true,
+		current:  value,
+		latest:   value,
+		hasValue: true,
+	}
+	if currentIdx >= len(ctx.deferred) {
+		ctx.deferred = append(ctx.deferred, hook)
+		return value
+	}
+
+	hook = ctx.deferred[currentIdx]
+	hook.active = true
+
+	if !hook.hasValue {
+		hook.current = value
+		hook.latest = value
+		hook.hasValue = true
+		ctx.deferred[currentIdx] = hook
+		return value
+	}
+
+	if reflect.DeepEqual(hook.latest, value) {
+		ctx.deferred[currentIdx] = hook
+		current, ok := hook.current.(T)
+		if !ok {
+			return value
+		}
+		return current
+	}
+
+	hook.latest = value
+	hook.pending = true
+	hook.generation++
+	generation := hook.generation
+	ctx.deferred[currentIdx] = hook
+
+	ctx.scheduleDeferredWork(func() {
+		if currentIdx >= len(ctx.deferred) {
+			return
+		}
+
+		hook := &ctx.deferred[currentIdx]
+		if hook.generation != generation {
+			return
+		}
+
+		if reflect.DeepEqual(hook.current, hook.latest) {
+			hook.pending = false
+			return
+		}
+
+		hook.current = hook.latest
+		hook.pending = false
+		ctx.RequestRerender()
+	})
+
+	current, ok := hook.current.(T)
+	if !ok {
+		return value
+	}
+
+	return current
 }
 
 // InputCallback is any supported useInput handler signature.

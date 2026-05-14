@@ -3,7 +3,8 @@ import path from "node:path";
 import {EventEmitter} from "node:events";
 import {fileURLToPath} from "node:url";
 
-import React from "../../../ink/node_modules/react/index.js";
+import React, {useEffect, useRef, useState} from "../../../ink/node_modules/react/index.js";
+import FakeTimers from "../../../ink/node_modules/@sinonjs/fake-timers/src/fake-timers-src.js";
 import chalk from "../../../ink/node_modules/chalk/source/index.js";
 import {
 	Box,
@@ -12,7 +13,9 @@ import {
 	Static,
 	Text,
 	Transform,
+	measureElement,
 	render,
+	useCursor,
 } from "../../../ink/build/index.js";
 
 import {buildCases} from "./cases.mjs";
@@ -20,13 +23,26 @@ import {buildCases} from "./cases.mjs";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+const originalStderrWrite = process.stderr.write.bind(process.stderr);
+process.stderr.write = (chunk, ...args) => {
+	if (String(chunk) === "\u001B[?25h") {
+		return true;
+	}
+
+	return originalStderrWrite(chunk, ...args);
+};
+
 const casesPath = path.join(__dirname, "cases.json");
 const goldensPath = path.join(__dirname, "goldens.json");
 
 class FakeStdout extends EventEmitter {
-	constructor(columns) {
+	constructor(columns, {tty = false} = {}) {
 		super();
 		this.columns = columns;
+		if (tty) {
+			this.isTTY = true;
+			this.rows = 24;
+		}
 		this._output = "";
 		this._writes = [];
 	}
@@ -206,6 +222,115 @@ const renderToString = (node, columns, screenReader = false, ansi = false) => {
 	}
 };
 
+const delay = milliseconds => new Promise(resolve => {
+	setTimeout(resolve, milliseconds);
+});
+
+const measureElementFixture = () => {
+	function Test() {
+		const [width, setWidth] = useState(0);
+		const ref = useRef(null);
+
+		useEffect(() => {
+			if (!ref.current) {
+				return;
+			}
+
+			setWidth(measureElement(ref.current).width);
+		}, []);
+
+		return React.createElement(
+			Box,
+			{ref},
+			React.createElement(Text, null, "Width: ", width),
+		);
+	}
+
+	return React.createElement(Test);
+};
+
+const renderMeasureElementWrites = async (columns, throttled = false) => {
+	const stdout = new FakeStdout(columns ?? 100, {tty: throttled});
+	let instance;
+
+	if (throttled) {
+		instance = render(null, {stdout, patchConsole: false});
+		instance.rerender(measureElementFixture());
+		await delay(80);
+	} else {
+		instance = render(measureElementFixture(), {
+			stdout,
+			debug: true,
+			patchConsole: false,
+		});
+		await delay(120);
+	}
+
+	const writes = [...stdout._writes];
+	instance.unmount();
+	return writes;
+};
+
+const throttleTextFixture = value => React.createElement(Text, null, value);
+
+const throttleCursorFixture = value => {
+	function Test() {
+		const {setCursorPosition} = useCursor();
+		setCursorPosition({x: 0, y: 0});
+
+		return React.createElement(Text, null, value);
+	}
+
+	return React.createElement(Test);
+};
+
+const renderThrottleMaxFPSWrites = columns => {
+	const clock = FakeTimers.install();
+	const stdout = new FakeStdout(columns ?? 100);
+	let instance;
+
+	try {
+		instance = render(throttleTextFixture("Hello"), {
+			stdout,
+			maxFps: 20,
+			patchConsole: false,
+		});
+		instance.rerender(throttleTextFixture("World"));
+		clock.tick(49);
+		clock.tick(1);
+
+		return [...stdout._writes];
+	} finally {
+		instance?.unmount();
+		clock.uninstall();
+	}
+};
+
+const renderTTYThrottleWrites = (columns, scenario) => {
+	const clock = FakeTimers.install();
+	const stdout = new FakeStdout(columns ?? 100, {tty: true});
+	let instance;
+
+	try {
+		const fixture = scenario === "unchanged-cursor" ? throttleCursorFixture : throttleTextFixture;
+		instance = render(fixture("Hello"), {
+			stdout,
+			maxFps: 20,
+			patchConsole: false,
+		});
+
+		stdout._writes = [];
+		instance.rerender(fixture(scenario === "trailing" ? "World" : "Hello"));
+		clock.tick(49);
+		clock.tick(1);
+
+		return [...stdout._writes];
+	} finally {
+		instance?.unmount();
+		clock.uninstall();
+	}
+};
+
 const withTemporaryEnv = (env, fn) => {
 	const previous = new Map();
 
@@ -232,7 +357,7 @@ const withTemporaryEnv = (env, fn) => {
 	}
 };
 
-const buildGolden = spec => {
+const buildGolden = async spec => {
 	const base = {
 		name: spec.name,
 		columns: spec.columns ?? 100,
@@ -256,6 +381,36 @@ const buildGolden = spec => {
 				...base,
 				contains: spec.expectedContains ?? [],
 			};
+		case "runtime-measure-element":
+			return {
+				...base,
+				writes: await renderMeasureElementWrites(spec.columns ?? 100),
+			};
+		case "runtime-measure-element-throttled":
+			return {
+				...base,
+				writes: await renderMeasureElementWrites(spec.columns ?? 100, true),
+			};
+		case "runtime-throttle-maxfps":
+			return {
+				...base,
+				writes: renderThrottleMaxFPSWrites(spec.columns ?? 100),
+			};
+		case "runtime-throttle-tty-unchanged":
+			return {
+				...base,
+				writes: renderTTYThrottleWrites(spec.columns ?? 100, "unchanged"),
+			};
+		case "runtime-throttle-tty-unchanged-cursor":
+			return {
+				...base,
+				writes: renderTTYThrottleWrites(spec.columns ?? 100, "unchanged-cursor"),
+			};
+		case "runtime-throttle-tty-trailing":
+			return {
+				...base,
+				writes: renderTTYThrottleWrites(spec.columns ?? 100, "trailing"),
+			};
 		default:
 			return {
 				...base,
@@ -273,7 +428,10 @@ const main = async () => {
 	const specs = buildCases();
 	await fs.writeFile(casesPath, `${JSON.stringify(specs, null, 2)}\n`);
 
-	const results = specs.map(buildGolden);
+	const results = [];
+	for (const spec of specs) {
+		results.push(await buildGolden(spec));
+	}
 
 	await fs.writeFile(goldensPath, `${JSON.stringify(results, null, 2)}\n`);
 };

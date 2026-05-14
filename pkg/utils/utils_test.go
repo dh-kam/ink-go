@@ -312,6 +312,60 @@ func TestStringWidth(t *testing.T) {
 	}
 }
 
+func TestStringWidthMatchesStringWidthGraphemeClusters(t *testing.T) {
+	tests := []struct {
+		name     string
+		input    string
+		expected int
+	}{
+		{"family emoji", "👨‍👩‍👧‍👦", 2},
+		{"skin tone emoji", "👍🏽", 2},
+		{"rainbow flag", "🏳️‍🌈", 2},
+		{"text variation selector", "♥︎", 1},
+		{"emoji variation selector", "♥️", 2},
+		{"plain emoji-capable symbols stay narrow", "🌡⚠✈", 3},
+		{"emoji variation symbols are wide", "🌡️⚠️✈️", 6},
+		{"emoji variation legacy symbols are wide", "™️©️®️ℹ️", 8},
+		{"regional indicator flag", "🇺🇸", 2},
+		{"lone regional indicator", "🇨", 1},
+		{"unsupported regional indicator pair", "🇦🇧", 1},
+		{"recognized flag plus lone regional indicator", "🇺🇸🇨", 3},
+		{"marked regional indicator pair is not a flag", "🇺🇸️", 1},
+		{"keycap sequence", "1️⃣", 2},
+		{"dangling zwj variation sequence", "⚠️‍", 1},
+		{"box drawing glyphs stay narrow", "╘════════════╛ +", 16},
+		{"block and arrow glyphs stay narrow", "▀→←↘↙", 5},
+		{"combining mark cluster", "é", 1},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if result := utils.StringWidth(tt.input); result != tt.expected {
+				t.Errorf("StringWidth(%q) = %d, want %d", tt.input, result, tt.expected)
+			}
+		})
+	}
+}
+
+func TestStringWidthMatchesWidestLineGraphemeClusters(t *testing.T) {
+	text := "a\n👨‍👩‍👧‍👦👍🏽\n🇺🇸🇨"
+	widest := 0
+	for _, line := range utils.SplitLines(text) {
+		widest = utils.Max(widest, utils.StringWidth(line))
+	}
+
+	if widest != 4 {
+		t.Fatalf("widest grapheme-aware line width = %d, want 4", widest)
+	}
+}
+
+func TestStringWidthIgnoresANSIAndControlCharacters(t *testing.T) {
+	input := "\x1b[31mred\x1b[0m\n\t\x00"
+	if result := utils.StringWidth(input); result != 3 {
+		t.Errorf("StringWidth(%q) = %d, want 3", input, result)
+	}
+}
+
 // TestTruncateWidth tests width-based truncation
 func TestTruncateWidth(t *testing.T) {
 	tests := []struct {
@@ -333,6 +387,30 @@ func TestTruncateWidth(t *testing.T) {
 			result := utils.TruncateWidth(tt.s, tt.maxWidth)
 			if result != tt.expected {
 				t.Errorf("TruncateWidth(%q, %d) = %q, want %q", tt.s, tt.maxWidth, result, tt.expected)
+			}
+		})
+	}
+}
+
+func TestTruncateWidthPreservesGraphemeClusters(t *testing.T) {
+	tests := []struct {
+		name     string
+		input    string
+		width    int
+		expected string
+	}{
+		{"family emoji fits as one cluster", "a👨‍👩‍👧‍👦b", 3, "a👨‍👩‍👧‍👦"},
+		{"family emoji does not split", "a👨‍👩‍👧‍👦b", 2, "a"},
+		{"variation selector stays attached", "✈️x", 2, "✈️"},
+		{"variation selector cluster too wide", "✈️x", 1, ""},
+		{"skin tone modifier stays attached", "👍🏽ok", 2, "👍🏽"},
+		{"flag stays attached", "🇺🇸x", 2, "🇺🇸"},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if result := utils.TruncateWidth(tt.input, tt.width); result != tt.expected {
+				t.Errorf("TruncateWidth(%q, %d) = %q, want %q", tt.input, tt.width, result, tt.expected)
 			}
 		})
 	}

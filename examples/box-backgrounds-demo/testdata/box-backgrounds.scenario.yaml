@@ -1,0 +1,16 @@
+schemaVersion: goink.tuitest/v1alpha1
+name: box-backgrounds-demo/static
+app: box-backgrounds-demo
+viewport:
+  width: 100
+  height: 80
+capture:
+  mode: ansi-escaped
+environment:
+  TERM: tmux-256color
+  COLORTERM: ""
+  FORCE_COLOR: ""
+steps:
+  - name: render
+    expect:
+      file: box-backgrounds.ansi.golden

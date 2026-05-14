@@ -1,0 +1,48 @@
+schemaVersion: goink.tuitest/v1alpha1
+name: terminal-resize-demo/resize-and-input
+app: terminal-resize-demo
+viewport:
+  width: 82
+  height: 28
+environment:
+  TERM: tmux-256color
+  COLORTERM: ""
+  FORCE_COLOR: "1"
+capture:
+  mode: screen
+steps:
+  - name: initial-82
+    expect:
+      file: terminal-resize-82.screen.golden
+  - name: resize-70
+    resize:
+      width: 70
+      height: 28
+    waitFor:
+      text: "  Cmd/Ctrl -/+)"
+      within: 5s
+    expect:
+      file: terminal-resize-70.screen.golden
+  - name: type-goink
+    input:
+      text: goink
+    waitFor:
+      text: 'Input: "goink"'
+      within: 5s
+    expect:
+      file: terminal-resize-goink.screen.golden
+  - name: enter-clear
+    input:
+      key: enter
+    waitFor:
+      text: 'Input: ""'
+      within: 5s
+    expect:
+      file: terminal-resize-70.screen.golden
+  - name: ctrl-c-exit
+    input:
+      key: ctrl-c
+    exit:
+      within: 5s
+    expect:
+      sameAsPrevious: true

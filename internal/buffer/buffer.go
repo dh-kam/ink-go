@@ -93,6 +93,26 @@ func (b *Buffer) Set(x, y int, ch rune) {
 	}
 }
 
+// SetString writes a single grapheme cluster at the specified position.
+func (b *Buffer) SetString(x, y int, text string, width int) {
+	if x < 0 || y < 0 || y >= b.height || text == "" {
+		return
+	}
+
+	if width <= 0 {
+		for _, ch := range text {
+			b.appendZeroWidth(x, y, ch)
+		}
+		return
+	}
+
+	b.ensureRowWidth(y, x+width)
+	b.cells[y][x] = text
+	for offset := 1; offset < width; offset++ {
+		b.cells[y][x+offset] = undefinedCell
+	}
+}
+
 func (b *Buffer) appendZeroWidth(x, y int, ch rune) {
 	if y < 0 || y >= b.height || x <= 0 {
 		return
@@ -110,6 +130,28 @@ func (b *Buffer) appendZeroWidth(x, y int, ch rune) {
 		b.cells[y][index] += string(ch)
 		return
 	}
+}
+
+// AppendToPreviousVisible appends text to the nearest visible cell before x.
+func (b *Buffer) AppendToPreviousVisible(x, y int, suffix string) bool {
+	if y < 0 || y >= b.height || x <= 0 || suffix == "" {
+		return false
+	}
+
+	for index := x - 1; index >= 0; index-- {
+		if index >= len(b.cells[y]) {
+			continue
+		}
+
+		if b.cells[y][index] == undefinedCell || b.cells[y][index] == "" {
+			continue
+		}
+
+		b.cells[y][index] += suffix
+		return true
+	}
+
+	return false
 }
 
 // Get gets a character at the specified position
@@ -149,8 +191,8 @@ func (b *Buffer) WriteString(x, y int, s string) {
 	currentX := x
 	currentY := y
 
-	for _, ch := range s {
-		if ch == '\n' {
+	for _, cluster := range utils.GraphemeClusters(s) {
+		if cluster == "\n" {
 			currentY++
 			currentX = x
 			if currentY >= b.height {
@@ -164,10 +206,10 @@ func (b *Buffer) WriteString(x, y int, s string) {
 		}
 
 		if currentX >= 0 {
-			b.Set(currentX, currentY, ch)
+			b.SetString(currentX, currentY, cluster, utils.StringWidth(cluster))
 		}
 
-		currentX += utils.RuneWidth(ch)
+		currentX += utils.StringWidth(cluster)
 	}
 }
 

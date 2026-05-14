@@ -206,27 +206,54 @@ Overall                87.1%  ✅ Excellent
 ## 🎓 What's Next? (Optional Enhancements)
 
 ### Additional Hooks
-- [ ] useEffect for side effects
-- [ ] useMemo for memoization
-- [ ] useCallback for callback memoization
-- [ ] useRef for persistent values
+- [x] useEffect for side effects
+- [x] useMemo for memoization
+- [x] useCallback for callback memoization
+- [x] useRef for persistent values
+- [x] useReducer (Redux-style state)
+- [x] useContext (provider/consumer)
+- [x] useMouse (SGR mouse events)
 
 ### Enhanced Components
-- [ ] Border rendering (single, double, rounded)
-- [ ] Static component for performance
-- [ ] Text component with color/style props
-- [ ] Box component with integrated layout
+- [x] Border rendering (single, double, rounded, bold)
+- [x] Static component for performance
+- [x] Text component with color/style props
+- [x] Box component with integrated layout
+- [x] Select (+ SelectState) / Divider / Alert
+- [x] TextInput / PasswordInput / Spinner / ProgressBar / Table
+- [x] Confirm (yes/no prompt with controller)
+- [x] MultiSelect (multi-pick list with windowed scrolling)
+- [x] Tabs (+ TabsState focusable tab strip)
+- [x] QuickSearch (filter-as-you-type fuzzy list)
+- [x] Link (OSC 8 hyperlink wrapper)
+- [x] Gradient (per-character RGB interpolation)
+- [x] BigText (figlet-style, `Block` / `Tiny` fonts)
+- [x] Syntax (inline highlighter, `Go` / `JSON` tokenizers)
+- [x] Image (ANSI half-block raw RGBA renderer)
+- [x] ErrorBoundary (panic recovery with default fallback + `OnError`)
+- [x] Form (multi-field controller with validation, focus, submit/cancel)
 
 ### Advanced Features
-- [ ] Mouse input handling
-- [ ] Progress bars
-- [ ] Tables
-- [ ] Spinners and loaders
-- [ ] Interactive forms
+- [x] Mouse input handling (SGR 1006 parser + DECSET 1000/1006 enable/disable + runtime fan-out via `pkg/ink/session.go` `routeMouseInput`)
+- [x] Progress bars
+- [x] Tables
+- [x] Spinners and loaders
+- [x] Interactive forms (multi-field with per-field validation through `components.Form`)
+- [x] Reconciler diff/patch (`pkg/reconciler` with LIS-keyed children, `NewTracker` cache short-circuit)
+- [x] Snapshot testing helpers (`pkg/renderer.Render` / `Instance`, `MatchSnapshot` with `UPDATE_SNAPSHOTS=1`, fake stdin via `WithStdin`)
+- [x] Stdout/stderr frame capture (`pkg/renderer.WithStdoutCapture` / `WithStderrCapture`, `Instance.StdoutFrames()` / `StderrFrames()`)
+- [x] Legacy X10 mouse parser (`pkg/input.ParseX10Mouse` / `IsX10MouseSequence` for `\x1b[M` six-byte frames)
+
+### Remaining
+- [x] Wire `reconciler.Tracker` into the mounted session render path through `pkg/ink/render_cache.go`'s `RenderSections` cache, so idle commits (zero patches, identical width/height/screen-reader/ANSI/static-counts) reuse the cached `RenderSections` and suppress the stdout write entirely
+- [x] Column-level dirty-rect repaints inside the incremental render path: when both the previous and next line are plain text, the writer jumps the cursor to the divergence column and emits only the differing tail instead of rewriting the whole line
+- [x] Mounted session input loop now peels multiple SGR 1006 / legacy X10 mouse frames out of a single chunk via `consumeMouseFramesWithManager`, dispatches each through the app-scoped mouse manager, and forwards any trailing non-mouse bytes to keyboard handling
+- [x] `components.ErrorOverviewGroup` for grouped validation / runtime errors with optional joint stack trace, source excerpt, and dynamic count suffix
+- [x] `components.FontShadow` (6×6 drop-shadow variant of `FontBlock`, derived from `blockFontData` at init) and additional Syntax tokenizers for `SyntaxYAML`, `SyntaxMarkdown`, and `SyntaxBash`
 
 ---
 
-**Last Updated: 2026-02-10**
-**Phase 3 Status: ✅ COMPLETE!**
+**Last Updated: 2026-04-25**
+**Phase 3 Status: ✅ COMPLETE! (G/H/I/J follow-up integration also done)**
 
 **Goink is now a fully functional React-like CLI framework in pure Go!**

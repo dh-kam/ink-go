@@ -54,6 +54,20 @@ const (
 	EdgeAll
 )
 
+// Position selects whether a node participates in the parent's flex flow
+// (PositionRelative, the default) or is laid out independently of siblings
+// (PositionAbsolute). Mirrors Yoga's POSITION_TYPE_RELATIVE/ABSOLUTE.
+type Position int
+
+const (
+	// PositionRelative makes the node participate in flex flow (default).
+	PositionRelative Position = iota
+	// PositionAbsolute removes the node from the parent's main-axis flow,
+	// stacking it on top of siblings at the offset implied by margin and
+	// the optional top/left/right/bottom offsets.
+	PositionAbsolute
+)
+
 // Node represents a layout node in the flexbox tree
 type Node struct {
 	// Style properties
@@ -87,17 +101,31 @@ type Node struct {
 	columnGapSet   bool
 	padding        [4]float64 // left, top, right, bottom
 	margin         [4]float64 // left, top, right, bottom
+	absolute       bool
+	// position offsets for absolute layout (top/left/right/bottom in cells).
+	// *Set flags distinguish "not provided" from an explicit 0.
+	positionTop       float64
+	positionLeft      float64
+	positionRight     float64
+	positionBottom    float64
+	positionTopSet    bool
+	positionLeftSet   bool
+	positionRightSet  bool
+	positionBottomSet bool
 
 	// Computed layout
-	computedLeft   float64
-	computedTop    float64
-	computedWidth  float64
-	computedHeight float64
-	widthHint      float64
-	widthHintSet   bool
-	measureHeight  func(width float64) float64
-	sizeAdjusted   bool
-	textLike       bool
+	computedLeft     float64
+	computedTop      float64
+	computedWidth    float64
+	computedHeight   float64
+	widthHint        float64
+	widthHintSet     bool
+	measureHeight    func(width float64) float64
+	measureSize      func(width float64) (float64, float64)
+	measuredWidth    float64
+	measuredWidthSet bool
+	sizeAdjusted     bool
+	textLike         bool
 
 	// Tree structure
 	children []*Node
@@ -208,9 +236,106 @@ func (n *Node) SetMeasureHeightFunc(measure func(width float64) float64) {
 	n.measureHeight = measure
 }
 
+// SetMeasureSizeFunc sets a callback for nodes whose measured size (both
+// floored wrap width and resulting height) depends on the resolved width.
+// Used to mirror upstream Yoga's measureFunc: the returned width represents
+// the floored value wrap-ansi will actually wrap at, which the renderer must
+// later use as the wrap budget so output matches upstream.
+func (n *Node) SetMeasureSizeFunc(measure func(width float64) (float64, float64)) {
+	n.measureSize = measure
+}
+
+// SetMeasuredWidth records the floored measure-time width that the renderer
+// should use when wrapping this node's text content. Mirrors upstream Ink's
+// behaviour where Yoga's measure callback returns the wrap-ansi-floored width
+// for the inner text node, and the renderer subsequently wraps text using
+// `getMaxWidth` (the floored value) instead of the parent's allotted width.
+func (n *Node) SetMeasuredWidth(width float64) {
+	n.measuredWidth = width
+	n.measuredWidthSet = true
+}
+
+// HasMeasuredWidth reports whether a measure-time wrap width was recorded.
+func (n *Node) HasMeasuredWidth() bool {
+	return n.measuredWidthSet
+}
+
+// GetMeasuredWidth returns the floored measure-time width recorded for this
+// node. Callers must guard with HasMeasuredWidth.
+func (n *Node) GetMeasuredWidth() float64 {
+	return n.measuredWidth
+}
+
+// ShouldHonorMeasuredWidth reports whether the renderer should clamp text
+// wrapping to the floored measure-time width recorded on this node. We only
+// honor it when the node's parent in the layout tree was itself shrunk by a
+// flex container (sizeAdjusted) — that mirrors upstream Ink's flow where
+// Yoga's measureFunc-floored width becomes the inner text's getMaxWidth only
+// when an ancestor container forced the text below its intrinsic size. When
+// the text node is itself a direct flow item being shrunk by a non-shrunk
+// container, our existing ceil-based textLike rounding already compensates
+// for the non-iterative wrap-and-redistribute pass, so the floor would
+// over-wrap and break sibling overlap of trailing whitespace.
+func (n *Node) ShouldHonorMeasuredWidth() bool {
+	if !n.measuredWidthSet {
+		return false
+	}
+	if n.parent == nil {
+		return false
+	}
+	return n.parent.sizeAdjusted
+}
+
 // SetTextLike marks nodes whose measured height depends on text wrapping semantics.
 func (n *Node) SetTextLike(textLike bool) {
 	n.textLike = textLike
+}
+
+// SetPositionAbsolute marks this node as absolutely positioned.
+func (n *Node) SetPositionAbsolute(absolute bool) {
+	n.absolute = absolute
+}
+
+// SetPosition selects whether this node uses relative (in-flow) or absolute
+// (out-of-flow) positioning, mirroring Yoga's setPositionType.
+func (n *Node) SetPosition(position Position) {
+	n.absolute = position == PositionAbsolute
+}
+
+// IsPositionAbsolute reports whether this node is excluded from flex flow.
+func (n *Node) IsPositionAbsolute() bool {
+	return n.absolute
+}
+
+// SetPositionTop sets the top offset applied to absolutely-positioned nodes.
+// Has no effect on relatively-positioned nodes (matches Yoga semantics where
+// top/left/right/bottom are honored only for POSITION_TYPE_ABSOLUTE in our
+// limited port — full relative offsetting is not yet implemented).
+func (n *Node) SetPositionTop(value float64) {
+	n.positionTop = value
+	n.positionTopSet = true
+}
+
+// SetPositionLeft sets the left offset applied to absolutely-positioned nodes.
+func (n *Node) SetPositionLeft(value float64) {
+	n.positionLeft = value
+	n.positionLeftSet = true
+}
+
+// SetPositionRight sets the right offset applied to absolutely-positioned
+// nodes. Resolved against the parent's content width when the node has an
+// explicit width; otherwise treated as a no-op (deferred sub-feature).
+func (n *Node) SetPositionRight(value float64) {
+	n.positionRight = value
+	n.positionRightSet = true
+}
+
+// SetPositionBottom sets the bottom offset applied to absolutely-positioned
+// nodes. Resolved against the parent's content height when the node has an
+// explicit height; otherwise treated as a no-op (deferred sub-feature).
+func (n *Node) SetPositionBottom(value float64) {
+	n.positionBottom = value
+	n.positionBottomSet = true
 }
 
 // GetFlexGrow returns the configured flex grow factor.
@@ -294,19 +419,31 @@ func (n *Node) SetAlignSelf(align AlignItems) {
 	n.alignSelfSet = true
 }
 
-// SetGap sets the gap between children along both axes.
+// SetGap sets the gap between children along both axes. Negative values are
+// clamped to zero to mirror Yoga's behavior.
 func (n *Node) SetGap(gap float64) {
+	if gap < 0 {
+		gap = 0
+	}
 	n.gap = gap
 }
 
-// SetRowGap sets the vertical gap between rows.
+// SetRowGap sets the vertical gap between rows. Negative values are clamped to
+// zero to mirror Yoga's behavior.
 func (n *Node) SetRowGap(gap float64) {
+	if gap < 0 {
+		gap = 0
+	}
 	n.rowGap = gap
 	n.rowGapSet = true
 }
 
-// SetColumnGap sets the horizontal gap between columns.
+// SetColumnGap sets the horizontal gap between columns. Negative values are
+// clamped to zero to mirror Yoga's behavior.
 func (n *Node) SetColumnGap(gap float64) {
+	if gap < 0 {
+		gap = 0
+	}
 	n.columnGap = gap
 	n.columnGapSet = true
 }
@@ -428,25 +565,66 @@ func (n *Node) measure() {
 	var contentWidth float64
 	var contentHeight float64
 
-	if n.flexDirection == FlexDirectionRow {
+	if n.wrapMode != WrapNoWrap && ((n.flexDirection == FlexDirectionRow && n.widthSet) || (n.flexDirection == FlexDirectionColumn && n.heightSet)) {
+		cWidth := 0.0
+		cHeight := 0.0
+		if n.flexDirection == FlexDirectionRow {
+			cWidth = n.computedWidth - paddingLeft - paddingRight
+		} else {
+			cHeight = n.computedHeight - paddingTop - paddingBottom
+		}
+
+		lines := n.buildWrapLines(cWidth, cHeight)
+		totalMain := 0.0
+		totalCross := 0.0
+		for _, line := range lines {
+			if line.mainSize > totalMain {
+				totalMain = line.mainSize
+			}
+			totalCross += line.crossSize
+		}
+		if len(lines) > 1 {
+			totalCross += n.crossAxisGap() * float64(len(lines)-1)
+		}
+
+		if n.flexDirection == FlexDirectionRow {
+			contentWidth = totalMain
+			contentHeight = totalCross
+		} else {
+			contentWidth = totalCross
+			contentHeight = totalMain
+		}
+	} else if n.flexDirection == FlexDirectionRow {
+		flowCount := 0
 		for _, child := range n.children {
+			if child.absolute {
+				continue
+			}
+
+			flowCount++
 			contentWidth += child.outerWidth()
 			if child.outerHeight() > contentHeight {
 				contentHeight = child.outerHeight()
 			}
 		}
-		if len(n.children) > 1 {
-			contentWidth += n.mainAxisGap() * float64(len(n.children)-1)
+		if flowCount > 1 {
+			contentWidth += n.mainAxisGap() * float64(flowCount-1)
 		}
 	} else {
+		flowCount := 0
 		for _, child := range n.children {
+			if child.absolute {
+				continue
+			}
+
+			flowCount++
 			contentHeight += child.outerHeight()
 			if child.outerWidth() > contentWidth {
 				contentWidth = child.outerWidth()
 			}
 		}
-		if len(n.children) > 1 {
-			contentHeight += n.mainAxisGap() * float64(len(n.children)-1)
+		if flowCount > 1 {
+			contentHeight += n.mainAxisGap() * float64(flowCount-1)
 		}
 	}
 
@@ -487,6 +665,7 @@ func (n *Node) calculateLayoutInternal(offsetX, offsetY float64) {
 
 	if n.wrapMode != WrapNoWrap {
 		n.calculateWrappedLayout(baseX, baseY, contentWidth, contentHeight)
+		n.layoutAbsoluteChildren(baseX, baseY)
 		return
 	}
 
@@ -496,7 +675,13 @@ func (n *Node) calculateLayoutInternal(offsetX, offsetY float64) {
 	var totalChildSize float64
 	var totalFlexGrow float64
 	var totalFlexShrink float64
+	flowCount := 0
 	for _, child := range n.children {
+		if child.absolute {
+			continue
+		}
+
+		flowCount++
 		if n.flexDirection == FlexDirectionRow {
 			totalChildSize += child.outerWidth()
 			totalFlexShrink += child.flexShrink * child.computedWidth
@@ -506,8 +691,8 @@ func (n *Node) calculateLayoutInternal(offsetX, offsetY float64) {
 		}
 		totalFlexGrow += child.flexGrow
 	}
-	if len(n.children) > 1 {
-		totalChildSize += n.mainAxisGap() * float64(len(n.children)-1)
+	if flowCount > 1 {
+		totalChildSize += n.mainAxisGap() * float64(flowCount-1)
 	}
 
 	availableSpace := contentWidth - totalChildSize
@@ -517,6 +702,10 @@ func (n *Node) calculateLayoutInternal(offsetX, offsetY float64) {
 
 	if availableSpace > 0 && totalFlexGrow > 0 {
 		for _, child := range n.children {
+			if child.absolute {
+				continue
+			}
+
 			if child.flexGrow <= 0 {
 				continue
 			}
@@ -535,37 +724,62 @@ func (n *Node) calculateLayoutInternal(offsetX, offsetY float64) {
 
 	if availableSpace < 0 && totalFlexShrink > 0 {
 		deficit := -availableSpace
-		distributedShrink := 0.0
-
+		active := make(map[*Node]bool)
 		for _, child := range n.children {
-			mainSize := child.computedWidth
-			if n.flexDirection == FlexDirectionColumn {
-				mainSize = child.computedHeight
-			}
-
-			weight := child.flexShrink * mainSize
-			if weight <= 0 || mainSize <= 0 {
+			if child.absolute || child.flexShrink <= 0 || n.childMainSize(child) <= 0 {
 				continue
 			}
 
-			shrink := deficit * (weight / totalFlexShrink)
-			if shrink > mainSize {
-				shrink = mainSize
-			}
-
-			if n.flexDirection == FlexDirectionRow {
-				child.computedWidth -= shrink
-			} else {
-				child.computedHeight -= shrink
-			}
-			if shrink > 1e-9 {
-				child.sizeAdjusted = true
-			}
-
-			distributedShrink += shrink
+			active[child] = true
 		}
 
-		totalChildSize -= distributedShrink
+		for deficit > 1e-9 && len(active) > 0 {
+			totalWeight := 0.0
+			for child := range active {
+				totalWeight += child.flexShrink * n.childMainSize(child)
+			}
+			if totalWeight <= 0 {
+				break
+			}
+
+			distributed := 0.0
+			frozeChild := false
+			for _, child := range n.children {
+				if !active[child] {
+					continue
+				}
+
+				mainSize := n.childMainSize(child)
+				minSize := n.childResolvedMainMinimum(child, contentWidth, contentHeight)
+				capacity := mainSize - minSize
+				if capacity <= 1e-9 {
+					delete(active, child)
+					continue
+				}
+
+				shrink := deficit * ((child.flexShrink * mainSize) / totalWeight)
+				if shrink >= capacity-1e-9 {
+					shrink = capacity
+					delete(active, child)
+					frozeChild = true
+				}
+
+				n.setChildMainSize(child, mainSize-shrink)
+				if shrink > 1e-9 {
+					child.sizeAdjusted = true
+					distributed += shrink
+				}
+			}
+
+			if distributed <= 1e-9 {
+				break
+			}
+
+			deficit -= distributed
+			if !frozeChild {
+				break
+			}
+		}
 	}
 
 	n.reapplyChildMinimums(contentWidth, contentHeight)
@@ -587,7 +801,7 @@ func (n *Node) calculateLayoutInternal(offsetX, offsetY float64) {
 		case JustifyStart:
 			currentPos = 0
 		case JustifyCenter:
-			currentPos = (contentWidth - totalChildSize) / 2
+			currentPos = math.Floor((contentWidth - totalChildSize) / 2)
 		case JustifyEnd:
 			currentPos = contentWidth - totalChildSize
 		case JustifySpaceBetween:
@@ -598,12 +812,12 @@ func (n *Node) calculateLayoutInternal(offsetX, offsetY float64) {
 		case JustifySpaceAround:
 			if len(n.children) > 0 {
 				spacing = (contentWidth - totalChildSize) / float64(len(n.children))
-				currentPos = spacing / 2
+				currentPos = math.Floor(spacing / 2)
 			}
 		case JustifySpaceEvenly:
 			if len(n.children) > 0 {
 				spacing = (contentWidth - totalChildSize) / float64(len(n.children)+1)
-				currentPos = spacing
+				currentPos = math.Floor(spacing)
 			}
 		}
 	} else {
@@ -611,7 +825,7 @@ func (n *Node) calculateLayoutInternal(offsetX, offsetY float64) {
 		case JustifyStart:
 			currentPos = 0
 		case JustifyCenter:
-			currentPos = (contentHeight - totalChildSize) / 2
+			currentPos = math.Floor((contentHeight - totalChildSize) / 2)
 		case JustifyEnd:
 			currentPos = contentHeight - totalChildSize
 		case JustifySpaceBetween:
@@ -622,19 +836,24 @@ func (n *Node) calculateLayoutInternal(offsetX, offsetY float64) {
 		case JustifySpaceAround:
 			if len(n.children) > 0 {
 				spacing = (contentHeight - totalChildSize) / float64(len(n.children))
-				currentPos = spacing / 2
+				currentPos = math.Floor(spacing / 2)
 			}
 		case JustifySpaceEvenly:
 			if len(n.children) > 0 {
 				spacing = (contentHeight - totalChildSize) / float64(len(n.children)+1)
-				currentPos = spacing
+				currentPos = math.Floor(spacing)
 			}
 		}
 	}
 
 	// Position children
 	adjustedChildren := n.hasAdjustedChildren()
+	flowIndex := 0
 	for index, child := range n.children {
+		if child.absolute {
+			continue
+		}
+
 		if n.flexDirection == FlexDirectionRow {
 			if !adjustedChildren {
 				currentPos += child.margin[0]
@@ -644,7 +863,7 @@ func (n *Node) calculateLayoutInternal(offsetX, offsetY float64) {
 				child.calculateLayoutInternal(child.computedLeft, child.computedTop)
 
 				currentPos += child.computedWidth + child.margin[2]
-				if index < len(n.children)-1 {
+				if flowIndex < flowCount-1 {
 					currentPos += n.mainAxisGap()
 				}
 
@@ -686,7 +905,7 @@ func (n *Node) calculateLayoutInternal(offsetX, offsetY float64) {
 			child.computedWidth = finalWidth
 
 			currentPos = exactEnd + child.margin[2]
-			if index < len(n.children)-1 {
+			if flowIndex < flowCount-1 {
 				currentPos += n.mainAxisGap()
 			}
 
@@ -702,7 +921,7 @@ func (n *Node) calculateLayoutInternal(offsetX, offsetY float64) {
 				child.calculateLayoutInternal(child.computedLeft, child.computedTop)
 
 				currentPos += child.computedHeight + child.margin[3]
-				if index < len(n.children)-1 {
+				if flowIndex < flowCount-1 {
 					currentPos += n.mainAxisGap()
 				}
 
@@ -739,7 +958,7 @@ func (n *Node) calculateLayoutInternal(offsetX, offsetY float64) {
 			child.computedHeight = finalHeight
 
 			currentPos = exactEnd + child.margin[3]
-			if index < len(n.children)-1 {
+			if flowIndex < flowCount-1 {
 				currentPos += n.mainAxisGap()
 			}
 
@@ -747,7 +966,12 @@ func (n *Node) calculateLayoutInternal(offsetX, offsetY float64) {
 				currentPos += spacing
 			}
 		}
+
+		_ = index
+		flowIndex++
 	}
+
+	n.layoutAbsoluteChildren(baseX, baseY)
 
 	if n.flexDirection == FlexDirectionRow && n.shouldRecomputeRowCrossSize() {
 		n.recomputeCrossSizeFromChildren()
@@ -759,11 +983,25 @@ func (n *Node) calculateLayoutInternal(offsetX, offsetY float64) {
 
 func (n *Node) remeasureChildrenForWidth() {
 	for _, child := range n.children {
-		if child.measureHeight == nil || !child.sizeAdjusted {
+		if child.absolute {
 			continue
 		}
 
-		child.computedHeight = child.measureHeight(child.computedWidth)
+		if !child.sizeAdjusted {
+			continue
+		}
+
+		if child.measureSize != nil {
+			width, height := child.measureSize(child.computedWidth)
+			child.computedHeight = height
+			child.measuredWidth = width
+			child.measuredWidthSet = true
+			continue
+		}
+
+		if child.measureHeight != nil {
+			child.computedHeight = child.measureHeight(child.computedWidth)
+		}
 	}
 }
 
@@ -776,6 +1014,10 @@ func (n *Node) recomputeCrossSizeFromChildren() {
 	if n.flexDirection == FlexDirectionRow {
 		contentHeight := 0.0
 		for _, child := range n.children {
+			if child.absolute {
+				continue
+			}
+
 			if child.outerHeight() > contentHeight {
 				contentHeight = child.outerHeight()
 			}
@@ -787,6 +1029,10 @@ func (n *Node) recomputeCrossSizeFromChildren() {
 
 	contentWidth := 0.0
 	for _, child := range n.children {
+		if child.absolute {
+			continue
+		}
+
 		if child.outerWidth() > contentWidth {
 			contentWidth = child.outerWidth()
 		}
@@ -820,6 +1066,10 @@ func (n *Node) shouldUseTextOverlapRounding() bool {
 
 func (n *Node) hasAdjustedChildren() bool {
 	for _, child := range n.children {
+		if child.absolute {
+			continue
+		}
+
 		if child.sizeAdjusted {
 			return true
 		}
@@ -861,7 +1111,7 @@ func (n *Node) crossAxisOffset(availableSpace float64, child *Node, isRow bool) 
 	case AlignStart:
 		return marginStart
 	case AlignCenter:
-		return marginStart + usableSpace/2
+		return marginStart + math.Floor(usableSpace/2)
 	case AlignEnd:
 		return marginStart + usableSpace
 	case AlignStretch:
@@ -976,7 +1226,13 @@ func (n *Node) reapplyChildMinimums(parentContentWidth, parentContentHeight floa
 
 func (n *Node) totalChildMainSize() float64 {
 	total := 0.0
+	flowCount := 0
 	for _, child := range n.children {
+		if child.absolute {
+			continue
+		}
+
+		flowCount++
 		if n.flexDirection == FlexDirectionRow {
 			total += child.outerWidth()
 		} else {
@@ -984,11 +1240,40 @@ func (n *Node) totalChildMainSize() float64 {
 		}
 	}
 
-	if len(n.children) > 1 {
-		total += n.mainAxisGap() * float64(len(n.children)-1)
+	if flowCount > 1 {
+		total += n.mainAxisGap() * float64(flowCount-1)
 	}
 
 	return total
+}
+
+func (n *Node) childMainSize(child *Node) float64 {
+	if n.flexDirection == FlexDirectionColumn {
+		return child.computedHeight
+	}
+
+	return child.computedWidth
+}
+
+func (n *Node) setChildMainSize(child *Node, size float64) {
+	if size < 0 {
+		size = 0
+	}
+
+	if n.flexDirection == FlexDirectionColumn {
+		child.computedHeight = size
+		return
+	}
+
+	child.computedWidth = size
+}
+
+func (n *Node) childResolvedMainMinimum(child *Node, contentWidth, contentHeight float64) float64 {
+	if n.flexDirection == FlexDirectionColumn {
+		return child.resolvedMinimumHeight(contentHeight)
+	}
+
+	return child.resolvedMinimumWidth(contentWidth)
 }
 
 func (n *Node) parentContentDimensions() (float64, float64) {
@@ -1107,6 +1392,10 @@ func (n *Node) buildWrapLines(contentWidth, contentHeight float64) []wrapLine {
 	current := wrapLine{}
 
 	for _, child := range n.children {
+		if child.absolute {
+			continue
+		}
+
 		mainSize := child.outerWidth()
 		crossSize := child.outerHeight()
 		if n.flexDirection == FlexDirectionColumn {
@@ -1139,6 +1428,51 @@ func (n *Node) buildWrapLines(contentWidth, contentHeight float64) []wrapLine {
 	}
 
 	return lines
+}
+
+func (n *Node) layoutAbsoluteChildren(baseX, baseY float64) {
+	contentWidth := n.computedWidth - n.padding[0] - n.padding[2]
+	contentHeight := n.computedHeight - n.padding[1] - n.padding[3]
+	if contentWidth < 0 {
+		contentWidth = 0
+	}
+	if contentHeight < 0 {
+		contentHeight = 0
+	}
+
+	for _, child := range n.children {
+		if !child.absolute {
+			continue
+		}
+
+		// Default position: parent's content origin offset by the child's
+		// margin. top/left override this directly; right/bottom are honored
+		// only when the child has an explicit width/height (mirrors Yoga's
+		// behavior where bottom/right anchoring needs a resolved size).
+		left := child.margin[0]
+		if child.positionLeftSet {
+			left = child.positionLeft + child.margin[0]
+		} else if child.positionRightSet && child.widthSet && !child.widthPct {
+			left = contentWidth - child.computedWidth - child.positionRight - child.margin[2]
+			if left < 0 {
+				left = 0
+			}
+		}
+
+		top := child.margin[1]
+		if child.positionTopSet {
+			top = child.positionTop + child.margin[1]
+		} else if child.positionBottomSet && child.heightSet && !child.heightPct {
+			top = contentHeight - child.computedHeight - child.positionBottom - child.margin[3]
+			if top < 0 {
+				top = 0
+			}
+		}
+
+		child.computedLeft = baseX + n.padding[0] + left
+		child.computedTop = baseY + n.padding[1] + top
+		child.calculateLayoutInternal(child.computedLeft, child.computedTop)
+	}
 }
 
 func (n *Node) mainAxisGap() float64 {
@@ -1183,7 +1517,7 @@ func (n *Node) mainAxisPlacement(lineMainSize, contentWidth, contentHeight float
 	case JustifyStart:
 		currentPos = 0
 	case JustifyCenter:
-		currentPos = available / 2
+		currentPos = math.Floor(available / 2)
 	case JustifyEnd:
 		currentPos = available
 	case JustifySpaceBetween:
@@ -1193,12 +1527,12 @@ func (n *Node) mainAxisPlacement(lineMainSize, contentWidth, contentHeight float
 	case JustifySpaceAround:
 		if childCount > 0 {
 			spacing = available / float64(childCount)
-			currentPos = spacing / 2
+			currentPos = math.Floor(spacing / 2)
 		}
 	case JustifySpaceEvenly:
 		if childCount > 0 {
 			spacing = available / float64(childCount+1)
-			currentPos = spacing
+			currentPos = math.Floor(spacing)
 		}
 	}
 

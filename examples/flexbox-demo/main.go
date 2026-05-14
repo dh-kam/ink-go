@@ -22,20 +22,20 @@ func main() {
 
 	// Box 1 - Red
 	box1 := vdom.CreateElement("box", vdom.Props{
-		"width":  20.0,
-		"height": 10.0,
+		"width":  20.0, "borderStyle": "single",
+		"height": 5.0,
 	}, components.Text(styles.Colorize("Box 1", styles.Red, styles.Foreground)))
 
 	// Box 2 - Green
 	box2 := vdom.CreateElement("box", vdom.Props{
-		"width":  20.0,
-		"height": 10.0,
+		"width":  20.0, "borderStyle": "single",
+		"height": 5.0,
 	}, components.Text(styles.Colorize("Box 2", styles.Green, styles.Foreground)))
 
 	// Box 3 - Blue
 	box3 := vdom.CreateElement("box", vdom.Props{
-		"width":  20.0,
-		"height": 10.0,
+		"width":  20.0, "borderStyle": "single",
+		"height": 5.0,
 	}, components.Text(styles.Colorize("Box 3", styles.Blue, styles.Foreground)))
 
 	container.Children = append(container.Children, box1, box2, box3)

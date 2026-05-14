@@ -1,0 +1,54 @@
+schemaVersion: goink.tuitest/v1alpha1
+name: aria-demo/toggle
+app: aria-demo
+viewport:
+  width: 100
+  height: 30
+capture:
+  mode: plain
+steps:
+  - name: initial
+    expect:
+      text: |-
+        Press spacebar to toggle the checkbox. This example is best experienced with a screen reader.
+
+        [ ]
+
+        This text is hidden from screen readers.
+  - name: toggle-on
+    input:
+      text: " "
+    expect:
+      text: |-
+        Press spacebar to toggle the checkbox. This example is best experienced with a screen reader.
+
+        [x]
+
+        This text is hidden from screen readers.
+  - name: toggle-off
+    input:
+      text: " "
+    expect:
+      text: |-
+        Press spacebar to toggle the checkbox. This example is best experienced with a screen reader.
+
+        [ ]
+
+        This text is hidden from screen readers.
+  - name: toggle-on-again
+    input:
+      text: " "
+    expect:
+      text: |-
+        Press spacebar to toggle the checkbox. This example is best experienced with a screen reader.
+
+        [x]
+
+        This text is hidden from screen readers.
+  - name: ctrl-c-exit
+    input:
+      key: ctrl-c
+    exit:
+      within: 5s
+    expect:
+      sameAsPrevious: true

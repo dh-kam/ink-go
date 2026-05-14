@@ -2,6 +2,7 @@ package styles
 
 import (
 	"fmt"
+	"math"
 	"strconv"
 	"strings"
 )
@@ -40,14 +41,24 @@ func (c basicColor) ToANSI(mode ColorMode) string {
 
 // Standard colors
 var (
-	Black   = basicColor{"black", 30, 40}
-	Red     = basicColor{"red", 31, 41}
-	Green   = basicColor{"green", 32, 42}
-	Yellow  = basicColor{"yellow", 33, 43}
-	Blue    = basicColor{"blue", 34, 44}
-	Magenta = basicColor{"magenta", 35, 45}
-	Cyan    = basicColor{"cyan", 36, 46}
-	White   = basicColor{"white", 37, 47}
+	Black         = basicColor{"black", 30, 40}
+	Red           = basicColor{"red", 31, 41}
+	Green         = basicColor{"green", 32, 42}
+	Yellow        = basicColor{"yellow", 33, 43}
+	Blue          = basicColor{"blue", 34, 44}
+	Magenta       = basicColor{"magenta", 35, 45}
+	Cyan          = basicColor{"cyan", 36, 46}
+	White         = basicColor{"white", 37, 47}
+	BlackBright   = basicColor{"blackBright", 90, 100}
+	Gray          = basicColor{"gray", 90, 100}
+	Grey          = Gray
+	RedBright     = basicColor{"redBright", 91, 101}
+	GreenBright   = basicColor{"greenBright", 92, 102}
+	YellowBright  = basicColor{"yellowBright", 93, 103}
+	BlueBright    = basicColor{"blueBright", 94, 104}
+	MagentaBright = basicColor{"magentaBright", 95, 105}
+	CyanBright    = basicColor{"cyanBright", 96, 106}
+	WhiteBright   = basicColor{"whiteBright", 97, 107}
 )
 
 // rgbColor represents a 24-bit RGB color
@@ -91,6 +102,103 @@ func (c ansi256Color) ToANSI(mode ColorMode) string {
 // ANSI256 creates an ANSI 256 color.
 func ANSI256(index uint8) Color {
 	return ansi256Color{index: index}
+}
+
+// RGBToANSI256Index maps an RGB color to the nearest xterm 256-color palette
+// index. Chalk uses this representation when the output color level is 256.
+func RGBToANSI256Index(r, g, b uint8) uint8 {
+	if r == g && g == b {
+		if r < 8 {
+			return 16
+		}
+		if r > 248 {
+			return 231
+		}
+
+		return uint8(math.Round(((float64(r)-8)/247)*24) + 232)
+	}
+
+	red := int(math.Round(float64(r) / 255 * 5))
+	green := int(math.Round(float64(g) / 255 * 5))
+	blue := int(math.Round(float64(b) / 255 * 5))
+
+	return uint8(16 + 36*red + 6*green + blue)
+}
+
+// DowngradeTruecolorANSIToANSI256 rewrites SGR truecolor sequences to their
+// xterm 256-color equivalents while leaving all other escape sequences intact.
+func DowngradeTruecolorANSIToANSI256(text string) string {
+	if text == "" {
+		return text
+	}
+
+	var builder strings.Builder
+	for index := 0; index < len(text); {
+		if text[index] != '\x1b' || index+2 >= len(text) || text[index+1] != '[' {
+			builder.WriteByte(text[index])
+			index++
+			continue
+		}
+
+		end := strings.IndexByte(text[index+2:], 'm')
+		if end < 0 {
+			builder.WriteString(text[index:])
+			break
+		}
+
+		end += index + 2
+		sequence := text[index : end+1]
+		body := text[index+2 : end]
+		rewritten, ok := downgradeTruecolorSGRBody(body)
+		if !ok {
+			builder.WriteString(sequence)
+		} else {
+			builder.WriteString("\x1b[")
+			builder.WriteString(rewritten)
+			builder.WriteByte('m')
+		}
+
+		index = end + 1
+	}
+
+	return builder.String()
+}
+
+func downgradeTruecolorSGRBody(body string) (string, bool) {
+	parts := strings.Split(body, ";")
+	rewritten := make([]string, 0, len(parts))
+	changed := false
+
+	for index := 0; index < len(parts); index++ {
+		if (parts[index] == "38" || parts[index] == "48") && index+4 < len(parts) && parts[index+1] == "2" {
+			r, okR := parseSGRByte(parts[index+2])
+			g, okG := parseSGRByte(parts[index+3])
+			b, okB := parseSGRByte(parts[index+4])
+			if okR && okG && okB {
+				rewritten = append(rewritten, parts[index], "5", strconv.Itoa(int(RGBToANSI256Index(r, g, b))))
+				index += 4
+				changed = true
+				continue
+			}
+		}
+
+		rewritten = append(rewritten, parts[index])
+	}
+
+	if !changed {
+		return "", false
+	}
+
+	return strings.Join(rewritten, ";"), true
+}
+
+func parseSGRByte(part string) (uint8, bool) {
+	value, err := strconv.ParseUint(part, 10, 8)
+	if err != nil {
+		return 0, false
+	}
+
+	return uint8(value), true
 }
 
 // ANSI codes
@@ -205,6 +313,24 @@ func ParseColor(spec string) (Color, bool) {
 		return Cyan, true
 	case "white":
 		return White, true
+	case "blackbright":
+		return BlackBright, true
+	case "gray", "grey":
+		return Gray, true
+	case "redbright":
+		return RedBright, true
+	case "greenbright":
+		return GreenBright, true
+	case "yellowbright":
+		return YellowBright, true
+	case "bluebright":
+		return BlueBright, true
+	case "magentabright":
+		return MagentaBright, true
+	case "cyanbright":
+		return CyanBright, true
+	case "whitebright":
+		return WhiteBright, true
 	}
 
 	if strings.HasPrefix(spec, "#") && len(spec) == 7 {

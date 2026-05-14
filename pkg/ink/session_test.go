@@ -127,6 +127,10 @@ func (stdin *rawModeRecordingStdin) Fd() int {
 	return 0
 }
 
+func (stdin *rawModeRecordingStdin) IsTTY() bool {
+	return true
+}
+
 func (stdin *inputRecordingStdin) Read(data []byte) (int, error) {
 	return 0, io.EOF
 }
@@ -225,6 +229,10 @@ func attachFakeThrottleClock(instance *Instance, clock *fakeThrottleClock) {
 	instance.lastRenderAt = clock.Now()
 }
 
+func fpsLimit(value int) *int {
+	return &value
+}
+
 type lastWriteRecorder interface {
 	last() string
 }
@@ -263,16 +271,12 @@ func TestMountWritesInitialOutput(t *testing.T) {
 	}
 	defer instance.Unmount()
 
-	if len(stdout.writes) != 2 {
-		t.Fatalf("expected 2 writes, got %d", len(stdout.writes))
+	if len(stdout.writes) != 1 {
+		t.Fatalf("expected 1 write, got %d", len(stdout.writes))
 	}
 
-	if stdout.writes[0] != hideCursorEscape {
-		t.Fatalf("expected first write to hide cursor, got %q", stdout.writes[0])
-	}
-
-	if stdout.writes[1] != "Hello\n" {
-		t.Fatalf("expected second write to contain output, got %q", stdout.writes[1])
+	if stdout.writes[0] != "Hello\n" {
+		t.Fatalf("expected first write to contain output, got %q", stdout.writes[0])
 	}
 }
 
@@ -326,6 +330,50 @@ func TestClearErasesOutputLikeUpstreamFixture(t *testing.T) {
 	}
 }
 
+// TestMountedRerenderUnchangedTreeHitsCache exercises the reconciler tracker
+// short-circuit: a Rerender() with a structurally identical component must
+// not emit any new bytes to stdout, and the tracker's sections cache must
+// record a hit. This is the core integration point for the renderer cache.
+func TestMountedRerenderUnchangedTreeHitsCache(t *testing.T) {
+	stdout := &recordingWriter{}
+
+	component := func() *vdom.Node {
+		return vdom.CreateTextNode("Hello")
+	}
+
+	instance, err := MountWithOptions(component, RenderOptions{
+		AppOptions: AppOptions{Stdout: stdout},
+	})
+	if err != nil {
+		t.Fatalf("mount failed: %v", err)
+	}
+	defer instance.Unmount()
+
+	initialWrites := len(stdout.writes)
+	if initialWrites == 0 {
+		t.Fatalf("expected at least one initial write")
+	}
+
+	hitsBefore, missesBefore := instance.renderCache.SectionsStats()
+
+	if err := instance.Rerender(component); err != nil {
+		t.Fatalf("rerender failed: %v", err)
+	}
+
+	hitsAfter, missesAfter := instance.renderCache.SectionsStats()
+	if hitsAfter != hitsBefore+1 {
+		t.Fatalf("expected one cache hit on idle rerender, hits before=%d after=%d", hitsBefore, hitsAfter)
+	}
+	if missesAfter != missesBefore {
+		t.Fatalf("expected miss count unchanged on idle rerender, before=%d after=%d", missesBefore, missesAfter)
+	}
+
+	if len(stdout.writes) != initialWrites {
+		t.Fatalf("expected no extra writes on idle rerender, before=%d after=%d (extra=%q)",
+			initialWrites, len(stdout.writes), stdout.writes[initialWrites:])
+	}
+}
+
 func TestInstanceRerenderClearsPreviousOutput(t *testing.T) {
 	stdout := &recordingWriter{}
 
@@ -345,16 +393,16 @@ func TestInstanceRerenderClearsPreviousOutput(t *testing.T) {
 		t.Fatalf("rerender failed: %v", err)
 	}
 
-	if len(stdout.writes) != 3 {
-		t.Fatalf("expected 3 writes, got %d", len(stdout.writes))
+	if len(stdout.writes) != 2 {
+		t.Fatalf("expected 2 writes, got %d", len(stdout.writes))
 	}
 
-	if !strings.Contains(stdout.writes[2], ansiEraseLines(2)) {
-		t.Fatalf("expected rerender to erase previous output, got %q", stdout.writes[2])
+	if !strings.Contains(stdout.writes[1], ansiEraseLines(2)) {
+		t.Fatalf("expected rerender to erase previous output, got %q", stdout.writes[1])
 	}
 
-	if !strings.Contains(stdout.writes[2], "World") {
-		t.Fatalf("expected rerender to write new output, got %q", stdout.writes[2])
+	if !strings.Contains(stdout.writes[1], "World") {
+		t.Fatalf("expected rerender to write new output, got %q", stdout.writes[1])
 	}
 }
 
@@ -1010,6 +1058,182 @@ func TestHandleInputTriggersStateUpdateRerender(t *testing.T) {
 	}
 	if !strings.Contains(joined, "Count: 1") {
 		t.Fatalf("expected rerendered count in debug stream, got %q", joined)
+	}
+}
+
+func TestUseTransitionSchedulesDeferredWorkAfterUrgentRender(t *testing.T) {
+	stdout := &recordingWriter{}
+
+	instance, err := MountWithOptions(func() *vdom.Node {
+		query, setQuery := UseState("")
+		deferred, setDeferred := UseState("")
+		isPending, startTransition := UseTransition()
+
+		UseInput(func(input string, key InputKey) {
+			if input != "a" {
+				return
+			}
+
+			setQuery(input)
+			startTransition(func() {
+				setDeferred(input)
+			})
+		})
+
+		return components.Text(fmt.Sprintf("query=%s deferred=%s pending=%t", query.(string), deferred.(string), isPending))
+	}, RenderOptions{
+		AppOptions: AppOptions{Stdout: stdout},
+		Debug:      true,
+	})
+	if err != nil {
+		t.Fatalf("mount failed: %v", err)
+	}
+	defer instance.Unmount()
+
+	clock := newFakeThrottleClock()
+	attachFakeThrottleClock(instance, clock)
+
+	if err := instance.HandleInput("a"); err != nil {
+		t.Fatalf("handle input failed: %v", err)
+	}
+
+	joined := stdout.joined()
+	if !strings.Contains(joined, "query=a deferred= pending=true") {
+		t.Fatalf("expected urgent render to keep deferred value stale and mark pending, got %q", joined)
+	}
+	if strings.Contains(joined, "query=a deferred=a pending=false") {
+		t.Fatalf("deferred transition committed before scheduler tick: %q", joined)
+	}
+
+	clock.Advance(time.Millisecond)
+
+	joined = stdout.joined()
+	if !strings.Contains(joined, "query=a deferred=a pending=false") {
+		t.Fatalf("expected scheduled transition commit after timer tick, got %q", joined)
+	}
+}
+
+func TestUseDeferredValueLagsUntilSchedulerTick(t *testing.T) {
+	stdout := &recordingWriter{}
+
+	instance, err := MountWithOptions(func() *vdom.Node {
+		value, setValue := UseState("")
+		deferred := UseDeferredValue(value.(string))
+
+		UseInput(func(input string, key InputKey) {
+			if input == "a" {
+				setValue(input)
+			}
+		})
+
+		return components.Text(fmt.Sprintf("value=%s deferred=%s", value.(string), deferred))
+	}, RenderOptions{
+		AppOptions: AppOptions{Stdout: stdout},
+		Debug:      true,
+	})
+	if err != nil {
+		t.Fatalf("mount failed: %v", err)
+	}
+	defer instance.Unmount()
+
+	clock := newFakeThrottleClock()
+	attachFakeThrottleClock(instance, clock)
+
+	if err := instance.HandleInput("a"); err != nil {
+		t.Fatalf("handle input failed: %v", err)
+	}
+
+	joined := stdout.joined()
+	if !strings.Contains(joined, "value=a deferred=") {
+		t.Fatalf("expected urgent render with stale deferred value, got %q", joined)
+	}
+	if strings.Contains(joined, "value=a deferred=a") {
+		t.Fatalf("deferred value committed before scheduler tick: %q", joined)
+	}
+
+	clock.Advance(time.Millisecond)
+
+	joined = stdout.joined()
+	if !strings.Contains(joined, "value=a deferred=a") {
+		t.Fatalf("expected deferred value commit after timer tick, got %q", joined)
+	}
+}
+
+func TestSuspenseRendersFallbackAndRerendersWhenDoneCloses(t *testing.T) {
+	stdout := &recordingWriter{}
+	done := make(chan struct{})
+
+	var resolvedMu sync.Mutex
+	resolved := false
+	isResolved := func() bool {
+		resolvedMu.Lock()
+		defer resolvedMu.Unlock()
+		return resolved
+	}
+	markResolved := func() {
+		resolvedMu.Lock()
+		resolved = true
+		resolvedMu.Unlock()
+	}
+
+	instance, err := MountWithOptions(func() *vdom.Node {
+		return Suspense(components.Text("loading"), func() *vdom.Node {
+			if !isResolved() {
+				SuspendUntil(done)
+			}
+
+			return components.Text("ready")
+		})
+	}, RenderOptions{
+		AppOptions: AppOptions{Stdout: stdout},
+		Debug:      true,
+	})
+	if err != nil {
+		t.Fatalf("mount failed: %v", err)
+	}
+	defer instance.Unmount()
+
+	if joined := stdout.joined(); !strings.Contains(joined, "loading") {
+		t.Fatalf("expected suspense fallback before promise resolves, got %q", joined)
+	}
+
+	markResolved()
+	close(done)
+
+	deadline := time.Now().Add(200 * time.Millisecond)
+	for {
+		if strings.Contains(stdout.joined(), "ready") {
+			return
+		}
+
+		if time.Now().After(deadline) {
+			t.Fatalf("expected suspense to rerender after done closes, got %q", stdout.joined())
+		}
+
+		time.Sleep(5 * time.Millisecond)
+	}
+}
+
+func TestSuspendedRenderDoesNotLeakCursorPositionToFallback(t *testing.T) {
+	stdout := &recordingWriter{}
+	done := make(chan struct{})
+
+	instance, err := MountWithOptions(func() *vdom.Node {
+		return Suspense(components.Text("loading"), func() *vdom.Node {
+			UseCursor().SetCursorPosition(&CursorPosition{X: 5, Y: 0})
+			SuspendUntil(done)
+			return components.Text("loaded")
+		})
+	}, RenderOptions{
+		AppOptions: AppOptions{Stdout: stdout},
+	})
+	if err != nil {
+		t.Fatalf("mount failed: %v", err)
+	}
+	defer instance.Unmount()
+
+	if joined := stdout.joined(); strings.Contains(joined, showCursorEscape) {
+		t.Fatalf("expected fallback output without leaked cursor escape, got %q", joined)
 	}
 }
 
@@ -1786,8 +2010,74 @@ func TestMountWaitUntilExitReturnsExitError(t *testing.T) {
 		t.Fatalf("expected waitUntilExit to return %v, got %v", exitErr, err)
 	}
 
-	if stdout.last() != showCursorEscape {
-		t.Fatalf("expected unmount to restore cursor, got %q", stdout.last())
+	if strings.Contains(stdout.joined(), showCursorEscape) {
+		t.Fatalf("expected non-TTY unmount not to restore cursor, got %#v", stdout.writes)
+	}
+}
+
+func TestUseAppExitFromAsyncEffectUnmountsSession(t *testing.T) {
+	stdout := &recordingWriter{}
+
+	instance, err := MountWithOptions(func() *vdom.Node {
+		app := UseApp()
+		UseEffect(func() func() {
+			timer := time.AfterFunc(10*time.Millisecond, func() {
+				app.Exit()
+			})
+			return func() {
+				timer.Stop()
+			}
+		}, []interface{}{"async-exit"})
+
+		return vdom.CreateTextNode("bye")
+	}, RenderOptions{
+		AppOptions: AppOptions{Stdout: stdout},
+	})
+	if err != nil {
+		t.Fatalf("mount failed: %v", err)
+	}
+
+	waitDone := make(chan error, 1)
+	go func() {
+		waitDone <- instance.WaitUntilExit()
+	}()
+
+	select {
+	case err := <-waitDone:
+		if err != nil {
+			t.Fatalf("expected nil exit error, got %v", err)
+		}
+	case <-time.After(500 * time.Millisecond):
+		t.Fatal("expected async useApp exit to unmount the session")
+	}
+}
+
+func TestRuntimeRenderAppendsNewlineEvenWhenOutputEndsWithBlankRow(t *testing.T) {
+	stdout := &recordingWriter{}
+
+	instance, err := MountWithOptions(func() *vdom.Node {
+		return Box(vdom.Props{"flexDirection": "column"},
+			Text("Use arrow keys to move the face. Press “q” to exit."),
+			Box(vdom.Props{
+				"height":      12.0,
+				"paddingLeft": 20.0,
+				"paddingTop":  10.0,
+			}, Text("^_^")),
+		)
+	}, RenderOptions{
+		AppOptions: AppOptions{
+			Stdout: stdout,
+			Width:  100,
+			Height: 30,
+		},
+	})
+	if err != nil {
+		t.Fatalf("mount failed: %v", err)
+	}
+	defer instance.Unmount()
+
+	if got := stdout.last(); !strings.HasSuffix(got, "                    ^_^\n\n") {
+		t.Fatalf("expected non-fullscreen render to append a newline after the output blank row, got %q", got)
 	}
 }
 
@@ -2029,6 +2319,43 @@ func TestWaitUntilExitReturnsAsyncStdoutBarrierError(t *testing.T) {
 	}
 }
 
+func TestWaitUntilExitRequiresExplicitUnmountInGoRuntime(t *testing.T) {
+	stdout := &recordingWriter{}
+
+	instance, err := MountWithOptions(func() *vdom.Node {
+		return vdom.CreateTextNode("complete")
+	}, RenderOptions{
+		AppOptions: AppOptions{Stdout: stdout},
+	})
+	if err != nil {
+		t.Fatalf("mount failed: %v", err)
+	}
+
+	waitDone := make(chan error, 1)
+	go func() {
+		waitDone <- instance.WaitUntilExit()
+	}()
+
+	select {
+	case err := <-waitDone:
+		t.Fatalf("expected waitUntilExit to wait for explicit unmount, got %v", err)
+	case <-time.After(20 * time.Millisecond):
+	}
+
+	if err := instance.Unmount(); err != nil {
+		t.Fatalf("unmount failed: %v", err)
+	}
+
+	select {
+	case err := <-waitDone:
+		if err != nil {
+			t.Fatalf("expected nil waitUntilExit error, got %v", err)
+		}
+	case <-time.After(100 * time.Millisecond):
+		t.Fatal("expected waitUntilExit to resolve after explicit unmount")
+	}
+}
+
 func TestMountUseStdoutWritePreservesRenderOutput(t *testing.T) {
 	stdout := &recordingWriter{}
 
@@ -2046,16 +2373,16 @@ func TestMountUseStdoutWritePreservesRenderOutput(t *testing.T) {
 	}
 	defer instance.Unmount()
 
-	if len(stdout.writes) != 3 {
-		t.Fatalf("expected 3 writes, got %d", len(stdout.writes))
+	if len(stdout.writes) != 2 {
+		t.Fatalf("expected 2 writes, got %d", len(stdout.writes))
 	}
 
 	if stdout.writes[0] != "outside\n" {
 		t.Fatalf("expected direct stdout write first, got %q", stdout.writes[0])
 	}
 
-	if stdout.writes[2] != "inside\n" {
-		t.Fatalf("expected render output last, got %q", stdout.writes[2])
+	if stdout.writes[1] != "inside\n" {
+		t.Fatalf("expected render output last, got %q", stdout.writes[1])
 	}
 }
 
@@ -2488,16 +2815,16 @@ func TestCursorOnlyUpdateDoesNotRewriteOutput(t *testing.T) {
 		t.Fatalf("rerender failed: %v", err)
 	}
 
-	if len(stdout.writes) != 3 {
-		t.Fatalf("expected 3 writes, got %d", len(stdout.writes))
+	if len(stdout.writes) != 2 {
+		t.Fatalf("expected 2 writes, got %d", len(stdout.writes))
 	}
 
-	if strings.Contains(stdout.writes[2], "cursor") {
-		t.Fatalf("expected cursor-only update without rewriting output, got %q", stdout.writes[2])
+	if strings.Contains(stdout.writes[1], "cursor") {
+		t.Fatalf("expected cursor-only update without rewriting output, got %q", stdout.writes[1])
 	}
 
-	if !strings.Contains(stdout.writes[2], showCursorEscape) {
-		t.Fatalf("expected cursor-only update to show cursor, got %q", stdout.writes[2])
+	if !strings.Contains(stdout.writes[1], showCursorEscape) {
+		t.Fatalf("expected cursor-only update to show cursor, got %q", stdout.writes[1])
 	}
 }
 
@@ -2752,8 +3079,8 @@ func TestUnmountRunsEffectCleanup(t *testing.T) {
 		t.Fatal("expected effect cleanup to run on unmount")
 	}
 
-	if stdout.last() != showCursorEscape {
-		t.Fatalf("expected cursor to be restored on unmount, got %q", stdout.last())
+	if strings.Contains(stdout.joined(), showCursorEscape) {
+		t.Fatalf("expected non-TTY unmount not to restore cursor, got %#v", stdout.writes)
 	}
 }
 
@@ -2997,6 +3324,85 @@ func TestIncrementalRerenderShrinksOutput(t *testing.T) {
 	}
 }
 
+// TestIncrementalRerenderUsesColumnLevelDirtyDiff verifies the per-line
+// column-level dirty-rect optimization: when only the trailing portion of
+// a line changes, the writer emits cursor positioning to the divergence
+// column plus the differing tail, instead of rewriting the whole line.
+func TestIncrementalRerenderUsesColumnLevelDirtyDiff(t *testing.T) {
+	stdout := &recordingWriter{}
+
+	instance, err := MountWithOptions(func() *vdom.Node {
+		return vdom.CreateTextNode("Counter: 0\n")
+	}, RenderOptions{
+		AppOptions:           AppOptions{Stdout: stdout},
+		IncrementalRendering: true,
+	})
+	if err != nil {
+		t.Fatalf("mount failed: %v", err)
+	}
+	defer instance.Unmount()
+
+	if err := instance.Rerender(func() *vdom.Node {
+		return vdom.CreateTextNode("Counter: 1\n")
+	}); err != nil {
+		t.Fatalf("rerender failed: %v", err)
+	}
+
+	if len(stdout.writes) != 3 {
+		t.Fatalf("expected 3 writes, got %d", len(stdout.writes))
+	}
+
+	update := stdout.writes[2]
+	// "Counter: " is the 9-column shared prefix; the writer should jump
+	// straight to column 9, erase the rest of the line, and emit "1".
+	if !strings.Contains(update, ansiCursorTo(9)) {
+		t.Fatalf("expected column-level diff to position cursor at column 9, got %q", update)
+	}
+	if !strings.Contains(update, "1") {
+		t.Fatalf("expected column-level diff to write the changed tail, got %q", update)
+	}
+	if strings.Contains(update, "Counter: 1") {
+		t.Fatalf("expected column-level diff to skip rewriting the shared prefix, got %q", update)
+	}
+}
+
+// TestIncrementalRerenderColumnDiffFallsBackForANSIEscapes verifies the
+// optimization is gated to plain text. When either line contains ANSI
+// escape sequences we must not naively count columns — the writer falls
+// back to the cursorTo(0) + full-line rewrite path.
+func TestIncrementalRerenderColumnDiffFallsBackForANSIEscapes(t *testing.T) {
+	stdout := &ttyRecordingWriter{}
+
+	first := "\x1b[31mhello\x1b[0m\n"
+	second := "\x1b[32mhello\x1b[0m\n"
+
+	instance, err := MountWithOptions(func() *vdom.Node {
+		return vdom.CreateTextNode(first)
+	}, RenderOptions{
+		AppOptions:           AppOptions{Stdout: stdout},
+		IncrementalRendering: true,
+	})
+	if err != nil {
+		t.Fatalf("mount failed: %v", err)
+	}
+	defer instance.Unmount()
+
+	if err := instance.Rerender(func() *vdom.Node {
+		return vdom.CreateTextNode(second)
+	}); err != nil {
+		t.Fatalf("rerender failed: %v", err)
+	}
+
+	last := stdout.writes[len(stdout.writes)-1]
+	// ANSI-bearing line — full-line rewrite must reposition to column 0.
+	if !strings.Contains(last, ansiCursorTo(0)) {
+		t.Fatalf("expected ANSI line to fall back to cursorTo(0) full-line rewrite, got %q", last)
+	}
+	if !strings.Contains(last, "\x1b[32m") {
+		t.Fatalf("expected new ANSI sequence to be emitted in full-line rewrite, got %q", last)
+	}
+}
+
 func TestIncrementalClearResetsState(t *testing.T) {
 	stdout := &recordingWriter{}
 
@@ -3025,7 +3431,7 @@ func TestIncrementalClearResetsState(t *testing.T) {
 		t.Fatalf("expected 4 writes, got %d", len(stdout.writes))
 	}
 
-	if stdout.writes[3] != "Line 1\n" {
+	if stdout.writes[3] != "Line 1\n\n" {
 		t.Fatalf("expected fresh output after clear, got %q", stdout.writes[3])
 	}
 }
@@ -3083,8 +3489,11 @@ func TestIncrementalTrailingToNoTrailingTransition(t *testing.T) {
 		t.Fatalf("rerender failed: %v", err)
 	}
 
-	if len(stdout.writes) != 2 {
-		t.Fatalf("expected normalized trailing-newline transition to be a no-op, got %#v", stdout.writes)
+	if len(stdout.writes) != 3 {
+		t.Fatalf("expected trailing blank-row transition to clear the extra row, got %#v", stdout.writes)
+	}
+	if !containsANSIEscape(stdout.writes[2]) {
+		t.Fatalf("expected trailing blank-row transition to use cursor/erase escapes, got %q", stdout.writes[2])
 	}
 }
 
@@ -3171,8 +3580,11 @@ func TestIncrementalRenderToEmptyLineSkipsSecondIdenticalRender(t *testing.T) {
 	}
 
 	firstEmpty := stdout.last()
-	if firstEmpty != ansiEraseLines(4)+"\n" {
-		t.Fatalf("expected full erase plus newline, got %q", firstEmpty)
+	if strings.Count(firstEmpty, "\n") != 2 {
+		t.Fatalf("expected empty-line render to preserve output newline plus render newline, got %q", firstEmpty)
+	}
+	if !strings.Contains(firstEmpty, ansiEraseLines(3)) {
+		t.Fatalf("expected empty-line render to erase previous output, got %q", firstEmpty)
 	}
 
 	if err := instance.Rerender(func() *vdom.Node {
@@ -3845,8 +4257,18 @@ func TestDebugMountedUseStderrWriteReplaysManagedOutput(t *testing.T) {
 		t.Fatalf("expected hook payload on stderr, got %#v", stderr.writes)
 	}
 
-	if len(stdout.writes) != 1 || stdout.writes[0] != "A\nLive" {
-		t.Fatalf("expected debug hook write to replay full managed output, got %#v", stdout.writes)
+	// In debug mode upstream Ink writes once per render PLUS replays the
+	// managed output after every external stderr/stdout hook write (see
+	// ink.tsx writeToStderr). The hook fires during the rerender's effect,
+	// producing one replay write; the rerender itself produces a second
+	// debug append (debug mode emits one write per render unconditionally).
+	if len(stdout.writes) != 2 {
+		t.Fatalf("expected debug hook replay plus post-render append, got %#v", stdout.writes)
+	}
+	for index, write := range stdout.writes {
+		if write != "A\nLive" {
+			t.Fatalf("expected debug stdout write #%d to replay managed output %q, got %q", index, "A\nLive", write)
+		}
 	}
 }
 
@@ -3892,16 +4314,20 @@ func TestDebugMountedUseStdoutWriteReplaysManagedOutput(t *testing.T) {
 		t.Fatalf("rerender failed: %v", err)
 	}
 
-	if len(stdout.writes) != 2 {
-		t.Fatalf("expected hook payload plus full managed replay on stdout, got %#v", stdout.writes)
+	// Upstream Ink debug mode writes the hook payload, replays managed
+	// output, then emits one append for the render itself — three writes.
+	// See ink.tsx writeToStdout (debug branch) plus the unconditional
+	// per-render write in the debug branch of onRender.
+	if len(stdout.writes) != 3 {
+		t.Fatalf("expected hook payload, managed replay, and post-render append on stdout, got %#v", stdout.writes)
 	}
 
 	if stdout.writes[0] != "from stdout hook\n" {
 		t.Fatalf("expected hook payload on stdout first, got %#v", stdout.writes)
 	}
 
-	if stdout.writes[1] != "A\nLive" {
-		t.Fatalf("expected debug stdout hook write to replay full managed output, got %#v", stdout.writes)
+	if stdout.writes[1] != "A\nLive" || stdout.writes[2] != "A\nLive" {
+		t.Fatalf("expected debug stdout writes [1..2] to replay managed output %q, got %#v", "A\nLive", stdout.writes)
 	}
 }
 
@@ -4016,8 +4442,14 @@ func TestDebugStaticOutputKeepsHistoryAndIgnoresReplacement(t *testing.T) {
 		t.Fatalf("second rerender failed: %v", err)
 	}
 
-	if len(stdout.writes) != 0 {
-		t.Fatalf("expected debug static replacement to produce no new writes, got %#v", stdout.writes)
+	// Upstream Ink debug mode emits one append per render, replaying
+	// `fullStaticOutput + output` regardless of whether the tree changed
+	// (see ink.tsx onRender debug branch). Static-list replacement at the
+	// same index is intentionally NOT mirrored above the dynamic block —
+	// `fullStaticOutput` keeps the originally appended "A\n" — but the
+	// render itself still produces a debug write.
+	if len(stdout.writes) != 1 || stdout.writes[0] != "A\n" {
+		t.Fatalf("expected debug rerender to replay accumulated static history, got %#v", stdout.writes)
 	}
 }
 
@@ -4068,6 +4500,124 @@ func TestThrottleStaticAppendBypassesDelay(t *testing.T) {
 	clock.Advance(1 * time.Second)
 	if len(stdout.writes) != writeCount {
 		t.Fatalf("expected static append to cancel trailing throttled write, got %#v", stdout.writes)
+	}
+}
+
+func TestMaxFPSLimitCanSelectUpstreamDefaultWithoutChangingLegacyZero(t *testing.T) {
+	stdout := &recordingWriter{}
+	clock := newFakeThrottleClock()
+
+	instance, err := MountWithOptions(func() *vdom.Node {
+		return vdom.CreateTextNode("initial")
+	}, RenderOptions{
+		AppOptions:  AppOptions{Stdout: stdout},
+		MaxFPSLimit: fpsLimit(DefaultMaxFPS),
+	})
+	if err != nil {
+		t.Fatalf("mount failed: %v", err)
+	}
+	defer instance.Unmount()
+
+	if instance.maxFPS != DefaultMaxFPS {
+		t.Fatalf("expected upstream default max FPS %d, got %d", DefaultMaxFPS, instance.maxFPS)
+	}
+
+	if instance.renderThrottle != 34*time.Millisecond {
+		t.Fatalf("expected upstream default throttle window 34ms, got %s", instance.renderThrottle)
+	}
+
+	attachFakeThrottleClock(instance, clock)
+	stdout.writes = nil
+
+	if err := instance.Rerender(func() *vdom.Node {
+		return vdom.CreateTextNode("updated")
+	}); err != nil {
+		t.Fatalf("rerender failed: %v", err)
+	}
+
+	if len(stdout.writes) != 0 {
+		t.Fatalf("expected upstream default max FPS to throttle immediate rerender, got %#v", stdout.writes)
+	}
+
+	clock.Advance(33 * time.Millisecond)
+	if len(stdout.writes) != 0 {
+		t.Fatalf("expected no trailing render before default throttle window, got %#v", stdout.writes)
+	}
+
+	clock.Advance(1 * time.Millisecond)
+	if !strings.Contains(stdout.last(), "updated") {
+		t.Fatalf("expected trailing render after default throttle window, got %#v", stdout.writes)
+	}
+}
+
+func TestLegacyZeroMaxFPSRemainsUnthrottled(t *testing.T) {
+	stdout := &recordingWriter{}
+	clock := newFakeThrottleClock()
+
+	instance, err := MountWithOptions(func() *vdom.Node {
+		return vdom.CreateTextNode("initial")
+	}, RenderOptions{
+		AppOptions: AppOptions{Stdout: stdout},
+		MaxFPS:     0,
+	})
+	if err != nil {
+		t.Fatalf("mount failed: %v", err)
+	}
+	defer instance.Unmount()
+
+	if instance.maxFPS != 0 || instance.renderThrottle != 0 {
+		t.Fatalf("expected legacy MaxFPS: 0 to disable throttling, got fps=%d throttle=%s", instance.maxFPS, instance.renderThrottle)
+	}
+
+	attachFakeThrottleClock(instance, clock)
+	stdout.writes = nil
+
+	if err := instance.Rerender(func() *vdom.Node {
+		return vdom.CreateTextNode("updated")
+	}); err != nil {
+		t.Fatalf("rerender failed: %v", err)
+	}
+
+	if !strings.Contains(stdout.last(), "updated") {
+		t.Fatalf("expected legacy MaxFPS: 0 rerender to write immediately, got %#v", stdout.writes)
+	}
+
+	if len(clock.timers) != 0 {
+		t.Fatalf("expected legacy MaxFPS: 0 to avoid scheduling throttle timers, got %#v", clock.timers)
+	}
+}
+
+func TestMaxFPSLimitZeroOverridesLegacyMaxFPS(t *testing.T) {
+	stdout := &recordingWriter{}
+	clock := newFakeThrottleClock()
+
+	instance, err := MountWithOptions(func() *vdom.Node {
+		return vdom.CreateTextNode("initial")
+	}, RenderOptions{
+		AppOptions:  AppOptions{Stdout: stdout},
+		MaxFPS:      1,
+		MaxFPSLimit: fpsLimit(0),
+	})
+	if err != nil {
+		t.Fatalf("mount failed: %v", err)
+	}
+	defer instance.Unmount()
+
+	if instance.maxFPS != 0 || instance.renderThrottle != 0 {
+		t.Fatalf("expected MaxFPSLimit: 0 to disable throttling, got fps=%d throttle=%s", instance.maxFPS, instance.renderThrottle)
+	}
+
+	attachFakeThrottleClock(instance, clock)
+	stdout.writes = nil
+
+	if err := instance.Rerender(func() *vdom.Node {
+		return vdom.CreateTextNode("updated")
+	}); err != nil {
+		t.Fatalf("rerender failed: %v", err)
+	}
+
+	if !strings.Contains(stdout.last(), "updated") {
+		t.Fatalf("expected MaxFPSLimit: 0 rerender to write immediately, got %#v", stdout.writes)
 	}
 }
 
@@ -4766,5 +5316,245 @@ func TestScreenReaderUnmountDoesNotEraseAccessibleOutput(t *testing.T) {
 
 	if len(stdout.writes) != 0 {
 		t.Fatalf("expected screen-reader unmount to avoid erase writes, got %#v", stdout.writes)
+	}
+}
+
+// TestDebugTakesPrecedenceOverScreenReaderRerender locks upstream Ink's render
+// branch precedence: when both `debug` and `isScreenReaderEnabled` are set,
+// the debug append-only path wins (see ink/src/ink.tsx onRender — debug check
+// fires before the screen-reader branch). A second render must therefore
+// produce a single append-only write of the new logical output, with no
+// `eraseLines` escape sequences from the screen-reader rewrite path.
+func TestDebugTakesPrecedenceOverScreenReaderRerender(t *testing.T) {
+	stdout := &recordingWriter{}
+
+	makeRoot := func(label string) func() *vdom.Node {
+		return func() *vdom.Node {
+			return components.Box(vdom.Props{"aria-role": "button"},
+				components.Text(label),
+			)
+		}
+	}
+
+	instance, err := MountWithOptions(makeRoot("Click"), RenderOptions{
+		AppOptions: AppOptions{
+			Stdout:              stdout,
+			ScreenReaderEnabled: true,
+		},
+		Debug: true,
+	})
+	if err != nil {
+		t.Fatalf("mount failed: %v", err)
+	}
+	defer instance.Unmount()
+
+	if len(stdout.writes) != 1 || stdout.writes[0] != "button: Click" {
+		t.Fatalf("expected single debug-mode initial write of plain accessible output, got %#v", stdout.writes)
+	}
+
+	stdout.writes = nil
+	if err := instance.Rerender(makeRoot("Submit")); err != nil {
+		t.Fatalf("rerender failed: %v", err)
+	}
+
+	if len(stdout.writes) != 1 {
+		t.Fatalf("expected single debug append on rerender, got %#v", stdout.writes)
+	}
+
+	if stdout.writes[0] != "button: Submit" {
+		t.Fatalf("expected debug append %q, got %q", "button: Submit", stdout.writes[0])
+	}
+
+	if strings.Contains(stdout.writes[0], "\x1b[2K") || strings.Contains(stdout.writes[0], "\x1b[1A") {
+		t.Fatalf("expected debug rerender to avoid screen-reader erase escapes, got %q", stdout.writes[0])
+	}
+}
+
+// TestDebugRerenderEmitsAppendEvenWhenOutputUnchanged locks upstream Ink's
+// debug-mode contract: every render produces exactly one append, even when
+// the rendered string is byte-identical to the previous frame. Upstream
+// onRender always writes `fullStaticOutput + output` in the debug branch
+// (no equality short-circuit), so a stream of identical renders is faithfully
+// duplicated in the debug log. Goink previously skipped identical writes,
+// breaking the append-only timeline contract.
+func TestDebugRerenderEmitsAppendEvenWhenOutputUnchanged(t *testing.T) {
+	stdout := &recordingWriter{}
+
+	makeRoot := func() *vdom.Node {
+		return vdom.CreateTextNode("hello")
+	}
+
+	instance, err := MountWithOptions(makeRoot, RenderOptions{
+		AppOptions: AppOptions{Stdout: stdout},
+		Debug:      true,
+	})
+	if err != nil {
+		t.Fatalf("mount failed: %v", err)
+	}
+	defer instance.Unmount()
+
+	if len(stdout.writes) != 1 || stdout.writes[0] != "hello" {
+		t.Fatalf("expected single initial debug write %q, got %#v", "hello", stdout.writes)
+	}
+
+	stdout.writes = nil
+	if err := instance.Rerender(makeRoot); err != nil {
+		t.Fatalf("rerender failed: %v", err)
+	}
+	if err := instance.Rerender(makeRoot); err != nil {
+		t.Fatalf("second rerender failed: %v", err)
+	}
+
+	if len(stdout.writes) != 2 {
+		t.Fatalf("expected two append-only debug writes for two identical rerenders, got %#v", stdout.writes)
+	}
+	for index, write := range stdout.writes {
+		if write != "hello" {
+			t.Fatalf("expected debug append #%d to equal %q, got %q", index, "hello", write)
+		}
+	}
+}
+
+// TestStaticDeltaOfPureNewlineDoesNotRewriteDynamic locks upstream Ink's
+// `hasStaticOutput = staticOutput && staticOutput !== '\n'` filter (see
+// ink/src/ink.tsx onRender). Any static delta that consists solely of a
+// trailing newline must be ignored: the dynamic block is left intact and
+// `fullStaticOutput` does not grow. Goink historically treated any non-empty
+// staticOutput as a real append, which fired clearLocked + write(static)
+// even when the renderer produced just a newline.
+func TestStaticDeltaOfPureNewlineDoesNotRewriteDynamic(t *testing.T) {
+	stdout := &recordingWriter{}
+
+	instance, err := MountWithOptions(func() *vdom.Node {
+		return vdom.CreateTextNode("dyn")
+	}, RenderOptions{
+		AppOptions: AppOptions{Stdout: stdout},
+	})
+	if err != nil {
+		t.Fatalf("mount failed: %v", err)
+	}
+	defer instance.Unmount()
+
+	stdout.writes = nil
+	previousFullStatic := instance.fullStaticOutput
+
+	prepared := preparedRender{
+		logicalOutput:  "dyn",
+		renderedOutput: "dyn\n",
+		staticOutput:   "\n",
+		shouldWrite:    true,
+	}
+	if err := instance.commitPreparedRenderLocked(prepared); err != nil {
+		t.Fatalf("commit failed: %v", err)
+	}
+
+	if instance.fullStaticOutput != previousFullStatic {
+		t.Fatalf("expected fullStaticOutput to remain %q after pure-newline static delta, got %q", previousFullStatic, instance.fullStaticOutput)
+	}
+
+	for _, write := range stdout.writes {
+		if write == "\n" {
+			t.Fatalf("expected pure-newline static delta to be filtered, got writes %#v", stdout.writes)
+		}
+	}
+}
+
+// TestIncrementalConsecutiveClearsAreIdempotent locks the upstream invariant
+// that calling clear() multiple times in a row leaves incremental
+// rendering's internal state in a fully-reset shape — a subsequent render
+// must do a fresh full write (eraseLines(0) + payload), not a surgical
+// diff against stale `previousLines`. Mirrors upstream test
+// 'incremental rendering - multiple consecutive clear() calls (should be harmless no-ops)'.
+func TestIncrementalConsecutiveClearsAreIdempotent(t *testing.T) {
+	stdout := &recordingWriter{}
+
+	instance, err := MountWithOptions(func() *vdom.Node {
+		return vdom.CreateTextNode("Line 1\nLine 2\nLine 3\n")
+	}, RenderOptions{
+		AppOptions:           AppOptions{Stdout: stdout},
+		IncrementalRendering: true,
+	})
+	if err != nil {
+		t.Fatalf("mount failed: %v", err)
+	}
+	defer instance.Unmount()
+
+	for index := 0; index < 3; index++ {
+		if err := instance.Clear(); err != nil {
+			t.Fatalf("clear #%d failed: %v", index, err)
+		}
+	}
+
+	if len(instance.previousLines) != 0 {
+		t.Fatalf("expected previousLines reset after consecutive clears, got %#v", instance.previousLines)
+	}
+	if instance.previousOutput != "" {
+		t.Fatalf("expected previousOutput reset after consecutive clears, got %q", instance.previousOutput)
+	}
+
+	stdout.writes = nil
+	if err := instance.Rerender(func() *vdom.Node {
+		return vdom.CreateTextNode("New content\n")
+	}); err != nil {
+		t.Fatalf("rerender after clears failed: %v", err)
+	}
+
+	combined := strings.Join(stdout.writes, "")
+	if !strings.Contains(combined, "New content\n") {
+		t.Fatalf("expected fresh full write of new content after consecutive clears, got %#v", stdout.writes)
+	}
+
+	// A surgical diff against stale `previousLines` would emit ansiCursorTo +
+	// per-line tail rewrites; a fresh write goes through the
+	// `previousOutput == ""` branch and emits eraseLines(0) (empty) + payload.
+	if strings.Contains(combined, ansiCursorNextLine()) {
+		t.Fatalf("expected fresh write after clears, but found surgical cursor escapes in %#v", stdout.writes)
+	}
+}
+
+// TestScreenReaderStaticAppendReemitsDynamicBlock locks upstream Ink's
+// screen-reader path with a non-empty staticOutput: the dynamic block must
+// be re-emitted alongside the new static delta even when the dynamic
+// rendered string is byte-identical to the previous frame. Upstream's
+// `if (output === this.lastOutput && !hasStaticOutput)` short-circuit
+// intentionally requires `!hasStaticOutput` to skip — when static grows we
+// always rewrite the dynamic part below it (see ink.tsx onRender).
+func TestScreenReaderStaticAppendReemitsDynamicBlock(t *testing.T) {
+	stdout := &recordingWriter{}
+	items := []string{"A"}
+
+	render := func() *vdom.Node {
+		return components.Box(vdom.Props{"flexDirection": "column"},
+			components.StaticItems(items, func(item string, index int) *vdom.Node {
+				return components.Text(item)
+			}),
+			components.Text("dyn"),
+		)
+	}
+
+	instance, err := MountWithOptions(render, RenderOptions{
+		AppOptions: AppOptions{
+			Stdout:              stdout,
+			ScreenReaderEnabled: true,
+		},
+	})
+	if err != nil {
+		t.Fatalf("mount failed: %v", err)
+	}
+	defer instance.Unmount()
+
+	stdout.writes = nil
+	items = []string{"A", "B"}
+	if err := instance.Rerender(render); err != nil {
+		t.Fatalf("rerender failed: %v", err)
+	}
+
+	combined := strings.Join(stdout.writes, "")
+	if !strings.Contains(combined, "B\n") {
+		t.Fatalf("expected appended static delta %q in screen-reader output, got %#v", "B\n", stdout.writes)
+	}
+
+	if !strings.Contains(combined, "dyn") {
+		t.Fatalf("expected dynamic block to be re-emitted alongside static append, got %#v", stdout.writes)
 	}
 }

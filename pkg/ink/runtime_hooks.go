@@ -11,6 +11,15 @@ type AppContext struct {
 func (ctx AppContext) Exit(err ...error) {
 	if ctx.app != nil {
 		ctx.app.Exit(err...)
+		ctx.app.scheduleRuntimeWork(func() {})
+	}
+}
+
+// Schedule runs work through the mounted renderer's runtime scheduler. Use it
+// from goroutines, timers, and external callbacks before calling hook setters.
+func (ctx AppContext) Schedule(work func()) {
+	if ctx.app != nil {
+		ctx.app.scheduleRuntimeWork(work)
 	}
 }
 
@@ -47,8 +56,10 @@ func UseStdin() StdinContext {
 
 // StdoutContext exposes stdout-related runtime state.
 type StdoutContext struct {
-	app    *App
-	Stdout io.Writer
+	app     *App
+	Stdout  io.Writer
+	Columns int
+	Rows    int
 }
 
 // Write writes directly to the current app stdout stream.
@@ -64,8 +75,10 @@ func (ctx StdoutContext) Write(data string) (int, error) {
 func UseStdout() StdoutContext {
 	app := requireCurrentApp("UseStdout")
 	return StdoutContext{
-		app:    app,
-		Stdout: app.Stdout(),
+		app:     app,
+		Stdout:  app.Stdout(),
+		Columns: app.Width(),
+		Rows:    app.Height(),
 	}
 }
 

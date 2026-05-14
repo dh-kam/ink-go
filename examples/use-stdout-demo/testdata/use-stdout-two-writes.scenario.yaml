@@ -1,0 +1,28 @@
+schemaVersion: goink.tuitest/v1alpha1
+name: use-stdout-demo/two-writes
+app: use-stdout-demo
+viewport:
+  width: 100
+  height: 30
+environment:
+  TERM: tmux-256color
+  COLORTERM: ""
+  FORCE_COLOR: "1"
+capture:
+  mode: screen
+steps:
+  - name: two-writes
+    waitFor:
+      text: |-
+        Hello from Ink to stdout
+        Hello from Ink to stdout
+      within: 6s
+    expect:
+      file: use-stdout-two-writes.screen.golden
+  - name: ctrl-c-exit
+    input:
+      key: ctrl-c
+    exit:
+      within: 5s
+    expect:
+      sameAsPrevious: true

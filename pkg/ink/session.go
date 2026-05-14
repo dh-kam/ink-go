@@ -16,13 +16,37 @@ type RenderMetrics struct {
 	RenderTime time.Duration
 }
 
+// DefaultMaxFPS matches upstream Ink's default render update cap.
+const DefaultMaxFPS = 30
+const maxPendingStateSettles = 50
+
 // RenderOptions configures a mounted Ink session.
 type RenderOptions struct {
 	AppOptions
-	Debug                bool
-	MaxFPS               int
+	Debug       bool
+	ExitOnCtrlC *bool
+	// MaxFPS is the legacy frame cap. Values <= 0 disable throttling for
+	// backwards compatibility. Prefer MaxFPSLimit when omitted vs explicit zero
+	// needs to be distinguishable.
+	MaxFPS int
+	// MaxFPSLimit overrides MaxFPS when set. This provides tri-state semantics:
+	// nil keeps MaxFPS legacy behavior, a pointer containing DefaultMaxFPS
+	// matches upstream Ink's default, and a pointer containing 0 explicitly
+	// disables throttling.
+	MaxFPSLimit          *int
 	IncrementalRendering bool
-	OnRender             func(RenderMetrics)
+	// CellLevelDiff opts into cell-by-cell dirty-rect repaints layered on
+	// top of IncrementalRendering. When enabled, frames are parsed into
+	// per-cell records and only changed cells are emitted (with cursor
+	// jumps and SGR transitions) instead of rewriting whole lines.
+	//
+	// Opt-in because it changes the exact bytes produced on the wire — many
+	// existing tests assert on full-line rewrite shapes (cursorTo(0) +
+	// payload + eraseEndLine), so flipping cell-level diff on by default
+	// would break them. Falls back to the line-level path on frame size
+	// changes or on any non-trivial ANSI input the parser cannot represent.
+	CellLevelDiff bool
+	OnRender      func(RenderMetrics)
 }
 
 type scheduledTimer interface {
@@ -121,9 +145,11 @@ type Instance struct {
 	stderr                 io.Writer
 	onRender               func(RenderMetrics)
 	debug                  bool
+	exitOnCtrlC            bool
 	maxFPS                 int
 	renderThrottle         time.Duration
 	incrementalRendering   bool
+	cellLevelDiff          bool
 	fullStaticOutput       string
 	staticCounts           []int
 	previousLogicalOutput  string
@@ -146,6 +172,16 @@ type Instance struct {
 	unsubscribeResize      func()
 	unsubscribeInput       func()
 	lastRenderAt           time.Time
+	renderCache            *renderTracker
+	// pendingPaste accumulates the body of a bracketed-paste sequence whose
+	// start marker (\x1b[200~) arrived in a TTY read that did not contain
+	// the matching end marker (\x1b[201~). Subsequent reads append to this
+	// buffer until the end marker is observed, at which point the full
+	// payload is dispatched as a single paste event. pastePending tracks
+	// whether a paste is currently in flight (independent of pendingPaste
+	// length so that the empty-body case is preserved).
+	pendingPaste []byte
+	pastePending bool
 }
 
 type renderState struct {
@@ -169,6 +205,10 @@ type preparedRender struct {
 	exitErr             error
 }
 
+type unmountOptions struct {
+	clearOutput bool
+}
+
 // Mount creates a mounted Ink session and immediately renders it.
 func Mount(component ComponentFunc) (*Instance, error) {
 	return MountWithOptions(component, RenderOptions{})
@@ -177,21 +217,26 @@ func Mount(component ComponentFunc) (*Instance, error) {
 // MountWithOptions creates a mounted Ink session with explicit render options.
 func MountWithOptions(component ComponentFunc, options RenderOptions) (*Instance, error) {
 	app := NewAppWithOptions(component, options.AppOptions)
+	maxFPS := normalizeRenderMaxFPS(options)
 	instance := &Instance{
 		app:                  app,
 		onRender:             options.OnRender,
 		debug:                options.Debug,
-		maxFPS:               normalizeMaxFPS(options.MaxFPS),
-		renderThrottle:       throttleDuration(options.MaxFPS),
+		exitOnCtrlC:          normalizeExitOnCtrlC(options.ExitOnCtrlC),
+		maxFPS:               maxFPS,
+		renderThrottle:       throttleDuration(maxFPS),
 		incrementalRendering: options.IncrementalRendering,
+		cellLevelDiff:        options.CellLevelDiff,
 		exited:               make(chan struct{}),
 		now:                  time.Now,
 		afterFunc: func(delay time.Duration, fn func()) scheduledTimer {
 			return time.AfterFunc(delay, fn)
 		},
+		renderCache: newRenderTracker(RenderToString),
 	}
 
 	instance.installManagedStreamsLocked(app.stdout, app.stderr)
+	app.hooksCtx.SetWorkScheduler(instance.scheduleHookWork)
 	instance.configureResizeLocked()
 	instance.configureInputLocked()
 
@@ -200,6 +245,56 @@ func MountWithOptions(component ComponentFunc, options RenderOptions) (*Instance
 	}
 
 	return instance, nil
+}
+
+func (instance *Instance) scheduleHookWork(work func()) {
+	if work == nil {
+		return
+	}
+
+	afterFunc := instance.afterFunc
+	if afterFunc == nil {
+		afterFunc = func(delay time.Duration, fn func()) scheduledTimer {
+			return time.AfterFunc(delay, fn)
+		}
+	}
+
+	afterFunc(time.Millisecond, func() {
+		instance.runHookWork(work)
+	})
+}
+
+func (instance *Instance) runHookWork(work func()) (err error) {
+	instance.mu.Lock()
+	defer instance.mu.Unlock()
+
+	if instance.unmounted {
+		return nil
+	}
+
+	defer func() {
+		if recovered := recover(); recovered != nil {
+			panicErr := recoveredPanicError(recovered)
+			if unmountErr := instance.unmountLocked(panicErr); unmountErr != nil {
+				err = unmountErr
+				return
+			}
+
+			err = nil
+		}
+	}()
+
+	work()
+
+	if instance.app.ExitRequested() {
+		return instance.unmountDoneLocked(instance.app.ExitError())
+	}
+
+	if instance.app.consumeStateChange() {
+		return instance.renderCurrentLocked()
+	}
+
+	return nil
 }
 
 // Rerender replaces the root component and renders it again.
@@ -240,6 +335,18 @@ func (instance *Instance) Unmount() error {
 	return instance.unmountLocked(nil)
 }
 
+// Announcer returns the runtime aria-live channel attached to this
+// session. Multiple subscribers (UseAnnounce callers, external producers)
+// share this single instance, so dispatches from different parts of the
+// app aggregate into the same per-frame queue.
+func (instance *Instance) Announcer() *Announcer {
+	if instance == nil || instance.app == nil {
+		return nil
+	}
+
+	return instance.app.Announcer()
+}
+
 // Cleanup detaches the instance from the managed render registry, if present.
 func (instance *Instance) Cleanup() error {
 	instance.mu.Lock()
@@ -254,7 +361,9 @@ func (instance *Instance) Cleanup() error {
 	return nil
 }
 
-// WaitUntilExit blocks until the session has been unmounted and returns the exit error, if any.
+// WaitUntilExit blocks until the session has been explicitly unmounted or exited
+// and returns the exit error, if any. Go has no Node beforeExit equivalent, so
+// natural event-loop completion cannot be inferred by the runtime.
 func (instance *Instance) WaitUntilExit() error {
 	<-instance.exited
 
@@ -339,15 +448,18 @@ func (instance *Instance) prepareRenderLocked() preparedRender {
 	}
 
 	start := now()
-	output, staticOutput, nextStaticCounts := instance.app.RenderRuntimeOnce(instance.staticCounts)
+	sections, fresh := instance.app.renderRuntimeOnceWithCache(instance.staticCounts, instance.renderCache)
+	output := sections.Output
+	staticOutput := sections.StaticDeltaOutput
+	nextStaticCounts := sections.StaticCounts
 	cursorPosition := cloneCursorPosition(instance.app.CursorPosition())
 	instance.staticCounts = append(instance.staticCounts[:0], nextStaticCounts...)
 	renderedOutput := output
 	if !instance.debug && !instance.app.IsScreenReaderEnabled() && !instance.shouldRenderFullscreenLocked(output) {
-		renderedOutput = ensureTrailingNewline(output)
+		renderedOutput = output + "\n"
 	}
 
-	return preparedRender{
+	prepared := preparedRender{
 		logicalOutput:       output,
 		renderedOutput:      renderedOutput,
 		staticOutput:        staticOutput,
@@ -358,9 +470,47 @@ func (instance *Instance) prepareRenderLocked() preparedRender {
 		exitRequested:       instance.app.ExitRequested(),
 		exitErr:             instance.app.ExitError(),
 	}
+	if prepared.shouldClearTerminal {
+		prepared.shouldWrite = true
+	}
+
+	// On a tracker cache hit (no patches relative to last render, identical
+	// inputs, no exit/state changes pending) the rendered bytes are
+	// guaranteed identical to what we already wrote — suppress the write
+	// so idle ticks do not redraw the screen. We only do this when the
+	// previously-committed output already matches the cached output: a
+	// preceding Clear() or mode change invalidates that assumption and
+	// we still need to repaint even though the tree is unchanged.
+	//
+	// Debug mode opts out of this suppression: upstream Ink emits one append
+	// per render even for byte-identical frames, so callers tailing the
+	// debug log can correlate writes 1:1 with onRender invocations.
+	cursorMatches := (cursorPosition == nil && instance.previousCursorPosition == nil) ||
+		(cursorPosition != nil && instance.previousCursorPosition != nil && *cursorPosition == *instance.previousCursorPosition)
+	if !instance.debug && !fresh && !prepared.exitRequested && staticOutput == "" &&
+		instance.previousLogicalOutput == output && cursorMatches && !prepared.shouldClearTerminal {
+		prepared.shouldWrite = false
+		prepared.shouldClearTerminal = false
+	}
+
+	return prepared
 }
 
 func (instance *Instance) commitPreparedRenderLocked(prepared preparedRender) error {
+	// Mirror upstream Ink's `hasStaticOutput = staticOutput && staticOutput !== '\n'`
+	// filter from ink/src/ink.tsx onRender: a static delta consisting solely
+	// of a trailing newline carries no real content and must not grow the
+	// fullStaticOutput buffer or trigger the clear+rewrite cycle that a real
+	// static append would require.
+	if prepared.staticOutput == "\n" {
+		prepared.staticOutput = ""
+		prepared.shouldWrite = instance.willWriteRenderLocked(prepared.logicalOutput, prepared.renderedOutput, prepared.cursorPosition, prepared.staticOutput)
+		prepared.shouldClearTerminal = instance.shouldClearTerminalRenderLocked(prepared.logicalOutput, prepared.staticOutput)
+		if prepared.shouldClearTerminal {
+			prepared.shouldWrite = true
+		}
+	}
+
 	output := prepared.renderedOutput
 	nextFullStaticOutput := instance.fullStaticOutput
 	if prepared.staticOutput != "" {
@@ -467,7 +617,9 @@ func (instance *Instance) rerenderLocked(component ComponentFunc) error {
 }
 
 func (instance *Instance) applyOptionsLocked(options RenderOptions) {
-	modeChanged := instance.debug != options.Debug || instance.incrementalRendering != options.IncrementalRendering
+	modeChanged := instance.debug != options.Debug ||
+		instance.incrementalRendering != options.IncrementalRendering ||
+		instance.cellLevelDiff != options.CellLevelDiff
 	if modeChanged {
 		if err := instance.clearModeChangeOutputLocked(); err != nil && instance.exitErr == nil {
 			instance.exitErr = err
@@ -475,13 +627,16 @@ func (instance *Instance) applyOptionsLocked(options RenderOptions) {
 	}
 
 	instance.onRender = options.OnRender
+	instance.exitOnCtrlC = normalizeExitOnCtrlC(options.ExitOnCtrlC)
 	instance.app.stdin = options.Stdin
 	instance.installManagedStreamsLocked(options.Stdout, options.Stderr)
 	instance.app.SetScreenReaderEnabled(options.ScreenReaderEnabled)
 	instance.debug = options.Debug
-	instance.maxFPS = normalizeMaxFPS(options.MaxFPS)
-	instance.renderThrottle = throttleDuration(options.MaxFPS)
+	maxFPS := normalizeRenderMaxFPS(options)
+	instance.maxFPS = maxFPS
+	instance.renderThrottle = throttleDuration(maxFPS)
 	instance.incrementalRendering = options.IncrementalRendering
+	instance.cellLevelDiff = options.CellLevelDiff
 
 	if options.Width > 0 || options.Height > 0 {
 		instance.app.SetSize(options.Width, options.Height)
@@ -505,6 +660,9 @@ func (instance *Instance) applyOptionsLocked(options RenderOptions) {
 		instance.cursorWasShown = false
 		instance.cursorHidden = false
 		instance.lastRenderAt = time.Time{}
+		// Mode change invalidates everything we knew about the visible
+		// output — drop the render cache so the next commit always writes.
+		instance.renderCache.Reset()
 	}
 }
 
@@ -615,6 +773,7 @@ func (instance *Instance) handleResize() {
 	}
 
 	instance.cancelPendingRenderLocked()
+	instance.renderCache.Reset()
 
 	if instance.app.Width() < previousWidth {
 		if err := instance.clearLocked(); err != nil {
@@ -644,13 +803,179 @@ func (instance *Instance) handleInput(data string) {
 }
 
 func (instance *Instance) handleInputLocked(data string) error {
+	// Route SGR 1006 and legacy X10 mouse reports first so subscribers via
+	// UseMouse get them before key normalization treats the bytes as
+	// regular escape sequences. consumeMouseFrames peels off as many
+	// leading mouse frames as it can find — this matters because raw TTY
+	// reads frequently coalesce multiple mouse-move events, or stitch a
+	// mouse frame onto a subsequent keypress, into a single chunk.
+	mouseDispatched, leftover := consumeMouseFramesWithManager(data, instance.app.mouseManager)
+	if mouseDispatched && leftover == "" {
+		if instance.app.consumeStateChange() {
+			return instance.renderCurrentLocked()
+		}
+		return nil
+	}
+	if mouseDispatched {
+		// Keep the trailing non-mouse bytes flowing through key handling.
+		// We may also need to render after dispatching the mouse event(s),
+		// but renderCurrentLocked is tail-called below after key handling
+		// completes, so a single render pass covers both.
+		data = leftover
+	}
+
+	// Peel any bracketed-paste segments off the front of the chunk so the
+	// pasted body is delivered as a single hook event with no synthetic
+	// modifier flags, even when the kernel coalesces the paste with leading
+	// or trailing keystrokes into a single TTY read. Upstream Ink does not
+	// do this — pasted markers leak into the useInput callback's input
+	// string verbatim there — but goink intentionally diverges so terminal
+	// pastes round-trip cleanly.
+	for len(data) > 0 {
+		// If a paste is already in flight from an earlier chunk, accumulate
+		// bytes until we observe the end marker. The end marker may itself
+		// be split across chunks (e.g. "\x1b[201" in one read, "~" in the
+		// next), but appending the raw bytes and re-scanning the buffer on
+		// every iteration handles that case naturally.
+		if instance.pastePending {
+			// Concatenate so an end marker that straddles the chunk
+			// boundary (e.g. "\x1b[20" in the buffer, "1~" in data) is
+			// detected on the joined string.
+			combined := string(instance.pendingPaste) + data
+			endIdx := strings.Index(combined, bracketedPasteEndLiteral)
+			if endIdx < 0 {
+				instance.pendingPaste = []byte(combined)
+				data = ""
+				break
+			}
+			body := combined[:endIdx]
+			rest := combined[endIdx+len(bracketedPasteEndLiteral):]
+			instance.pendingPaste = nil
+			instance.pastePending = false
+			if err := instance.dispatchPasteLocked(body); err != nil {
+				return err
+			}
+			if instance.unmounted {
+				return nil
+			}
+			data = rest
+			continue
+		}
+
+		consumed, payload, hadPaste, rest := splitBracketedPaste(data)
+		if hadPaste {
+			if consumed != "" {
+				if err := instance.dispatchKeypressLocked(consumed); err != nil {
+					return err
+				}
+				if instance.unmounted {
+					return nil
+				}
+			}
+			if err := instance.dispatchPasteLocked(payload); err != nil {
+				return err
+			}
+			if instance.unmounted {
+				return nil
+			}
+			data = rest
+			continue
+		}
+
+		// Detect a start marker without a matching end marker in this
+		// chunk — open a pending paste and buffer the trailing bytes
+		// (everything after the start marker) until subsequent reads
+		// deliver the end marker. Bytes preceding the start marker are
+		// still dispatched as ordinary keypresses.
+		if openIdx := strings.Index(data, bracketedPasteStartLiteral); openIdx >= 0 {
+			leading := data[:openIdx]
+			tail := data[openIdx+len(bracketedPasteStartLiteral):]
+			if leading != "" {
+				if err := instance.dispatchKeypressLocked(leading); err != nil {
+					return err
+				}
+				if instance.unmounted {
+					return nil
+				}
+			}
+			instance.pastePending = true
+			instance.pendingPaste = append(instance.pendingPaste[:0], []byte(tail)...)
+			data = ""
+			break
+		}
+
+		break
+	}
+
+	if data == "" {
+		if instance.app.consumeStateChange() {
+			return instance.renderCurrentLocked()
+		}
+		return nil
+	}
+
+	return instance.dispatchKeypressLocked(data)
+}
+
+// splitBracketedPaste finds the first complete bracketed-paste sequence in
+// data and reports the bytes preceding the paste-start marker, the inner
+// payload, whether a complete paste was found, and the bytes after the
+// paste-end marker. When no complete paste is present, hadPaste is false and
+// the other return values are zero.
+func splitBracketedPaste(data string) (preceding string, payload string, hadPaste bool, rest string) {
+	startIdx := strings.Index(data, bracketedPasteStartLiteral)
+	if startIdx < 0 {
+		return "", "", false, ""
+	}
+
+	tail := data[startIdx+len(bracketedPasteStartLiteral):]
+	endIdx := strings.Index(tail, bracketedPasteEndLiteral)
+	if endIdx < 0 {
+		// No matching end marker in this chunk — leave the bytes intact
+		// so the regular keypress dispatcher delivers them verbatim. We
+		// intentionally avoid buffering across reads to keep the input
+		// pipeline stateless; terminals that emit start without end in a
+		// single chunk are rare enough that this falls back gracefully.
+		return "", "", false, ""
+	}
+
+	return data[:startIdx], tail[:endIdx], true, tail[endIdx+len(bracketedPasteEndLiteral):]
+}
+
+const (
+	bracketedPasteStartLiteral = "\x1b[200~"
+	bracketedPasteEndLiteral   = "\x1b[201~"
+)
+
+func (instance *Instance) dispatchPasteLocked(payload string) error {
+	if instance.app.hooksCtx.DispatchInput(payload, inkinput.HookKey{}, nil) {
+		instance.app.Exit()
+	}
+
+	if instance.app.ExitRequested() {
+		return instance.unmountDoneLocked(instance.app.ExitError())
+	}
+
+	if instance.app.consumeStateChange() {
+		return instance.renderCurrentLocked()
+	}
+
+	return nil
+}
+
+func (instance *Instance) dispatchKeypressLocked(data string) error {
+	if data == "\x03" && instance.exitOnCtrlC {
+		instance.app.Exit()
+		return instance.unmountDoneLocked(nil)
+	}
+
 	inputValue, key, keys, err := inkinput.NormalizeHookInput(data)
 	if err != nil {
 		return err
 	}
 
 	if data == "\x1b" {
-		instance.app.blurFocus()
+		instance.app.clearFocus()
 	}
 
 	hasShiftTab := false
@@ -677,7 +1002,7 @@ func (instance *Instance) handleInputLocked(data string) error {
 	}
 
 	if instance.app.ExitRequested() {
-		return instance.unmountLocked(instance.app.ExitError())
+		return instance.unmountDoneLocked(instance.app.ExitError())
 	}
 
 	if instance.app.consumeStateChange() {
@@ -688,15 +1013,22 @@ func (instance *Instance) handleInputLocked(data string) error {
 }
 
 func (instance *Instance) writeRenderLocked(logicalOutput string, renderedOutput string, cursorPosition *CursorPosition) error {
-	if instance.app.IsScreenReaderEnabled() {
-		return instance.writeScreenReaderRenderLocked(logicalOutput, renderedOutput)
-	}
-
+	// Branch precedence mirrors upstream Ink's onRender: the debug branch is
+	// checked first, before the screen-reader branch, so debug+screenReader
+	// produces an append-only stream of plain accessible frames rather than
+	// the screen-reader path's eraseLines+rewrite cycle. See ink/src/ink.tsx.
 	if instance.debug {
 		return instance.writeDebugRenderLocked(logicalOutput, renderedOutput, cursorPosition)
 	}
 
+	if instance.app.IsScreenReaderEnabled() {
+		return instance.writeScreenReaderRenderLocked(logicalOutput, renderedOutput)
+	}
+
 	if instance.incrementalRendering {
+		if instance.cellLevelDiff {
+			return instance.writeCellLevelRenderLocked(logicalOutput, renderedOutput, cursorPosition)
+		}
 		return instance.writeIncrementalRenderLocked(logicalOutput, renderedOutput, cursorPosition)
 	}
 
@@ -738,12 +1070,11 @@ func (instance *Instance) writeDebugRenderLocked(logicalOutput string, renderedO
 		return nil
 	}
 
-	if renderedOutput == instance.previousOutput {
-		instance.previousCursorPosition = cloneCursorPosition(cursorPosition)
-		instance.cursorWasShown = cursorPosition != nil
-		return nil
-	}
-
+	// Upstream Ink's debug path always emits one append per render (see
+	// onRender's `this.options.stdout.write(this.fullStaticOutput + output)`
+	// with no equality short-circuit). Identical-frame skipping here would
+	// silently swallow ticks of an animation or progress-log timeline that
+	// callers explicitly opted into by enabling debug.
 	if err := writePayload(instance.stdout, renderedOutput); err != nil {
 		return err
 	}
@@ -763,7 +1094,7 @@ func (instance *Instance) writeClearTerminalRenderLocked(logicalOutput string, r
 		return nil
 	}
 
-	if !instance.cursorHidden {
+	if !instance.cursorHidden && shouldManageCursor(instance.stdout) {
 		if err := writePayload(instance.stdout, hideCursorEscape); err != nil {
 			return err
 		}
@@ -804,10 +1135,6 @@ func (instance *Instance) shouldClearTerminalRenderLocked(logicalOutput string, 
 		return false
 	}
 
-	if logicalOutput == instance.previousLogicalOutput && staticOutput == "" {
-		return false
-	}
-
 	if !shouldSynchronize(instance.stdout) {
 		return false
 	}
@@ -825,8 +1152,11 @@ func (instance *Instance) willWriteRenderLocked(logicalOutput string, output str
 		return true
 	}
 
+	// Debug mode is an append-only frame log: every render must produce a
+	// write so callers can step through the timeline. Upstream Ink's debug
+	// branch unconditionally writes — see ink/src/ink.tsx onRender.
 	if instance.debug {
-		return output != instance.previousOutput
+		return true
 	}
 
 	return logicalOutput != instance.previousLogicalOutput || cursorPositionChanged(cursorPosition, instance.previousCursorPosition)
@@ -865,6 +1195,7 @@ func (instance *Instance) runPendingRender() {
 
 	prepared := *instance.pendingRender
 	instance.pendingRender = nil
+	prepared = instance.settlePendingRenderLocked(prepared)
 
 	if err := instance.commitPreparedRenderLocked(prepared); err != nil && instance.exitErr == nil {
 		instance.exitErr = err
@@ -893,7 +1224,23 @@ func (instance *Instance) flushPendingRenderLocked() error {
 
 	prepared := *instance.pendingRender
 	instance.pendingRender = nil
+	prepared = instance.settlePendingRenderLocked(prepared)
 	return instance.commitPreparedRenderLocked(prepared)
+}
+
+func (instance *Instance) settlePendingRenderLocked(prepared preparedRender) preparedRender {
+	for settled := 0; settled < maxPendingStateSettles; settled++ {
+		if !instance.app.consumeStateChange() {
+			return prepared
+		}
+
+		prepared = instance.prepareRenderLocked()
+		if prepared.exitRequested {
+			return prepared
+		}
+	}
+
+	return prepared
 }
 
 func (instance *Instance) writeStandardRenderLocked(logicalOutput string, output string, cursorPosition *CursorPosition) error {
@@ -901,7 +1248,7 @@ func (instance *Instance) writeStandardRenderLocked(logicalOutput string, output
 		return nil
 	}
 
-	if !instance.cursorHidden {
+	if !instance.cursorHidden && shouldManageCursor(instance.stdout) {
 		if err := writePayload(instance.stdout, hideCursorEscape); err != nil {
 			return err
 		}
@@ -1040,12 +1387,29 @@ func (instance *Instance) writeIncrementalRenderLocked(logicalOutput string, out
 			line = nextLines[index]
 		}
 
+		previousLine := ""
+		if index < len(instance.previousLines) {
+			previousLine = instance.previousLines[index]
+		}
+
 		suffix := "\n"
 		if isLastLine && !hasTrailingNewline {
 			suffix = ""
 		}
 
-		buffer = append(buffer, ansiCursorTo(0)+line+ansiEraseEndLine()+suffix)
+		// Column-level dirty-rect optimization: when both the previous and
+		// next line are pure plain text (no ANSI escapes) and share a
+		// common visible prefix, move the cursor to the divergence column,
+		// erase to end-of-line, and emit only the differing tail. Falls
+		// back to a full-line rewrite when ANSI sequences are present —
+		// styled output mixes display state with code points so a naïve
+		// column count would corrupt the active SGR state.
+		if commonCols, useColumnDiff := commonPlainPrefixWidth(previousLine, line); useColumnDiff {
+			tail := line[len(previousLine[:commonByteOffsetForWidth(previousLine, commonCols)]):]
+			buffer = append(buffer, ansiCursorTo(commonCols)+ansiEraseEndLine()+tail+suffix)
+		} else {
+			buffer = append(buffer, ansiCursorTo(0)+line+ansiEraseEndLine()+suffix)
+		}
 	}
 
 	buffer = append(buffer, buildCursorSuffix(visibleLines, cursorPosition))
@@ -1293,6 +1657,14 @@ func (instance *Instance) restoreRenderStateLocked(state renderState) error {
 }
 
 func (instance *Instance) unmountLocked(exitErr error) error {
+	return instance.unmountLockedWithOptions(exitErr, unmountOptions{clearOutput: true})
+}
+
+func (instance *Instance) unmountDoneLocked(exitErr error) error {
+	return instance.unmountLockedWithOptions(exitErr, unmountOptions{clearOutput: false})
+}
+
+func (instance *Instance) unmountLockedWithOptions(exitErr error, options unmountOptions) error {
 	if exitErr != nil && instance.exitErr == nil {
 		instance.exitErr = exitErr
 	}
@@ -1311,6 +1683,11 @@ func (instance *Instance) unmountLocked(exitErr error) error {
 	}
 
 	instance.unmounted = true
+	// Discard any in-flight bracketed-paste body — the session is closing
+	// before the terminal emitted the matching end marker, so the partial
+	// payload should not be delivered as a paste event.
+	instance.pendingPaste = nil
+	instance.pastePending = false
 	instance.app.stdout = instance.stdout
 	instance.app.stderr = instance.stderr
 	if instance.unsubscribeResize != nil {
@@ -1336,7 +1713,7 @@ func (instance *Instance) unmountLocked(exitErr error) error {
 		instance.previousLineCount = 0
 		instance.previousCursorPosition = nil
 		instance.cursorWasShown = false
-	} else {
+	} else if options.clearOutput {
 		if err := instance.clearLocked(); err != nil && firstErr == nil {
 			firstErr = err
 		}
@@ -1346,8 +1723,28 @@ func (instance *Instance) unmountLocked(exitErr error) error {
 				firstErr = err
 			}
 		}
+	} else {
+		instance.previousLogicalOutput = ""
+		instance.previousOutput = ""
+		instance.previousLines = nil
+		instance.previousLineCount = 0
+		instance.previousCursorPosition = nil
+		instance.cursorWasShown = false
+		if instance.cursorHidden && instance.stdout != nil {
+			if err := writePayload(instance.stdout, showCursorEscape); err != nil && firstErr == nil {
+				firstErr = err
+			}
+		}
 	}
 	instance.cursorHidden = false
+
+	// Drop any queued announcements: the session is going away, so any
+	// messages still pending would otherwise outlive the consumer that
+	// produced them. Done after the final render write but before hook
+	// cleanup so unmount-time cleanup can still observe an empty queue.
+	if announcer := instance.app.Announcer(); announcer != nil {
+		announcer.Clear()
+	}
 
 	instance.app.hooksCtx.RunCleanup()
 
@@ -1438,6 +1835,22 @@ func normalizeMaxFPS(fps int) int {
 	}
 
 	return fps
+}
+
+func normalizeRenderMaxFPS(options RenderOptions) int {
+	if options.MaxFPSLimit != nil {
+		return normalizeMaxFPS(*options.MaxFPSLimit)
+	}
+
+	return normalizeMaxFPS(options.MaxFPS)
+}
+
+func normalizeExitOnCtrlC(value *bool) bool {
+	if value == nil {
+		return true
+	}
+
+	return *value
 }
 
 func throttleDuration(fps int) time.Duration {

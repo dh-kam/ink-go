@@ -234,6 +234,31 @@ func TestNodeKeyField(t *testing.T) {
 	}
 }
 
+func TestCreateElementPropagatesKeyProp(t *testing.T) {
+	node := vdom.CreateElement("item", vdom.Props{"key": "test-key"})
+	if node.Key != "test-key" {
+		t.Errorf("Expected key 'test-key', got %q", node.Key)
+	}
+	if node.Props["key"] != "test-key" {
+		t.Errorf("Expected key prop to remain available, got %v", node.Props["key"])
+	}
+}
+
+func TestCreateElementPropagatesNumericKeyProp(t *testing.T) {
+	node := vdom.CreateElement("item", vdom.Props{"key": 42})
+	if node.Key != "42" {
+		t.Errorf("Expected numeric key '42', got %q", node.Key)
+	}
+}
+
+func TestSetAttributeUpdatesKey(t *testing.T) {
+	node := vdom.CreateElement("item", nil)
+	node.SetAttribute("key", "updated-key")
+	if node.Key != "updated-key" {
+		t.Errorf("Expected key 'updated-key', got %q", node.Key)
+	}
+}
+
 // TestTextNoChildren tests that text nodes don't have children
 func TestTextNoChildren(t *testing.T) {
 	node := vdom.CreateTextNode("test")

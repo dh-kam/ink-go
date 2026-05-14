@@ -1,0 +1,13 @@
+schemaVersion: goink.tuitest/v1alpha1
+name: border-demo/static
+app: border-demo
+viewport:
+  width: 100
+  height: 20
+capture:
+  mode: plain
+  trimTrailingNewline: false
+steps:
+  - name: render
+    expect:
+      file: borders.golden

@@ -871,6 +871,119 @@
     }
   },
   {
+    "name": "text/grapheme-combining-mark-fixed-width",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "node": {
+      "type": "box",
+      "children": [
+        {
+          "type": "box",
+          "props": {
+            "width": 1
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "é"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "children": [
+            {
+              "type": "raw",
+              "value": "|"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "text/osc8-hyperlink-preserved",
+    "columns": 40,
+    "screenReader": false,
+    "ansi": false,
+    "node": {
+      "type": "text",
+      "children": [
+        {
+          "type": "raw",
+          "value": "\u001b]8;;https://example.com\u0007Example\u001b]8;;\u0007"
+        }
+      ]
+    }
+  },
+  {
+    "name": "text/ansi-osc8-hyperlink-preserved",
+    "columns": 40,
+    "screenReader": false,
+    "ansi": true,
+    "node": {
+      "type": "text",
+      "children": [
+        {
+          "type": "raw",
+          "value": "\u001b]8;;https://example.com\u0007Example\u001b]8;;\u0007"
+        }
+      ]
+    }
+  },
+  {
+    "name": "text/zwj-family-fixed-width-between-siblings",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "node": {
+      "type": "box",
+      "children": [
+        {
+          "type": "text",
+          "children": [
+            {
+              "type": "raw",
+              "value": "["
+            }
+          ]
+        },
+        {
+          "type": "box",
+          "props": {
+            "width": 2
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "👨‍👩‍👧‍👦"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "children": [
+            {
+              "type": "raw",
+              "value": "]"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
     "name": "text/mixed-case",
     "columns": 100,
     "screenReader": false,
@@ -1266,6 +1379,78 @@
     }
   },
   {
+    "name": "text/ansi-style-gray",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "node": {
+      "type": "text",
+      "props": {
+        "color": "gray"
+      },
+      "children": [
+        {
+          "type": "raw",
+          "value": "Gray"
+        }
+      ]
+    }
+  },
+  {
+    "name": "text/ansi-style-grey",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "node": {
+      "type": "text",
+      "props": {
+        "color": "grey"
+      },
+      "children": [
+        {
+          "type": "raw",
+          "value": "Grey"
+        }
+      ]
+    }
+  },
+  {
+    "name": "text/ansi-style-green-bright",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "node": {
+      "type": "text",
+      "props": {
+        "color": "greenBright"
+      },
+      "children": [
+        {
+          "type": "raw",
+          "value": "Bright"
+        }
+      ]
+    }
+  },
+  {
+    "name": "text/ansi-style-background-blue-bright",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "node": {
+      "type": "text",
+      "props": {
+        "backgroundColor": "blueBright"
+      },
+      "children": [
+        {
+          "type": "raw",
+          "value": "Bright BG"
+        }
+      ]
+    }
+  },
+  {
     "name": "text/style-color-background-combo",
     "columns": 100,
     "screenReader": false,
@@ -1463,6 +1648,58 @@
     }
   },
   {
+    "name": "text/wrap-preserves-leading-and-trailing-spaces",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "node": {
+      "type": "box",
+      "props": {
+        "width": 5
+      },
+      "children": [
+        {
+          "type": "text",
+          "props": {
+            "wrap": "wrap"
+          },
+          "children": [
+            {
+              "type": "raw",
+              "value": "   alpha beta   "
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "text/wrap-preserves-leading-separator-when-it-fits",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "node": {
+      "type": "box",
+      "props": {
+        "width": 6
+      },
+      "children": [
+        {
+          "type": "text",
+          "props": {
+            "wrap": "wrap"
+          },
+          "children": [
+            {
+              "type": "raw",
+              "value": " alpha beta "
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
     "name": "text/wrap-enough-space",
     "columns": 100,
     "screenReader": false,
@@ -1607,6 +1844,59 @@
           "type": "text",
           "props": {
             "wrap": "truncate"
+          },
+          "children": [
+            {
+              "type": "raw",
+              "value": "Hello World"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "text/truncate-end-explicit-mode",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "node": {
+      "type": "box",
+      "props": {
+        "width": 7
+      },
+      "children": [
+        {
+          "type": "text",
+          "props": {
+            "wrap": "truncate-end"
+          },
+          "children": [
+            {
+              "type": "raw",
+              "value": "Hello World"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "text/truncate-end-explicit-text-wrap",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "node": {
+      "type": "box",
+      "props": {
+        "width": 7
+      },
+      "children": [
+        {
+          "type": "text",
+          "props": {
+            "wrap": "truncate-end",
+            "textWrap": "truncate-end"
           },
           "children": [
             {
@@ -5897,6 +6187,115 @@
     }
   },
   {
+    "name": "transform/ansi-link-wrapper",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "node": {
+      "type": "transform",
+      "preset": "angle",
+      "children": [
+        {
+          "type": "text",
+          "children": [
+            {
+              "type": "raw",
+              "value": "Example"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "transform/multiline-width-change",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "node": {
+      "type": "transform",
+      "preset": "bracket_index",
+      "children": [
+        {
+          "type": "text",
+          "children": [
+            {
+              "type": "raw",
+              "value": "a\nbb\nccc"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "transform/parent-text-color-continuation",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "node": {
+      "type": "text",
+      "props": {
+        "color": "green"
+      },
+      "children": [
+        {
+          "type": "raw",
+          "value": "pre "
+        },
+        {
+          "type": "transform",
+          "preset": "upper",
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "mid"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "raw",
+          "value": " post"
+        }
+      ]
+    }
+  },
+  {
+    "name": "transform/inside-bordered-box",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "node": {
+      "type": "box",
+      "props": {
+        "borderStyle": "round",
+        "width": 12
+      },
+      "children": [
+        {
+          "type": "transform",
+          "preset": "upper",
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "hello world"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
     "name": "box/row-basic-two",
     "columns": 100,
     "screenReader": false,
@@ -6083,6 +6482,55 @@
             {
               "type": "raw",
               "value": "Doggo"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "box/position-absolute-does-not-consume-column-space",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "node": {
+      "type": "box",
+      "props": {
+        "flexDirection": "column"
+      },
+      "children": [
+        {
+          "type": "text",
+          "children": [
+            {
+              "type": "raw",
+              "value": "Line 1"
+            }
+          ]
+        },
+        {
+          "type": "box",
+          "props": {
+            "position": "absolute"
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "ABS"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "children": [
+            {
+              "type": "raw",
+              "value": "Line 2"
             }
           ]
         }
@@ -7148,7 +7596,64 @@
     }
   },
   {
+    "name": "box/row - align text to center",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "node": {
+      "type": "box",
+      "props": {
+        "width": 10,
+        "justifyContent": "center"
+      },
+      "children": [
+        {
+          "type": "text",
+          "children": [
+            {
+              "type": "raw",
+              "value": "Test"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
     "name": "box/justify-center-row-two",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "node": {
+      "type": "box",
+      "props": {
+        "width": 10,
+        "justifyContent": "center"
+      },
+      "children": [
+        {
+          "type": "text",
+          "children": [
+            {
+              "type": "raw",
+              "value": "A"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "children": [
+            {
+              "type": "raw",
+              "value": "B"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "box/row - align multiple text nodes to center",
     "columns": 100,
     "screenReader": false,
     "ansi": false,
@@ -7205,6 +7710,30 @@
     }
   },
   {
+    "name": "box/row - align text to right",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "node": {
+      "type": "box",
+      "props": {
+        "width": 10,
+        "justifyContent": "flex-end"
+      },
+      "children": [
+        {
+          "type": "text",
+          "children": [
+            {
+              "type": "raw",
+              "value": "Test"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
     "name": "box/justify-end-row-two",
     "columns": 100,
     "screenReader": false,
@@ -7231,6 +7760,66 @@
             {
               "type": "raw",
               "value": "B"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "box/row - align multiple text nodes to right",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "node": {
+      "type": "box",
+      "props": {
+        "width": 10,
+        "justifyContent": "flex-end"
+      },
+      "children": [
+        {
+          "type": "text",
+          "children": [
+            {
+              "type": "raw",
+              "value": "A"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "children": [
+            {
+              "type": "raw",
+              "value": "B"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "box/row - align colored text node when text is squashed",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": true,
+    "node": {
+      "type": "box",
+      "props": {
+        "justifyContent": "flex-end",
+        "width": 5
+      },
+      "children": [
+        {
+          "type": "text",
+          "props": {
+            "color": "green"
+          },
+          "children": [
+            {
+              "type": "raw",
+              "value": "X"
             }
           ]
         }
@@ -7271,7 +7860,106 @@
     }
   },
   {
+    "name": "box/row - align two text nodes on the edges",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "node": {
+      "type": "box",
+      "props": {
+        "width": 4,
+        "justifyContent": "space-between"
+      },
+      "children": [
+        {
+          "type": "text",
+          "children": [
+            {
+              "type": "raw",
+              "value": "A"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "children": [
+            {
+              "type": "raw",
+              "value": "B"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "box/row - space evenly two text nodes",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "node": {
+      "type": "box",
+      "props": {
+        "width": 10,
+        "justifyContent": "space-evenly"
+      },
+      "children": [
+        {
+          "type": "text",
+          "children": [
+            {
+              "type": "raw",
+              "value": "A"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "children": [
+            {
+              "type": "raw",
+              "value": "B"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
     "name": "box/justify-around-row-two",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "node": {
+      "type": "box",
+      "props": {
+        "width": 5,
+        "justifyContent": "space-around"
+      },
+      "children": [
+        {
+          "type": "text",
+          "children": [
+            {
+              "type": "raw",
+              "value": "A"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "children": [
+            {
+              "type": "raw",
+              "value": "B"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "box/row - align two text nodes with equal space around them",
     "columns": 100,
     "screenReader": false,
     "ansi": false,
@@ -7371,6 +8059,31 @@
     }
   },
   {
+    "name": "box/column - align text to center",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "node": {
+      "type": "box",
+      "props": {
+        "flexDirection": "column",
+        "height": 3,
+        "justifyContent": "center"
+      },
+      "children": [
+        {
+          "type": "text",
+          "children": [
+            {
+              "type": "raw",
+              "value": "Test"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
     "name": "box/justify-center-column-two",
     "columns": 100,
     "screenReader": false,
@@ -7430,6 +8143,31 @@
     }
   },
   {
+    "name": "box/column - align text to bottom",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "node": {
+      "type": "box",
+      "props": {
+        "flexDirection": "column",
+        "height": 3,
+        "justifyContent": "flex-end"
+      },
+      "children": [
+        {
+          "type": "text",
+          "children": [
+            {
+              "type": "raw",
+              "value": "Test"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
     "name": "box/justify-end-column-two",
     "columns": 100,
     "screenReader": false,
@@ -7465,6 +8203,40 @@
   },
   {
     "name": "box/justify-between-column-two",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "node": {
+      "type": "box",
+      "props": {
+        "flexDirection": "column",
+        "height": 4,
+        "justifyContent": "space-between"
+      },
+      "children": [
+        {
+          "type": "text",
+          "children": [
+            {
+              "type": "raw",
+              "value": "A"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "children": [
+            {
+              "type": "raw",
+              "value": "B"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "box/column - align two text nodes on the edges",
     "columns": 100,
     "screenReader": false,
     "ansi": false,
@@ -8286,7 +9058,95 @@
     }
   },
   {
+    "name": "box/grow equally",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "node": {
+      "type": "box",
+      "props": {
+        "width": 6
+      },
+      "children": [
+        {
+          "type": "box",
+          "props": {
+            "flexGrow": 1
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "A"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "box",
+          "props": {
+            "flexGrow": 1
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "B"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
     "name": "box/flex-grow-one",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "node": {
+      "type": "box",
+      "props": {
+        "width": 6
+      },
+      "children": [
+        {
+          "type": "box",
+          "props": {
+            "flexGrow": 1
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "A"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "children": [
+            {
+              "type": "raw",
+              "value": "B"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "box/grow one element",
     "columns": 100,
     "screenReader": false,
     "ansi": false,
@@ -8442,7 +9302,133 @@
     }
   },
   {
+    "name": "box/dont shrink",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "node": {
+      "type": "box",
+      "props": {
+        "width": 16
+      },
+      "children": [
+        {
+          "type": "box",
+          "props": {
+            "flexShrink": 0,
+            "width": 6
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "A"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "box",
+          "props": {
+            "flexShrink": 0,
+            "width": 6
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "B"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "box",
+          "props": {
+            "width": 6
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "C"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
     "name": "box/flex-shrink-equal",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "node": {
+      "type": "box",
+      "props": {
+        "width": 10
+      },
+      "children": [
+        {
+          "type": "box",
+          "props": {
+            "flexShrink": 1,
+            "width": 6
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "A"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "box",
+          "props": {
+            "flexShrink": 1,
+            "width": 6
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "B"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "children": [
+            {
+              "type": "raw",
+              "value": "C"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "box/shrink equally",
     "columns": 100,
     "screenReader": false,
     "ansi": false,
@@ -9170,6 +10156,142 @@
     }
   },
   {
+    "name": "box/flex-shrink-redistributes-after-min-width",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "node": {
+      "type": "box",
+      "props": {
+        "width": 5
+      },
+      "children": [
+        {
+          "type": "box",
+          "props": {
+            "width": 4,
+            "minWidth": 3,
+            "flexShrink": 1
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "AAAA"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "box",
+          "props": {
+            "width": 4,
+            "flexShrink": 1
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "BBBB"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "box/flex-shrink-2-1",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "node": {
+      "type": "box",
+      "props": {
+        "width": 8
+      },
+      "children": [
+        {
+          "type": "box",
+          "props": {
+            "flexShrink": 2,
+            "width": 6
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "AAAAAA"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "box",
+          "props": {
+            "flexShrink": 1,
+            "width": 6
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "BBBBBB"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "box/flex-shrink-clamped-by-min-width-percent",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "node": {
+      "type": "box",
+      "props": {
+        "width": 8
+      },
+      "children": [
+        {
+          "type": "text",
+          "props": {
+            "minWidth": "50%"
+          },
+          "children": [
+            {
+              "type": "raw",
+              "value": "AAAAAA"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "children": [
+            {
+              "type": "raw",
+              "value": "BBBBBB"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
     "name": "box/overflow-x-hidden-single-text",
     "columns": 100,
     "screenReader": false,
@@ -9516,6 +10638,80 @@
     }
   },
   {
+    "name": "box/border-negative-margin-child-draw-order",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "node": {
+      "type": "box",
+      "props": {
+        "width": 8,
+        "height": 4,
+        "borderStyle": "round"
+      },
+      "children": [
+        {
+          "type": "box",
+          "props": {
+            "marginTop": -1,
+            "marginLeft": -1,
+            "width": 4,
+            "flexShrink": 0
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "EDGE"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "box/overflow-hidden-border-container-negative-child",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "node": {
+      "type": "box",
+      "props": {
+        "width": 8,
+        "height": 4,
+        "overflow": "hidden",
+        "borderStyle": "round"
+      },
+      "children": [
+        {
+          "type": "box",
+          "props": {
+            "marginTop": -1,
+            "marginLeft": -1,
+            "width": 8,
+            "height": 3,
+            "flexShrink": 0
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "AAAAAA\nBBBBBB\nCCCCCC"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
     "name": "box/border-round-full-width",
     "columns": 100,
     "screenReader": false,
@@ -9532,6 +10728,56 @@
             {
               "type": "raw",
               "value": "Hello World"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "box/border-classic-fixed-width",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "node": {
+      "type": "box",
+      "props": {
+        "width": 7,
+        "height": 3,
+        "borderStyle": "classic"
+      },
+      "children": [
+        {
+          "type": "text",
+          "children": [
+            {
+              "type": "raw",
+              "value": "Hi"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "box/border-arrow-fixed-width",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "node": {
+      "type": "box",
+      "props": {
+        "width": 7,
+        "height": 3,
+        "borderStyle": "arrow"
+      },
+      "children": [
+        {
+          "type": "text",
+          "children": [
+            {
+              "type": "raw",
+              "value": "Hi"
             }
           ]
         }
@@ -14521,7 +15767,87 @@
     }
   },
   {
+    "name": "box/set flex basis with flexDirection=\"row\" container",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "node": {
+      "type": "box",
+      "props": {
+        "width": 6
+      },
+      "children": [
+        {
+          "type": "box",
+          "props": {
+            "flexBasis": 3
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "A"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "children": [
+            {
+              "type": "raw",
+              "value": "B"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
     "name": "box/flex-basis-row-percent",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "node": {
+      "type": "box",
+      "props": {
+        "width": 6
+      },
+      "children": [
+        {
+          "type": "box",
+          "props": {
+            "flexBasis": "50%"
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "A"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "children": [
+            {
+              "type": "raw",
+              "value": "B"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "box/set flex basis in percent with flexDirection=\"row\" container",
     "columns": 100,
     "screenReader": false,
     "ansi": false,
@@ -14602,7 +15928,89 @@
     }
   },
   {
+    "name": "box/set flex basis with flexDirection=\"column\" container",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "node": {
+      "type": "box",
+      "props": {
+        "flexDirection": "column",
+        "height": 6
+      },
+      "children": [
+        {
+          "type": "box",
+          "props": {
+            "flexBasis": 3
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "A"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "children": [
+            {
+              "type": "raw",
+              "value": "B"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
     "name": "box/flex-basis-column-percent",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "node": {
+      "type": "box",
+      "props": {
+        "flexDirection": "column",
+        "height": 6
+      },
+      "children": [
+        {
+          "type": "box",
+          "props": {
+            "flexBasis": "50%"
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "A"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "children": [
+            {
+              "type": "raw",
+              "value": "B"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "box/set flex basis in percent with flexDirection=\"column\" container",
     "columns": 100,
     "screenReader": false,
     "ansi": false,
@@ -15696,6 +17104,43 @@
                   "value": "|"
                 }
               ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "box/emoji-zwj-width-fixed-box",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "node": {
+      "type": "box",
+      "children": [
+        {
+          "type": "box",
+          "props": {
+            "width": 2
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "👨‍👩‍👧‍👦"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "children": [
+            {
+              "type": "raw",
+              "value": "|"
             }
           ]
         }
@@ -20183,6 +21628,1180 @@
     }
   },
   {
+    "name": "box/screen-reader-arbitrary-state-key",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "node": {
+      "type": "box",
+      "props": {
+        "aria-role": "textbox",
+        "aria-state": {
+          "invalid": true
+        }
+      },
+      "children": [
+        {
+          "type": "text",
+          "children": [
+            {
+              "type": "raw",
+              "value": "Email"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "box/screen-reader-arbitrary-state-key-without-role",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "node": {
+      "type": "box",
+      "props": {
+        "aria-state": {
+          "invalid": true
+        }
+      },
+      "children": [
+        {
+          "type": "text",
+          "children": [
+            {
+              "type": "raw",
+              "value": "Email"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "box/screen-reader-aria-labelledby-missing-falls-back",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "node": {
+      "type": "box",
+      "props": {
+        "aria-labelledby": "no-such-id"
+      },
+      "children": [
+        {
+          "type": "text",
+          "children": [
+            {
+              "type": "raw",
+              "value": "fallback content"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "box/screen-reader-aria-describedby-missing-no-op",
+    "columns": 100,
+    "screenReader": true,
+    "ansi": false,
+    "node": {
+      "type": "box",
+      "props": {
+        "aria-describedby": "no-such-id"
+      },
+      "children": [
+        {
+          "type": "text",
+          "children": [
+            {
+              "type": "raw",
+              "value": "only content"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "box/overflow-hidden-border-top-left-text-overflow",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "node": {
+      "type": "box",
+      "props": {
+        "width": 6,
+        "height": 4,
+        "overflow": "hidden",
+        "borderStyle": "round"
+      },
+      "children": [
+        {
+          "type": "box",
+          "props": {
+            "marginTop": -1,
+            "marginLeft": -1,
+            "width": 6,
+            "height": 4,
+            "flexShrink": 0
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "AAAA\nBBBB\nCCCC\nDDDD"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "box/overflow-hidden-nested-borders",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "node": {
+      "type": "box",
+      "props": {
+        "width": 8,
+        "height": 5,
+        "overflow": "hidden",
+        "borderStyle": "round"
+      },
+      "children": [
+        {
+          "type": "box",
+          "props": {
+            "width": 6,
+            "height": 3,
+            "overflow": "hidden",
+            "borderStyle": "round",
+            "flexShrink": 0
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "AAAA\nBBBB\nCCCC"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "box/overflow-hidden-border-bottom-right-text-overflow",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "node": {
+      "type": "box",
+      "props": {
+        "width": 6,
+        "height": 4,
+        "overflow": "hidden",
+        "borderStyle": "round"
+      },
+      "children": [
+        {
+          "type": "box",
+          "props": {
+            "marginTop": 2,
+            "marginLeft": 2,
+            "width": 6,
+            "height": 4,
+            "flexShrink": 0
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "AAAA\nBBBB\nCCCC\nDDDD"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "box/default-flex-shrink-text-box-text-tight",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "node": {
+      "type": "box",
+      "props": {
+        "width": 8
+      },
+      "children": [
+        {
+          "type": "text",
+          "children": [
+            {
+              "type": "raw",
+              "value": "AAAA"
+            }
+          ]
+        },
+        {
+          "type": "box",
+          "props": {
+            "width": 4
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "BBBB"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "children": [
+            {
+              "type": "raw",
+              "value": "CCCC"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "box/default-flex-shrink-flex-basis-row",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "node": {
+      "type": "box",
+      "props": {
+        "width": 10
+      },
+      "children": [
+        {
+          "type": "box",
+          "props": {
+            "flexBasis": 4
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "AAAA"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "children": [
+            {
+              "type": "raw",
+              "value": "BBBB"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "children": [
+            {
+              "type": "raw",
+              "value": "CCCC"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "box/default-flex-shrink-bordered-children-row",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "node": {
+      "type": "box",
+      "props": {
+        "width": 12
+      },
+      "children": [
+        {
+          "type": "box",
+          "props": {
+            "borderStyle": "round"
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "AB"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "box",
+          "props": {
+            "borderStyle": "round"
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "CD"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "box",
+          "props": {
+            "borderStyle": "round"
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "EF"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "box/yoga-flex-grow-proportional-3-1",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "node": {
+      "type": "box",
+      "props": {
+        "width": 8
+      },
+      "children": [
+        {
+          "type": "box",
+          "props": {
+            "flexGrow": 3
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "A"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "box",
+          "props": {
+            "flexGrow": 1
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "B"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "box/yoga-flex-grow-2-1",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "node": {
+      "type": "box",
+      "props": {
+        "width": 10
+      },
+      "children": [
+        {
+          "type": "box",
+          "props": {
+            "flexGrow": 2
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "A"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "box",
+          "props": {
+            "flexGrow": 1
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "B"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "box/yoga-flex-grow-fractional",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "node": {
+      "type": "box",
+      "props": {
+        "width": 12
+      },
+      "children": [
+        {
+          "type": "box",
+          "props": {
+            "flexGrow": 0.5
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "A"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "box",
+          "props": {
+            "flexGrow": 1
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "B"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "box/yoga-flex-grow-zero-with-grow-sibling",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "node": {
+      "type": "box",
+      "props": {
+        "width": 8
+      },
+      "children": [
+        {
+          "type": "box",
+          "props": {
+            "flexGrow": 0
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "A"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "box",
+          "props": {
+            "flexGrow": 1
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "B"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "box/yoga-flex-grow-with-flex-basis",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "node": {
+      "type": "box",
+      "props": {
+        "width": 10
+      },
+      "children": [
+        {
+          "type": "box",
+          "props": {
+            "flexGrow": 1,
+            "flexBasis": 4
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "A"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "box",
+          "props": {
+            "flexGrow": 1
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "B"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "box/yoga-flex-grow-with-margin",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "node": {
+      "type": "box",
+      "props": {
+        "width": 10
+      },
+      "children": [
+        {
+          "type": "box",
+          "props": {
+            "flexGrow": 1,
+            "marginLeft": 2
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "A"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "box",
+          "props": {
+            "flexGrow": 1
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "B"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "box/yoga-column-flex-grow-3-1",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "node": {
+      "type": "box",
+      "props": {
+        "flexDirection": "column",
+        "height": 8
+      },
+      "children": [
+        {
+          "type": "box",
+          "props": {
+            "flexGrow": 3
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "A"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "box",
+          "props": {
+            "flexGrow": 1
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "B"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "box/yoga-column-fractional-grow",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "node": {
+      "type": "box",
+      "props": {
+        "flexDirection": "column",
+        "height": 7
+      },
+      "children": [
+        {
+          "type": "box",
+          "props": {
+            "flexGrow": 0.5
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "A"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "box",
+          "props": {
+            "flexGrow": 1.5
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "B"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "box/yoga-negative-gap",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "node": {
+      "type": "box",
+      "props": {
+        "gap": -1,
+        "width": 5
+      },
+      "children": [
+        {
+          "type": "text",
+          "children": [
+            {
+              "type": "raw",
+              "value": "A"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "children": [
+            {
+              "type": "raw",
+              "value": "B"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "children": [
+            {
+              "type": "raw",
+              "value": "C"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "box/yoga-min-width-larger-than-width",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "node": {
+      "type": "box",
+      "children": [
+        {
+          "type": "box",
+          "props": {
+            "width": 2,
+            "minWidth": 5
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "A"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "children": [
+            {
+              "type": "raw",
+              "value": "B"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "box/yoga-min-width-and-percent-width",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "node": {
+      "type": "box",
+      "props": {
+        "width": 8
+      },
+      "children": [
+        {
+          "type": "box",
+          "props": {
+            "width": "25%",
+            "minWidth": 4
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "A"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "children": [
+            {
+              "type": "raw",
+              "value": "B"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "box/yoga-flex-shrink-zero-in-row",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "node": {
+      "type": "box",
+      "props": {
+        "width": 8
+      },
+      "children": [
+        {
+          "type": "box",
+          "props": {
+            "flexShrink": 0,
+            "width": 5
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "AAAAA"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "box",
+          "props": {
+            "flexShrink": 1,
+            "width": 5
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "BBBBB"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "box/yoga-display-none-with-grow-sibling",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "node": {
+      "type": "box",
+      "props": {
+        "width": 6,
+        "flexDirection": "column"
+      },
+      "children": [
+        {
+          "type": "box",
+          "props": {
+            "display": "none"
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "Hidden"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "box",
+          "props": {
+            "flexGrow": 1
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "Visible"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "box/yoga-absolute-with-flex-grow-siblings",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "node": {
+      "type": "box",
+      "props": {
+        "width": 8
+      },
+      "children": [
+        {
+          "type": "box",
+          "props": {
+            "flexGrow": 1
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "A"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "box",
+          "props": {
+            "position": "absolute"
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "Z"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "box",
+          "props": {
+            "flexGrow": 1
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "B"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "box/yoga-absolute-with-margin",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "node": {
+      "type": "box",
+      "props": {
+        "width": 10,
+        "height": 3
+      },
+      "children": [
+        {
+          "type": "text",
+          "children": [
+            {
+              "type": "raw",
+              "value": "Base"
+            }
+          ]
+        },
+        {
+          "type": "box",
+          "props": {
+            "position": "absolute",
+            "marginLeft": 4,
+            "marginTop": 1
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "Z"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "box/yoga-align-self-stretch-overrides-align-items",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "node": {
+      "type": "box",
+      "props": {
+        "flexDirection": "row",
+        "alignItems": "flex-start",
+        "height": 4
+      },
+      "children": [
+        {
+          "type": "box",
+          "props": {
+            "alignSelf": "stretch",
+            "borderStyle": "single"
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "X"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "children": [
+            {
+              "type": "raw",
+              "value": "Y"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "box/yoga-min-height-percent",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "node": {
+      "type": "box",
+      "props": {
+        "flexDirection": "column",
+        "height": 6
+      },
+      "children": [
+        {
+          "type": "box",
+          "props": {
+            "minHeight": "50%"
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "A"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "children": [
+            {
+              "type": "raw",
+              "value": "B"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
     "name": "static/simple-0",
     "columns": 100,
     "screenReader": false,
@@ -21286,5 +23905,130 @@
         ]
       }
     ]
+  },
+  {
+    "name": "static/screen-reader-runtime-static-delta",
+    "columns": 100,
+    "mode": "managed-frames",
+    "screenReader": true,
+    "expectedContains": [
+      "Static A\n",
+      "status: One pending",
+      "Static B\n",
+      "status: Done"
+    ],
+    "frames": [
+      {
+        "type": "box",
+        "props": {
+          "flexDirection": "column"
+        },
+        "children": [
+          {
+            "type": "static",
+            "items": [
+              "A"
+            ],
+            "template": {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "Static {{item}}"
+                }
+              ]
+            }
+          },
+          {
+            "type": "box",
+            "props": {
+              "aria-role": "status"
+            },
+            "children": [
+              {
+                "type": "text",
+                "children": [
+                  {
+                    "type": "raw",
+                    "value": "One pending"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "box",
+        "props": {
+          "flexDirection": "column"
+        },
+        "children": [
+          {
+            "type": "static",
+            "items": [
+              "A",
+              "B"
+            ],
+            "template": {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "Static {{item}}"
+                }
+              ]
+            }
+          },
+          {
+            "type": "box",
+            "props": {
+              "aria-role": "status"
+            },
+            "children": [
+              {
+                "type": "text",
+                "children": [
+                  {
+                    "type": "raw",
+                    "value": "Done"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "measure/measure element",
+    "columns": 100,
+    "mode": "runtime-measure-element"
+  },
+  {
+    "name": "measure/calculate layout while rendering is throttled",
+    "columns": 100,
+    "mode": "runtime-measure-element-throttled"
+  },
+  {
+    "name": "render/throttle renders to maxFps",
+    "columns": 100,
+    "mode": "runtime-throttle-maxfps"
+  },
+  {
+    "name": "render/no bsu/esu when output is unchanged",
+    "columns": 100,
+    "mode": "runtime-throttle-tty-unchanged"
+  },
+  {
+    "name": "render/no bsu/esu when output and cursor are unchanged",
+    "columns": 100,
+    "mode": "runtime-throttle-tty-unchanged-cursor"
+  },
+  {
+    "name": "render/bsu/esu wraps throttledLog trailing call",
+    "columns": 100,
+    "mode": "runtime-throttle-tty-trailing"
   }
 ]

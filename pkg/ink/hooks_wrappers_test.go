@@ -21,6 +21,10 @@ func (rawModeTestStdin) Fd() int {
 	return 0
 }
 
+func (rawModeTestStdin) IsTTY() bool {
+	return true
+}
+
 func TestUseInputWrapperRegistersHook(t *testing.T) {
 	app := NewApp(func() *vdom.Node {
 		cleanup := UseInput(func(input interface{}, keys []string) bool {
@@ -55,6 +59,44 @@ func TestUseInputWrapperInactiveOptionSkipsHookAndRawMode(t *testing.T) {
 	}
 	if app.rawState != nil {
 		t.Fatal("expected raw mode to remain disabled for inactive useInput hook")
+	}
+}
+
+func TestUseInputWrapperEmptyOptionsDefaultsActive(t *testing.T) {
+	app := NewAppWithOptions(func() *vdom.Node {
+		UseInput(func(input string, key InputKey) {}, InputOptions{})
+		return vdom.CreateTextNode("input")
+	}, AppOptions{Stdin: rawModeTestStdin{}})
+
+	app.RenderOnce()
+
+	if len(app.hooksCtx.GetInputHooks()) != 1 {
+		t.Fatalf("expected empty input options to register an active hook, got %d", len(app.hooksCtx.GetInputHooks()))
+	}
+	if app.rawModeUsers != 1 {
+		t.Fatalf("expected empty input options to enable raw mode once, got %d users", app.rawModeUsers)
+	}
+	if app.rawState == nil {
+		t.Fatal("expected raw mode to be enabled for empty input options")
+	}
+}
+
+func TestUseInputWrapperPointerInactiveOptionSkipsHookAndRawMode(t *testing.T) {
+	app := NewAppWithOptions(func() *vdom.Node {
+		UseInput(func(input string, key InputKey) {}, InputOptions{IsActive: boolPtr(false)})
+		return vdom.CreateTextNode("input")
+	}, AppOptions{Stdin: rawModeTestStdin{}})
+
+	app.RenderOnce()
+
+	if len(app.hooksCtx.GetInputHooks()) != 0 {
+		t.Fatalf("expected no active input hooks for pointer inactive option, got %d", len(app.hooksCtx.GetInputHooks()))
+	}
+	if app.rawModeUsers != 0 {
+		t.Fatalf("expected pointer inactive option not to enable raw mode, got %d users", app.rawModeUsers)
+	}
+	if app.rawState != nil {
+		t.Fatal("expected pointer inactive option to keep raw mode disabled")
 	}
 }
 
@@ -207,6 +249,29 @@ func TestUseFocusWrapperPreservesExplicitEmptyStringID(t *testing.T) {
 	}
 	if order[0] != "" {
 		t.Fatalf("expected explicit empty string id to be preserved, got %q", order[0])
+	}
+}
+
+func TestUseFocusWrapperOptionsPreservesExplicitEmptyStringID(t *testing.T) {
+	var focusedInitially bool
+
+	app := NewAppWithOptions(func() *vdom.Node {
+		isFocused, _, _ := UseFocus(FocusOptions{ID: "", AutoFocus: true})
+		focusedInitially = isFocused()
+		return vdom.CreateTextNode("focus")
+	}, AppOptions{Stdin: rawModeTestStdin{}})
+
+	app.RenderOnce()
+
+	if focusedInitially {
+		t.Fatal("expected explicit empty string options id to remain unfocused in public hook state")
+	}
+	order := app.hooksCtx.FocusManager().FocusOrder()
+	if len(order) != 1 {
+		t.Fatalf("expected one focusable for explicit empty string options id, got %d", len(order))
+	}
+	if order[0] != "" {
+		t.Fatalf("expected explicit empty string options id to be preserved, got %q", order[0])
 	}
 }
 

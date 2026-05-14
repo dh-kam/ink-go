@@ -2,45 +2,58 @@ package main
 
 import (
 	"fmt"
+	"os"
+	"os/signal"
+	"sync/atomic"
+	"syscall"
 	"time"
 
-	"github.com/dh-kam/goink.go/pkg/components"
 	"github.com/dh-kam/goink.go/pkg/ink"
+	"github.com/dh-kam/goink.go/pkg/terminal"
 	"github.com/dh-kam/goink.go/pkg/vdom"
 )
 
-// Counter component with state
+var counterValue int64
+
 func Counter() *vdom.Node {
-	count, setCount := ink.UseState(0)
-
-	// Auto-increment every render (for demo)
-	// In a real app, this would be triggered by user input
-	currentCount := count.(int)
-
-	if currentCount < 5 {
-		// Schedule next increment
-		go func() {
-			time.Sleep(500 * time.Millisecond)
-			setCount(currentCount + 1)
-		}()
-	}
-
-	return vdom.CreateElement("box", nil,
-		components.Text(fmt.Sprintf("Counter: %d", currentCount)),
-	)
+	count := atomic.LoadInt64(&counterValue)
+	return ink.Text(vdom.Props{"color": "green"}, fmt.Sprintf("%d tests passed", count))
 }
 
 func main() {
-	app := ink.NewApp(Counter)
+	atomic.StoreInt64(&counterValue, 0)
 
-	// Render multiple times to show state updates
-	for i := 0; i < 6; i++ {
-		output := app.RenderOnce()
-		fmt.Print("\033[2J\033[H") // Clear screen and move cursor to top
-		fmt.Println(output)
-		fmt.Println("\n(Auto-incrementing counter demo)")
-		time.Sleep(500 * time.Millisecond)
+	if !terminal.StdinIsTerminal() {
+		app := ink.NewApp(Counter)
+		fmt.Println(app.RenderOnce())
+		return
 	}
 
-	fmt.Println("\n✅ Counter demo complete!")
+	instance, err := ink.RenderWithOptions(Counter, ink.RenderOptions{})
+	if err != nil {
+		panic(err)
+	}
+
+	signals := make(chan os.Signal, 1)
+	signal.Notify(signals, os.Interrupt, syscall.SIGTERM)
+	defer signal.Stop(signals)
+
+	ticker := time.NewTicker(100 * time.Millisecond)
+	defer ticker.Stop()
+
+	for {
+		select {
+		case <-ticker.C:
+			atomic.AddInt64(&counterValue, 1)
+			if _, err := ink.RenderWithOptions(Counter, ink.RenderOptions{}); err != nil {
+				fmt.Println(err)
+				return
+			}
+		case <-signals:
+			if err := instance.HandleInput("\x03"); err != nil {
+				fmt.Println(err)
+			}
+			return
+		}
+	}
 }

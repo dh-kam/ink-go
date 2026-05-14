@@ -4,9 +4,14 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"os/signal"
 	"strings"
+	"sync"
+	"syscall"
 
+	"github.com/dh-kam/goink.go/internal/ttyinput"
 	"github.com/dh-kam/goink.go/pkg/terminal"
+	"github.com/dh-kam/goink.go/pkg/utils"
 )
 
 const (
@@ -50,6 +55,23 @@ func shouldSynchronize(writer io.Writer) bool {
 		if ttyWriter.IsTTY() {
 			return true
 		}
+	}
+
+	fd, ok := streamFD(writer)
+	if !ok {
+		return false
+	}
+
+	return terminal.IsTerminal(fd)
+}
+
+func shouldManageCursor(writer io.Writer) bool {
+	if writer == nil {
+		return false
+	}
+
+	if ttyWriter, ok := writer.(ttyAwareWriter); ok {
+		return ttyWriter.IsTTY()
 	}
 
 	fd, ok := streamFD(writer)
@@ -165,7 +187,34 @@ func subscribeResize(writer io.Writer, handler func()) func() {
 		return subscriber.SubscribeResize(handler)
 	}
 
-	return nil
+	fd, ok := streamFD(writer)
+	if !ok || !terminal.IsTerminal(fd) {
+		return nil
+	}
+
+	signals := make(chan os.Signal, 1)
+	done := make(chan struct{})
+	signal.Notify(signals, syscall.SIGWINCH)
+
+	go func() {
+		for {
+			select {
+			case <-signals:
+				handler()
+			case <-done:
+				return
+			}
+		}
+	}()
+
+	var once sync.Once
+	return func() {
+		once.Do(func() {
+			signal.Stop(signals)
+			close(done)
+		})
+	}
+
 }
 
 func subscribeInput(reader io.Reader, handler func(string)) func() {
@@ -175,6 +224,40 @@ func subscribeInput(reader io.Reader, handler func(string)) func() {
 
 	if subscriber, ok := reader.(inputSubscriber); ok {
 		return subscriber.SubscribeInput(handler)
+	}
+
+	fd, ok := streamFD(reader)
+	if ok && terminal.IsTerminal(fd) {
+		done := make(chan struct{})
+		go func() {
+			buf := make([]byte, 1024)
+			decoder := ttyinput.UTF8Decoder{}
+			for {
+				select {
+				case <-done:
+					return
+				default:
+					n, err := reader.Read(buf)
+					if n > 0 {
+						if input := decoder.Write(buf[:n]); input != "" {
+							handler(input)
+						}
+					}
+					if err != nil {
+						if input := decoder.Flush(); input != "" {
+							handler(input)
+						}
+						return
+					}
+				}
+			}
+		}()
+		var once sync.Once
+		return func() {
+			once.Do(func() {
+				close(done)
+			})
+		}
 	}
 
 	return nil
@@ -297,8 +380,8 @@ func ansiCursorDown(lines int) string {
 }
 
 func ansiCursorTo(column int) string {
-	if column < 0 {
-		column = 0
+	if column <= 0 {
+		return "\x1b[G"
 	}
 
 	return fmt.Sprintf("\x1b[%dG", column+1)
@@ -327,4 +410,67 @@ func ansiEraseLines(lineCount int) string {
 
 	builder.WriteString(ansiCursorTo(0))
 	return builder.String()
+}
+
+// containsANSIEscape reports whether s contains any ANSI control sequence
+// introducer. Used to gate the column-level dirty-rect optimization on
+// plain text only — any embedded escape (color/style) would invalidate
+// naïve column counting against the previous line.
+func containsANSIEscape(s string) bool {
+	return strings.IndexByte(s, '\x1b') >= 0
+}
+
+// commonPlainPrefixWidth returns (visibleColumns, ok) — the number of
+// terminal columns occupied by the longest grapheme-cluster prefix shared
+// by previous and next, plus a bool reporting whether both lines are plain
+// (ANSI-free). When ok is false the caller must fall back to a full-line
+// rewrite. A leading-cluster mismatch returns (0, true): the caller still
+// emits eraseEndLine + tail starting at column 0.
+//
+// The optimization is intentionally narrow: when an entire line changes
+// (e.g. line index is brand new) the LCP is empty and the result is
+// equivalent to the prior cursorTo(0) + line path. The wins come from
+// localized changes (counters incrementing, spinners advancing) where
+// most of the line is unchanged.
+func commonPlainPrefixWidth(previous, next string) (int, bool) {
+	if containsANSIEscape(previous) || containsANSIEscape(next) {
+		return 0, false
+	}
+
+	prevClusters := utils.GraphemeClusters(previous)
+	nextClusters := utils.GraphemeClusters(next)
+	limit := len(prevClusters)
+	if len(nextClusters) < limit {
+		limit = len(nextClusters)
+	}
+
+	cols := 0
+	for i := 0; i < limit; i++ {
+		if prevClusters[i] != nextClusters[i] {
+			break
+		}
+		cols += utils.StringWidth(prevClusters[i])
+	}
+	return cols, true
+}
+
+// commonByteOffsetForWidth walks s's grapheme clusters and returns the
+// byte offset at which the accumulated visible width first reaches
+// targetWidth. Used to slice off the divergent tail from next without
+// re-tokenizing.
+func commonByteOffsetForWidth(s string, targetWidth int) int {
+	if targetWidth <= 0 {
+		return 0
+	}
+
+	cols := 0
+	offset := 0
+	for _, cluster := range utils.GraphemeClusters(s) {
+		if cols >= targetWidth {
+			break
+		}
+		cols += utils.StringWidth(cluster)
+		offset += len(cluster)
+	}
+	return offset
 }
