@@ -86,7 +86,7 @@ func settingsPanel() *vdom.Node {
 func aboutPanel() *vdom.Node {
 	return components.Box(
 		vdom.Props{"flexDirection": "column", "paddingTop": 1},
-		components.Text("goink.go tab demo"),
+		components.Text("ink-go tab demo"),
 		components.Text("press Tab / Shift-Tab to cycle (simulated)"),
 	)
 }

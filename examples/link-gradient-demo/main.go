@@ -18,7 +18,7 @@ import (
 func App() *vdom.Node {
 	link := components.Link(components.LinkProps{
 		URL:  "https://github.com/dh-kam/ink-go",
-		Text: "goink.go on GitHub",
+		Text: "ink-go on GitHub",
 	})
 
 	rainbow := components.Gradient(components.GradientProps{
