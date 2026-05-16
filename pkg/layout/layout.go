@@ -521,6 +521,11 @@ func (n *Node) measure() {
 		child.measure()
 	}
 
+	rootAutoHeightPercent := n.parent == nil && n.heightSet && n.heightPct
+	if n.parent == nil && n.widthSet && n.widthPct && n.widthHintSet {
+		n.computedWidth = n.widthHint * n.width / 100
+	}
+
 	if len(n.children) == 0 {
 		paddingLeft := n.padding[0]
 		paddingTop := n.padding[1]
@@ -632,7 +637,7 @@ func (n *Node) measure() {
 		n.computedWidth = contentWidth + paddingLeft + paddingRight
 	}
 
-	if !n.heightSet {
+	if !n.heightSet || rootAutoHeightPercent {
 		n.computedHeight = contentHeight + paddingTop + paddingBottom
 	}
 
@@ -651,6 +656,8 @@ func (n *Node) calculateLayoutInternal(offsetX, offsetY float64) {
 	if n.parent == nil {
 		baseX += n.margin[0]
 		baseY += n.margin[1]
+		n.computedLeft = baseX
+		n.computedTop = baseY
 	}
 
 	// Content area
@@ -857,7 +864,11 @@ func (n *Node) calculateLayoutInternal(offsetX, offsetY float64) {
 		if n.flexDirection == FlexDirectionRow {
 			if !adjustedChildren {
 				currentPos += child.margin[0]
-				child.computedLeft = baseX + paddingLeft + currentPos
+				childStart := currentPos
+				if child.textLike && flowCount > 1 && n.justifyContent == JustifySpaceBetween {
+					childStart = math.Floor(childStart + 1e-9)
+				}
+				child.computedLeft = baseX + paddingLeft + childStart
 				child.computedTop = baseY + paddingTop + n.crossAxisOffset(contentHeight, child, true)
 
 				child.calculateLayoutInternal(child.computedLeft, child.computedTop)

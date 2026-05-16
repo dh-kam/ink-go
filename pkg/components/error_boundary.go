@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"runtime"
 
-	"github.com/dh-kam/ink-go/pkg/styles"
 	"github.com/dh-kam/ink-go/pkg/vdom"
 )
 
@@ -114,27 +113,12 @@ func captureStack() string {
 	return string(buf[:n])
 }
 
-// defaultErrorFallback renders the built-in fallback UI: a single-bordered
-// red box with a title line and the error message.
+// defaultErrorFallback renders the built-in fallback UI through ErrorOverview,
+// mirroring upstream Ink's internal ErrorBoundary -> ErrorOverview path.
 func defaultErrorFallback(info ErrorInfo) *vdom.Node {
-	message := "<unknown>"
-	if info.Err != nil {
-		message = info.Err.Error()
-	}
-
-	title := styles.Colorize("Error", styles.Red, styles.Foreground)
-	body := styles.Colorize("Error: "+message, styles.Red, styles.Foreground)
-
-	column := vdom.CreateElement(
-		"error-boundary-body",
-		vdom.Props{"flexDirection": "column"},
-		vdom.CreateTextNode(title),
-		vdom.CreateTextNode(body),
-	)
-
-	return Border(
-		BorderProps{Style: BorderSingle},
-		vdom.Props{"borderColor": "red", "padding": 1},
-		column,
-	)
+	return ErrorOverview(ErrorOverviewProps{
+		Err:           info.Err,
+		Stack:         info.Stack,
+		SourceContext: 3,
+	})
 }

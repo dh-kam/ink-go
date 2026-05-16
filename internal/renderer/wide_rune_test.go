@@ -110,6 +110,32 @@ func TestStyledWideRuneKeepsStyleAcrossBothColumns(t *testing.T) {
 	}
 }
 
+func TestANSIStyledPathKeepsGraphemeClustersInFixedWidthBoxes(t *testing.T) {
+	family := "\U0001F468‍\U0001F469‍\U0001F467‍\U0001F466"
+	row := func(text string) *vdom.Node {
+		return components.Box(nil,
+			components.Box(vdom.Props{"width": 2.0},
+				components.Text(text),
+			),
+			components.Text("|"),
+		)
+	}
+
+	root := components.Box(vdom.Props{"flexDirection": "column"},
+		row("🍔"),
+		row("⏳"),
+		row(family),
+		row("日"),
+		row("e\u0301"),
+	)
+
+	output := renderer.RenderWithLayoutANSI(root, 20, 10)
+	expected := "🍔|\n⏳|\n" + family + "|\n日|\ne\u0301 |"
+	if output != expected {
+		t.Fatalf("expected fixed-width grapheme output %q, got %q", expected, output)
+	}
+}
+
 // TestWideRuneAtYogaShrunkBoundaryStaysWithinBox covers the case where a
 // flex container shrinks below the text's natural width. The text inside
 // must clip at the new width — including a wide cluster that would

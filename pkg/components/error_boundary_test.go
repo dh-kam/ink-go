@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/dh-kam/ink-go/pkg/components"
+	"github.com/dh-kam/ink-go/pkg/ink"
 	"github.com/dh-kam/ink-go/pkg/vdom"
 )
 
@@ -87,6 +88,24 @@ func TestErrorBoundary_DefaultFallbackContainsErrorAndMessage(t *testing.T) {
 	}
 	if !strings.Contains(rendered, "the-message") {
 		t.Fatalf("default fallback missing message: %q", rendered)
+	}
+}
+
+func TestErrorBoundary_DefaultFallbackRendersThroughApp(t *testing.T) {
+	app := ink.NewApp(func() *vdom.Node {
+		return components.ErrorBoundary(components.ErrorBoundaryProps{
+			Render: func() *vdom.Node {
+				panic(errors.New("render failure"))
+			},
+		})
+	})
+
+	output := app.RenderOnce()
+	if !strings.Contains(output, "ERROR") {
+		t.Fatalf("rendered fallback missing ERROR header: %q", output)
+	}
+	if !strings.Contains(output, "render failure") {
+		t.Fatalf("rendered fallback missing panic message: %q", output)
 	}
 }
 

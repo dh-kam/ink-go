@@ -16,14 +16,14 @@ import (
 )
 
 type projectCaseSpec struct {
-	Name             string             `json:"name"`
-	Columns          int                `json:"columns"`
-	Mode             string             `json:"mode,omitempty"`
-	ScreenReader     bool               `json:"screenReader,omitempty"`
-	ANSI             bool               `json:"ansi,omitempty"`
-	ExpectedError    string             `json:"expectedError,omitempty"`
-	ExpectedContains []string           `json:"expectedContains,omitempty"`
-	Env              map[string]string  `json:"env,omitempty"`
+	Name             string            `json:"name"`
+	Columns          int               `json:"columns"`
+	Mode             string            `json:"mode,omitempty"`
+	ScreenReader     bool              `json:"screenReader,omitempty"`
+	ANSI             bool              `json:"ansi,omitempty"`
+	ExpectedError    string            `json:"expectedError,omitempty"`
+	ExpectedContains []string          `json:"expectedContains,omitempty"`
+	Env              map[string]string `json:"env,omitempty"`
 	Node             projectNodeSpec   `json:"node,omitempty"`
 	Frames           []projectNodeSpec `json:"frames,omitempty"`
 }
@@ -32,22 +32,22 @@ type projectNodeSpec struct {
 	Type     string                 `json:"type"`
 	Value    string                 `json:"value,omitempty"`
 	Props    map[string]interface{} `json:"props,omitempty"`
-	Children []projectNodeSpec     `json:"children,omitempty"`
+	Children []projectNodeSpec      `json:"children,omitempty"`
 	Preset   string                 `json:"preset,omitempty"`
 	Count    int                    `json:"count,omitempty"`
 	Items    []string               `json:"items,omitempty"`
-	Template *projectNodeSpec      `json:"template,omitempty"`
+	Template *projectNodeSpec       `json:"template,omitempty"`
 }
 
 func (spec *projectNodeSpec) UnmarshalJSON(data []byte) error {
 	type projectNodeAlias struct {
-		Type     string             `json:"type"`
-		Value    string             `json:"value,omitempty"`
-		Props    json.RawMessage    `json:"props,omitempty"`
+		Type     string            `json:"type"`
+		Value    string            `json:"value,omitempty"`
+		Props    json.RawMessage   `json:"props,omitempty"`
 		Children []projectNodeSpec `json:"children,omitempty"`
-		Preset   string             `json:"preset,omitempty"`
-		Count    int                `json:"count,omitempty"`
-		Items    []string           `json:"items,omitempty"`
+		Preset   string            `json:"preset,omitempty"`
+		Count    int               `json:"count,omitempty"`
+		Items    []string          `json:"items,omitempty"`
 		Template *projectNodeSpec  `json:"template,omitempty"`
 	}
 
@@ -262,11 +262,11 @@ func TestProjectUpstreamGoldenParity(t *testing.T) {
 
 func TestProjectUpstreamCoverageCounts(t *testing.T) {
 	targets := map[string]int{
-		"gemini-cli":    8,
-		"neovate-code":  11,
-		"shopify-cli":   1,
-		"tweakcc":       1,
-		"nanocoder":     1,
+		"gemini-cli":   32,
+		"neovate-code": 11,
+		"shopify-cli":  1,
+		"tweakcc":      1,
+		"nanocoder":    1,
 	}
 
 	counts := make(map[string]int, len(targets))

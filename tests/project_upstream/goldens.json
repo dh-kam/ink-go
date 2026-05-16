@@ -64,6 +64,198 @@
     "output": "⠏ Waiting for confirmation (press tab to focus)"
   },
   {
+    "name": "gemini-cli/layout/default-app-normal-composer",
+    "columns": 80,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Gemini CLI\nStatic history item\nPending assistant response\n\n\n\n\n⚠ Sandbox is disabled for this session\n\n> Summarize the current workspace\nesc to cancel\n"
+  },
+  {
+    "name": "gemini-cli/layout/default-app-dialog-manager",
+    "columns": 80,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "MainContent\nLast response\n\n\nNotifications\n╭──────────────────────────────────────────────────────────────────────╮\n│ DialogManager: approve tool call?                                    │\n╰──────────────────────────────────────────────────────────────────────╯\nctrl+c twice to exit\n"
+  },
+  {
+    "name": "gemini-cli/layout/screen-reader-shell",
+    "columns": 80,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Notifications\nFooter metadata\nMainContent\nScrollable transcript\nComposer\nExit warning"
+  },
+  {
+    "name": "gemini-cli/header/wide-metadata-row",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\n ✦  Gemini CLI v0.1.0  ⠋ Updating\n    Signed in with Google: user@example.com\n"
+  },
+  {
+    "name": "gemini-cli/header/narrow-wordmark-column",
+    "columns": 48,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\n ✦     ____                _       _\n      / ___| ___ _ __ ___ (_)_ __ (_)\n\n Gemini CLI v0.1.0\n"
+  },
+  {
+    "name": "gemini-cli/user-identity/google-auth-row",
+    "columns": 80,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Signed in with Google: user@example.com /auth"
+  },
+  {
+    "name": "gemini-cli/notifications/startup-warning-stack",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\n⚠  MCP server alpha failed to start\n⚠  Extension beta is disabled\n"
+  },
+  {
+    "name": "gemini-cli/notifications/initialization-error-card",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭──────────────────────────────────────────────────────────────────────────────────────────────────╮\n│ Initialization Error: invalid API key Please check API key and configuration.                    │\n╰──────────────────────────────────────────────────────────────────────────────────────────────────╯\n"
+  },
+  {
+    "name": "gemini-cli/update-notification/warning-bar",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\n╭──────────────────────────────────────────────────────────────────────────────────────────────────╮\n│ Update available: run npm install -g @google/gemini-cli                                          │\n╰──────────────────────────────────────────────────────────────────────────────────────────────────╯\n"
+  },
+  {
+    "name": "gemini-cli/config-init/mcp-server-counts",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "\n⠙ Connecting to MCP servers: 2 connected, waiting for alpha"
+  },
+  {
+    "name": "gemini-cli/status-row/minimal-mode",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "⠋ Thinking ● auto                                                                            gpt-5.4"
+  },
+  {
+    "name": "gemini-cli/status-row/interactive-shell-wait",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": " Waiting for interactive shell to finish"
+  },
+  {
+    "name": "gemini-cli/background-task/output-panel-shell",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "┌────────────────────────────────────────────────────────────────────┐\n│ 1 bash                  PID 4242 Focused                   q close │\n│────────────────────────────────────────────────────────────────────│\n│ $ npm test                                                         │\n│ PASS tests/project_upstream                                        │\n│                                                                    │\n│ Log: /tmp/gemini-cli/task.log                                      │\n└────────────────────────────────────────────────────────────────────┘"
+  },
+  {
+    "name": "gemini-cli/background-task/process-selection-shell",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "┌────────────────────────────────────────────────────────────────────┐\n│ Background Shells                   enter view, x kill, esc cancel │\n│────────────────────────────────────────────────────────────────────│\n│                                                                    │\n│ Select a process                                                   │\n│                                                                    │\n│ ○ 7777 git status                                                  │\n└────────────────────────────────────────────────────────────────────┘"
+  },
+  {
+    "name": "gemini-cli/new-agents/review-card",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": " ╭────────────────────────────────────────────────────────────────────────────────────────────────╮\n │                                                                                                │\n │ New agents discovered                                                                          │\n │ Review these agents before enabling them.                                                      │\n │                                                                                                │\n │                                                                                                │\n │ ┌────────────────────────────────────────────────────────────────────────────────────────────┐ │\n │ │                                                                                            │ │\n │ │ - code-reviewer: Reviews source changes                                                    │ │\n │ │   MCP: github                                                                              │ │\n │ │                                                                                            │ │\n │ └────────────────────────────────────────────────────────────────────────────────────────────┘ │\n │ ○ Enable all                                                                                   │\n │ ● Review individually                                                                          │\n │                                                                                                │\n ╰────────────────────────────────────────────────────────────────────────────────────────────────╯"
+  },
+  {
+    "name": "gemini-cli/empty-wallet/quota-dialog",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭──────────────────────────────────────────────────────────────────────────────────────────────────╮\n│                                                                                                  │\n│ Daily quota exhausted                                                                            │\n│ Use /stats to inspect usage.                                                                     │\n│ Use /model to switch models.                                                                     │\n│ Use /auth to change account.                                                                     │\n│                                                                                                  │\n│ Purchase credits to continue immediately.                                                        │\n│                                                                                                  │\n│ Credit updates may be delayed.                                                                   │\n│                                                                                                  │\n│ Proceed?                                                                                         │\n│                                                                                                  │\n│ ● Continue with current model                                                                    │\n│ ○ Switch model                                                                                   │\n│                                                                                                  │\n│                                                                                                  │\n╰──────────────────────────────────────────────────────────────────────────────────────────────────╯"
+  },
+  {
+    "name": "gemini-cli/validation/default-action-dialog",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭──────────────────────────────────────────────────────────────────────────────────────────────────╮\n│                                                                                                  │\n│ Further action is required to validate this account.                                             │\n│                                                                                                  │\n│                                                                                                  │\n│ ● Open verification link                                                                         │\n│ ○ Paste verification URL                                                                         │\n│                                                                                                  │\n│                                                                                                  │\n│ Learn more: https://example.com/validation                                                       │\n│                                                                                                  │\n╰──────────────────────────────────────────────────────────────────────────────────────────────────╯"
+  },
+  {
+    "name": "gemini-cli/validation/waiting-panel",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "╭──────────────────────────────────────────────────────────────────────────────────────────────────╮\n│                                                                                                  │\n│ ⠋ Waiting for verification...                                                                    │\n│                                                                                                  │\n│ https://example.com/device                                                                       │\n│                                                                                                  │\n│ Press Enter when verification is complete.                                                       │\n│                                                                                                  │\n╰──────────────────────────────────────────────────────────────────────────────────────────────────╯"
+  },
+  {
+    "name": "gemini-cli/ask-user/review-unanswered",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "Review your answers:\n\n1 unanswered question\n\n1. Path → src/app.tsx\n2. Reason → (not answered)\nEnter submit, tab edit next"
+  },
+  {
+    "name": "gemini-cli/searchable-list/shell",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": " Choose a command\n\n ╭────────────────────────────────────────────────────────────────────────────────────────────────╮\n │ > git                                                                                          │\n ╰────────────────────────────────────────────────────────────────────────────────────────────────╯\n\n Recent commands\n\n ▲\n  git status\n\n  git diff\n\n ▼\n tab to change focus"
+  },
+  {
+    "name": "gemini-cli/messages/gemini-message",
+    "columns": 80,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "✦ The workspace contains a Go port of Ink.\n  Project-based goldens compare against upstream Ink."
+  },
+  {
+    "name": "gemini-cli/messages/user-message-background",
+    "columns": 80,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": " > Run parity tests for project goldens"
+  },
+  {
+    "name": "gemini-cli/checklist/expanded",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "────────────────────────────────────────────────────────────────────────────────────────────────────\n Todo 2/3\n\n ✓ Capture upstream output\n\n » Compare Go renderer\n\n   Document result"
+  },
+  {
+    "name": "gemini-cli/checklist/collapsed",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "mode": "",
+    "output": "────────────────────────────────────────────────────────────────────────────────────────────────────\n Todo 2/3 » Compare Go renderer"
+  },
+  {
     "name": "neovate-code/messages/static-header-and-dynamic-pending",
     "columns": 100,
     "screenReader": false,

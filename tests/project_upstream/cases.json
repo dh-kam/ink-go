@@ -417,6 +417,2264 @@
     }
   },
   {
+    "name": "gemini-cli/layout/default-app-normal-composer",
+    "columns": 80,
+    "screenReader": false,
+    "ansi": false,
+    "project": "gemini-cli",
+    "sourceRepo": "google-gemini/gemini-cli",
+    "sourceFile": "packages/cli/src/ui/layouts/DefaultAppLayout.tsx",
+    "node": {
+      "type": "box",
+      "props": {
+        "flexDirection": "column",
+        "width": 72,
+        "height": 12,
+        "paddingBottom": 1
+      },
+      "children": [
+        {
+          "type": "box",
+          "props": {
+            "flexDirection": "column",
+            "flexGrow": 1,
+            "overflow": "hidden"
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "Gemini CLI"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "Static history item"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "Pending assistant response"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "box",
+          "props": {
+            "flexDirection": "column",
+            "width": 72
+          },
+          "children": [
+            {
+              "type": "box",
+              "props": {
+                "flexDirection": "column",
+                "marginY": 1
+              },
+              "children": [
+                {
+                  "type": "text",
+                  "props": {
+                    "color": "yellow"
+                  },
+                  "children": [
+                    {
+                      "type": "raw",
+                      "value": "⚠ "
+                    },
+                    {
+                      "type": "raw",
+                      "value": "Sandbox is disabled for this session"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "> Summarize the current workspace"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "props": {
+                "dimColor": true
+              },
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "esc to cancel"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "gemini-cli/layout/default-app-dialog-manager",
+    "columns": 80,
+    "screenReader": false,
+    "ansi": false,
+    "project": "gemini-cli",
+    "sourceRepo": "google-gemini/gemini-cli",
+    "sourceFile": "packages/cli/src/ui/layouts/DefaultAppLayout.tsx",
+    "node": {
+      "type": "box",
+      "props": {
+        "flexDirection": "column",
+        "width": 72,
+        "height": 10,
+        "paddingBottom": 1
+      },
+      "children": [
+        {
+          "type": "box",
+          "props": {
+            "flexDirection": "column",
+            "flexGrow": 1,
+            "overflow": "hidden"
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "MainContent"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "Last response"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "box",
+          "props": {
+            "flexDirection": "column",
+            "width": 72
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "Notifications"
+                }
+              ]
+            },
+            {
+              "type": "box",
+              "props": {
+                "borderStyle": "round",
+                "borderColor": "cyan",
+                "paddingX": 1
+              },
+              "children": [
+                {
+                  "type": "text",
+                  "children": [
+                    {
+                      "type": "raw",
+                      "value": "DialogManager: approve tool call?"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "props": {
+                "dimColor": true
+              },
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "ctrl+c twice to exit"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "gemini-cli/layout/screen-reader-shell",
+    "columns": 80,
+    "screenReader": false,
+    "ansi": false,
+    "project": "gemini-cli",
+    "sourceRepo": "google-gemini/gemini-cli",
+    "sourceFile": "packages/cli/src/ui/layouts/ScreenReaderAppLayout.tsx",
+    "node": {
+      "type": "box",
+      "props": {
+        "flexDirection": "column",
+        "width": "90%",
+        "height": "100%"
+      },
+      "children": [
+        {
+          "type": "text",
+          "children": [
+            {
+              "type": "raw",
+              "value": "Notifications"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "children": [
+            {
+              "type": "raw",
+              "value": "Footer metadata"
+            }
+          ]
+        },
+        {
+          "type": "box",
+          "props": {
+            "flexDirection": "column",
+            "flexGrow": 1,
+            "overflow": "hidden"
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "MainContent"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "Scrollable transcript"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "children": [
+            {
+              "type": "raw",
+              "value": "Composer"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "props": {
+            "dimColor": true
+          },
+          "children": [
+            {
+              "type": "raw",
+              "value": "Exit warning"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "gemini-cli/header/wide-metadata-row",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "project": "gemini-cli",
+    "sourceRepo": "google-gemini/gemini-cli",
+    "sourceFile": "packages/cli/src/ui/components/AppHeader.tsx",
+    "node": {
+      "type": "box",
+      "props": {
+        "flexDirection": "column"
+      },
+      "children": [
+        {
+          "type": "box",
+          "props": {
+            "flexDirection": "row",
+            "marginTop": 1,
+            "marginBottom": 1,
+            "paddingLeft": 1
+          },
+          "children": [
+            {
+              "type": "box",
+              "props": {
+                "flexShrink": 0
+              },
+              "children": [
+                {
+                  "type": "text",
+                  "props": {
+                    "color": "cyan",
+                    "bold": true
+                  },
+                  "children": [
+                    {
+                      "type": "raw",
+                      "value": "✦"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "box",
+              "props": {
+                "marginLeft": 2,
+                "flexDirection": "column"
+              },
+              "children": [
+                {
+                  "type": "box",
+                  "props": {
+                    "flexDirection": "row"
+                  },
+                  "children": [
+                    {
+                      "type": "text",
+                      "props": {
+                        "bold": true
+                      },
+                      "children": [
+                        {
+                          "type": "raw",
+                          "value": "Gemini CLI"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "children": [
+                        {
+                          "type": "raw",
+                          "value": " v0.1.0"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "box",
+                      "props": {
+                        "marginLeft": 2
+                      },
+                      "children": [
+                        {
+                          "type": "text",
+                          "props": {
+                            "color": "gray"
+                          },
+                          "children": [
+                            {
+                              "type": "raw",
+                              "value": "⠋ Updating"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "props": {
+                    "dimColor": true
+                  },
+                  "children": [
+                    {
+                      "type": "raw",
+                      "value": "Signed in with Google: user@example.com"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "gemini-cli/header/narrow-wordmark-column",
+    "columns": 48,
+    "screenReader": false,
+    "ansi": false,
+    "project": "gemini-cli",
+    "sourceRepo": "google-gemini/gemini-cli",
+    "sourceFile": "packages/cli/src/ui/components/AppHeader.tsx",
+    "node": {
+      "type": "box",
+      "props": {
+        "flexDirection": "column"
+      },
+      "children": [
+        {
+          "type": "box",
+          "props": {
+            "flexDirection": "column",
+            "marginTop": 1,
+            "marginBottom": 1,
+            "paddingLeft": 1
+          },
+          "children": [
+            {
+              "type": "box",
+              "props": {
+                "flexDirection": "row"
+              },
+              "children": [
+                {
+                  "type": "text",
+                  "props": {
+                    "color": "cyan",
+                    "bold": true
+                  },
+                  "children": [
+                    {
+                      "type": "raw",
+                      "value": "✦"
+                    }
+                  ]
+                },
+                {
+                  "type": "box",
+                  "props": {
+                    "marginLeft": 3
+                  },
+                  "children": [
+                    {
+                      "type": "text",
+                      "children": [
+                        {
+                          "type": "raw",
+                          "value": "  ____                _       _\n / ___| ___ _ __ ___ (_)_ __ (_)"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "box",
+              "props": {
+                "marginTop": 1
+              },
+              "children": [
+                {
+                  "type": "text",
+                  "children": [
+                    {
+                      "type": "raw",
+                      "value": "Gemini CLI v0.1.0"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "gemini-cli/user-identity/google-auth-row",
+    "columns": 80,
+    "screenReader": false,
+    "ansi": false,
+    "project": "gemini-cli",
+    "sourceRepo": "google-gemini/gemini-cli",
+    "sourceFile": "packages/cli/src/ui/components/UserIdentity.tsx",
+    "node": {
+      "type": "box",
+      "props": {
+        "flexDirection": "column"
+      },
+      "children": [
+        {
+          "type": "box",
+          "props": {
+            "flexDirection": "row"
+          },
+          "children": [
+            {
+              "type": "text",
+              "props": {
+                "wrap": "truncate-end"
+              },
+              "children": [
+                {
+                  "type": "text",
+                  "props": {
+                    "bold": true
+                  },
+                  "children": [
+                    {
+                      "type": "raw",
+                      "value": "Signed in with Google:"
+                    }
+                  ]
+                },
+                {
+                  "type": "raw",
+                  "value": " user@example.com"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "props": {
+                "dimColor": true
+              },
+              "children": [
+                {
+                  "type": "raw",
+                  "value": " /auth"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "gemini-cli/notifications/startup-warning-stack",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "project": "gemini-cli",
+    "sourceRepo": "google-gemini/gemini-cli",
+    "sourceFile": "packages/cli/src/ui/components/Notifications.tsx",
+    "node": {
+      "type": "box",
+      "props": {
+        "flexDirection": "column",
+        "marginY": 1
+      },
+      "children": [
+        {
+          "type": "box",
+          "props": {
+            "flexDirection": "row"
+          },
+          "children": [
+            {
+              "type": "box",
+              "props": {
+                "width": 3
+              },
+              "children": [
+                {
+                  "type": "text",
+                  "props": {
+                    "color": "yellow"
+                  },
+                  "children": [
+                    {
+                      "type": "raw",
+                      "value": "⚠ "
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "box",
+              "props": {
+                "flexGrow": 1
+              },
+              "children": [
+                {
+                  "type": "text",
+                  "props": {
+                    "color": "yellow"
+                  },
+                  "children": [
+                    {
+                      "type": "raw",
+                      "value": "MCP server alpha failed to start"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "box",
+          "props": {
+            "flexDirection": "row"
+          },
+          "children": [
+            {
+              "type": "box",
+              "props": {
+                "width": 3
+              },
+              "children": [
+                {
+                  "type": "text",
+                  "props": {
+                    "color": "yellow"
+                  },
+                  "children": [
+                    {
+                      "type": "raw",
+                      "value": "⚠ "
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "box",
+              "props": {
+                "flexGrow": 1
+              },
+              "children": [
+                {
+                  "type": "text",
+                  "props": {
+                    "color": "yellow"
+                  },
+                  "children": [
+                    {
+                      "type": "raw",
+                      "value": "Extension beta is disabled"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "gemini-cli/notifications/initialization-error-card",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "project": "gemini-cli",
+    "sourceRepo": "google-gemini/gemini-cli",
+    "sourceFile": "packages/cli/src/ui/components/Notifications.tsx",
+    "node": {
+      "type": "box",
+      "props": {
+        "borderStyle": "round",
+        "borderColor": "red",
+        "paddingX": 1,
+        "marginBottom": 1
+      },
+      "children": [
+        {
+          "type": "text",
+          "props": {
+            "color": "red"
+          },
+          "children": [
+            {
+              "type": "raw",
+              "value": "Initialization Error: invalid API key"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "props": {
+            "color": "red"
+          },
+          "children": [
+            {
+              "type": "raw",
+              "value": " Please check API key and configuration."
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "gemini-cli/update-notification/warning-bar",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "project": "gemini-cli",
+    "sourceRepo": "google-gemini/gemini-cli",
+    "sourceFile": "packages/cli/src/ui/components/UpdateNotification.tsx",
+    "node": {
+      "type": "box",
+      "props": {
+        "borderStyle": "round",
+        "borderColor": "yellow",
+        "paddingX": 1,
+        "marginY": 1
+      },
+      "children": [
+        {
+          "type": "text",
+          "props": {
+            "color": "yellow"
+          },
+          "children": [
+            {
+              "type": "raw",
+              "value": "Update available: run npm install -g @google/gemini-cli"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "gemini-cli/config-init/mcp-server-counts",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "project": "gemini-cli",
+    "sourceRepo": "google-gemini/gemini-cli",
+    "sourceFile": "packages/cli/src/ui/components/ConfigInitDisplay.tsx",
+    "node": {
+      "type": "box",
+      "props": {
+        "marginTop": 1
+      },
+      "children": [
+        {
+          "type": "text",
+          "children": [
+            {
+              "type": "raw",
+              "value": "⠙ "
+            },
+            {
+              "type": "text",
+              "props": {
+                "color": "white"
+              },
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "Connecting to MCP servers: 2 connected, waiting for alpha"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "gemini-cli/status-row/minimal-mode",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "project": "gemini-cli",
+    "sourceRepo": "google-gemini/gemini-cli",
+    "sourceFile": "packages/cli/src/ui/components/StatusRow.tsx",
+    "node": {
+      "type": "box",
+      "props": {
+        "flexDirection": "column",
+        "width": "100%"
+      },
+      "children": [
+        {
+          "type": "box",
+          "props": {
+            "flexDirection": "row",
+            "justifyContent": "space-between",
+            "minHeight": 1
+          },
+          "children": [
+            {
+              "type": "box",
+              "props": {
+                "flexDirection": "row",
+                "flexGrow": 1,
+                "flexShrink": 1
+              },
+              "children": [
+                {
+                  "type": "box",
+                  "props": {
+                    "flexDirection": "row",
+                    "columnGap": 1
+                  },
+                  "children": [
+                    {
+                      "type": "text",
+                      "props": {
+                        "italic": true
+                      },
+                      "children": [
+                        {
+                          "type": "raw",
+                          "value": "⠋ Thinking"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "box",
+                      "children": [
+                        {
+                          "type": "text",
+                          "props": {
+                            "color": "green"
+                          },
+                          "children": [
+                            {
+                              "type": "raw",
+                              "value": "● auto"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "props": {
+                "dimColor": true
+              },
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "gpt-5.4"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "gemini-cli/status-row/interactive-shell-wait",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "project": "gemini-cli",
+    "sourceRepo": "google-gemini/gemini-cli",
+    "sourceFile": "packages/cli/src/ui/components/StatusRow.tsx",
+    "node": {
+      "type": "box",
+      "props": {
+        "width": "100%",
+        "marginLeft": 1
+      },
+      "children": [
+        {
+          "type": "text",
+          "props": {
+            "color": "yellow"
+          },
+          "children": [
+            {
+              "type": "raw",
+              "value": "Waiting for interactive shell to finish"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "gemini-cli/background-task/output-panel-shell",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "project": "gemini-cli",
+    "sourceRepo": "google-gemini/gemini-cli",
+    "sourceFile": "packages/cli/src/ui/components/BackgroundTaskDisplay.tsx",
+    "node": {
+      "type": "box",
+      "props": {
+        "flexDirection": "column",
+        "height": 8,
+        "width": 70,
+        "borderStyle": "single",
+        "borderColor": "cyan"
+      },
+      "children": [
+        {
+          "type": "box",
+          "props": {
+            "flexDirection": "row",
+            "justifyContent": "space-between",
+            "borderStyle": "single",
+            "borderTop": false,
+            "borderLeft": false,
+            "borderRight": false,
+            "paddingX": 1
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "1 bash"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "props": {
+                "bold": true
+              },
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "PID 4242 Focused"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "props": {
+                "dimColor": true
+              },
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "q close"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "box",
+          "props": {
+            "flexGrow": 1,
+            "overflow": "hidden",
+            "paddingX": 1,
+            "flexDirection": "column"
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "$ npm test"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "PASS tests/project_upstream"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "box",
+          "props": {
+            "paddingX": 1
+          },
+          "children": [
+            {
+              "type": "text",
+              "props": {
+                "dimColor": true,
+                "wrap": "truncate-end"
+              },
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "Log: /tmp/gemini-cli/task.log"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "gemini-cli/background-task/process-selection-shell",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "project": "gemini-cli",
+    "sourceRepo": "google-gemini/gemini-cli",
+    "sourceFile": "packages/cli/src/ui/components/BackgroundTaskDisplay.tsx",
+    "node": {
+      "type": "box",
+      "props": {
+        "flexDirection": "column",
+        "height": 8,
+        "width": 70,
+        "borderStyle": "single"
+      },
+      "children": [
+        {
+          "type": "box",
+          "props": {
+            "flexDirection": "row",
+            "justifyContent": "space-between",
+            "borderStyle": "single",
+            "borderTop": false,
+            "borderLeft": false,
+            "borderRight": false,
+            "paddingX": 1
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "Background Shells"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "props": {
+                "dimColor": true
+              },
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "enter view, x kill, esc cancel"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "box",
+          "props": {
+            "flexGrow": 1,
+            "overflow": "hidden",
+            "paddingX": 1,
+            "flexDirection": "column"
+          },
+          "children": [
+            {
+              "type": "box",
+              "props": {
+                "flexShrink": 0,
+                "marginBottom": 1,
+                "paddingTop": 1
+              },
+              "children": [
+                {
+                  "type": "text",
+                  "props": {
+                    "bold": true
+                  },
+                  "children": [
+                    {
+                      "type": "raw",
+                      "value": "Select a process"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "● 4242 npm test"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "○ 7777 git status"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "gemini-cli/new-agents/review-card",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "project": "gemini-cli",
+    "sourceRepo": "google-gemini/gemini-cli",
+    "sourceFile": "packages/cli/src/ui/components/NewAgentsNotification.tsx",
+    "node": {
+      "type": "box",
+      "props": {
+        "flexDirection": "column",
+        "width": "100%"
+      },
+      "children": [
+        {
+          "type": "box",
+          "props": {
+            "flexDirection": "column",
+            "borderStyle": "round",
+            "borderColor": "yellow",
+            "padding": 1,
+            "marginX": 1
+          },
+          "children": [
+            {
+              "type": "box",
+              "props": {
+                "flexDirection": "column",
+                "marginBottom": 1
+              },
+              "children": [
+                {
+                  "type": "text",
+                  "props": {
+                    "bold": true
+                  },
+                  "children": [
+                    {
+                      "type": "raw",
+                      "value": "New agents discovered"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "children": [
+                    {
+                      "type": "raw",
+                      "value": "Review these agents before enabling them."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "box",
+              "props": {
+                "flexDirection": "column",
+                "marginTop": 1,
+                "borderStyle": "single",
+                "padding": 1
+              },
+              "children": [
+                {
+                  "type": "box",
+                  "props": {
+                    "flexDirection": "row"
+                  },
+                  "children": [
+                    {
+                      "type": "box",
+                      "props": {
+                        "flexShrink": 0
+                      },
+                      "children": [
+                        {
+                          "type": "text",
+                          "props": {
+                            "bold": true
+                          },
+                          "children": [
+                            {
+                              "type": "raw",
+                              "value": "- code-reviewer:"
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "props": {
+                        "dimColor": true
+                      },
+                      "children": [
+                        {
+                          "type": "raw",
+                          "value": " Reviews source changes"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "box",
+                  "props": {
+                    "marginLeft": 2
+                  },
+                  "children": [
+                    {
+                      "type": "text",
+                      "props": {
+                        "dimColor": true
+                      },
+                      "children": [
+                        {
+                          "type": "raw",
+                          "value": "MCP: github"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "○ Enable all"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "● Review individually"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "gemini-cli/empty-wallet/quota-dialog",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "project": "gemini-cli",
+    "sourceRepo": "google-gemini/gemini-cli",
+    "sourceFile": "packages/cli/src/ui/components/EmptyWalletDialog.tsx",
+    "node": {
+      "type": "box",
+      "props": {
+        "flexDirection": "column",
+        "borderStyle": "round",
+        "padding": 1
+      },
+      "children": [
+        {
+          "type": "box",
+          "props": {
+            "flexDirection": "column",
+            "marginBottom": 1
+          },
+          "children": [
+            {
+              "type": "text",
+              "props": {
+                "color": "yellow",
+                "bold": true
+              },
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "Daily quota exhausted"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "Use /stats to inspect usage."
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "Use /model to switch models."
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "Use /auth to change account."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "box",
+          "props": {
+            "marginBottom": 1
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "Purchase credits to continue immediately."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "box",
+          "props": {
+            "marginBottom": 1
+          },
+          "children": [
+            {
+              "type": "text",
+              "props": {
+                "dimColor": true
+              },
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "Credit updates may be delayed."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "children": [
+            {
+              "type": "raw",
+              "value": "Proceed?"
+            }
+          ]
+        },
+        {
+          "type": "box",
+          "props": {
+            "marginTop": 1,
+            "marginBottom": 1,
+            "flexDirection": "column"
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "● Continue with current model"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "○ Switch model"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "gemini-cli/validation/default-action-dialog",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "project": "gemini-cli",
+    "sourceRepo": "google-gemini/gemini-cli",
+    "sourceFile": "packages/cli/src/ui/components/ValidationDialog.tsx",
+    "node": {
+      "type": "box",
+      "props": {
+        "flexDirection": "column",
+        "borderStyle": "round",
+        "padding": 1
+      },
+      "children": [
+        {
+          "type": "box",
+          "props": {
+            "marginBottom": 1
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "Further action is required to validate this account."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "box",
+          "props": {
+            "marginTop": 1,
+            "marginBottom": 1,
+            "flexDirection": "column"
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "● Open verification link"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "○ Paste verification URL"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "box",
+          "props": {
+            "marginTop": 1
+          },
+          "children": [
+            {
+              "type": "text",
+              "props": {
+                "dimColor": true
+              },
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "Learn more: "
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "props": {
+                "color": "cyan"
+              },
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "https://example.com/validation"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "gemini-cli/validation/waiting-panel",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "project": "gemini-cli",
+    "sourceRepo": "google-gemini/gemini-cli",
+    "sourceFile": "packages/cli/src/ui/components/ValidationDialog.tsx",
+    "node": {
+      "type": "box",
+      "props": {
+        "flexDirection": "column",
+        "borderStyle": "round",
+        "padding": 1
+      },
+      "children": [
+        {
+          "type": "box",
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "⠋"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": " Waiting for verification..."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "box",
+          "props": {
+            "marginTop": 1
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "https://example.com/device"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "box",
+          "props": {
+            "marginTop": 1
+          },
+          "children": [
+            {
+              "type": "text",
+              "props": {
+                "dimColor": true
+              },
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "Press Enter when verification is complete."
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "gemini-cli/ask-user/review-unanswered",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "project": "gemini-cli",
+    "sourceRepo": "google-gemini/gemini-cli",
+    "sourceFile": "packages/cli/src/ui/components/AskUserDialog.tsx",
+    "node": {
+      "type": "box",
+      "props": {
+        "aria-label": "Review",
+        "flexDirection": "column"
+      },
+      "children": [
+        {
+          "type": "box",
+          "props": {
+            "flexDirection": "column"
+          },
+          "children": [
+            {
+              "type": "box",
+              "props": {
+                "marginBottom": 1
+              },
+              "children": [
+                {
+                  "type": "text",
+                  "props": {
+                    "bold": true
+                  },
+                  "children": [
+                    {
+                      "type": "raw",
+                      "value": "Review your answers:"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "box",
+              "props": {
+                "marginBottom": 1
+              },
+              "children": [
+                {
+                  "type": "text",
+                  "props": {
+                    "color": "yellow"
+                  },
+                  "children": [
+                    {
+                      "type": "raw",
+                      "value": "1 unanswered question"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "box",
+              "props": {
+                "flexDirection": "column"
+              },
+              "children": [
+                {
+                  "type": "box",
+                  "children": [
+                    {
+                      "type": "text",
+                      "props": {
+                        "dimColor": true
+                      },
+                      "children": [
+                        {
+                          "type": "raw",
+                          "value": "1. Path"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "props": {
+                        "dimColor": true
+                      },
+                      "children": [
+                        {
+                          "type": "raw",
+                          "value": " → "
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "children": [
+                        {
+                          "type": "raw",
+                          "value": "src/app.tsx"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "box",
+                  "children": [
+                    {
+                      "type": "text",
+                      "props": {
+                        "dimColor": true
+                      },
+                      "children": [
+                        {
+                          "type": "raw",
+                          "value": "2. Reason"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "props": {
+                        "dimColor": true
+                      },
+                      "children": [
+                        {
+                          "type": "raw",
+                          "value": " → "
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "props": {
+                        "color": "yellow"
+                      },
+                      "children": [
+                        {
+                          "type": "raw",
+                          "value": "(not answered)"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "props": {
+                "dimColor": true
+              },
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "Enter submit, tab edit next"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "gemini-cli/searchable-list/shell",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "project": "gemini-cli",
+    "sourceRepo": "google-gemini/gemini-cli",
+    "sourceFile": "packages/cli/src/ui/components/shared/SearchableList.tsx",
+    "node": {
+      "type": "box",
+      "props": {
+        "flexDirection": "column",
+        "width": "100%",
+        "height": "100%",
+        "paddingX": 1
+      },
+      "children": [
+        {
+          "type": "box",
+          "props": {
+            "marginBottom": 1
+          },
+          "children": [
+            {
+              "type": "text",
+              "props": {
+                "bold": true
+              },
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "Choose a command"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "box",
+          "props": {
+            "borderStyle": "round",
+            "borderColor": "white",
+            "paddingX": 1,
+            "marginBottom": 1
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "> git"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "box",
+          "props": {
+            "marginBottom": 1
+          },
+          "children": [
+            {
+              "type": "text",
+              "props": {
+                "dimColor": true
+              },
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "Recent commands"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "box",
+          "props": {
+            "flexDirection": "column",
+            "flexGrow": 1
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "▲"
+                }
+              ]
+            },
+            {
+              "type": "box",
+              "props": {
+                "marginBottom": 1,
+                "marginX": 1
+              },
+              "children": [
+                {
+                  "type": "text",
+                  "children": [
+                    {
+                      "type": "raw",
+                      "value": "git status"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "box",
+              "props": {
+                "marginBottom": 1,
+                "marginX": 1
+              },
+              "children": [
+                {
+                  "type": "text",
+                  "children": [
+                    {
+                      "type": "raw",
+                      "value": "git diff"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "▼"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "props": {
+            "dimColor": true
+          },
+          "children": [
+            {
+              "type": "raw",
+              "value": "tab to change focus"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "gemini-cli/messages/gemini-message",
+    "columns": 80,
+    "screenReader": false,
+    "ansi": false,
+    "project": "gemini-cli",
+    "sourceRepo": "google-gemini/gemini-cli",
+    "sourceFile": "packages/cli/src/ui/components/messages/GeminiMessage.tsx",
+    "node": {
+      "type": "box",
+      "props": {
+        "flexDirection": "row"
+      },
+      "children": [
+        {
+          "type": "box",
+          "props": {
+            "width": 2
+          },
+          "children": [
+            {
+              "type": "text",
+              "props": {
+                "color": "cyan",
+                "aria-label": "Gemini"
+              },
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "✦ "
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "box",
+          "props": {
+            "flexGrow": 1,
+            "flexDirection": "column"
+          },
+          "children": [
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "The workspace contains a Go port of Ink."
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "Project-based goldens compare against upstream Ink."
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "gemini-cli/messages/user-message-background",
+    "columns": 80,
+    "screenReader": false,
+    "ansi": false,
+    "project": "gemini-cli",
+    "sourceRepo": "google-gemini/gemini-cli",
+    "sourceFile": "packages/cli/src/ui/components/messages/UserMessage.tsx",
+    "node": {
+      "type": "box",
+      "props": {
+        "backgroundColor": "#222222",
+        "paddingX": 1
+      },
+      "children": [
+        {
+          "type": "box",
+          "props": {
+            "flexDirection": "row",
+            "alignSelf": "flex-start",
+            "width": 70
+          },
+          "children": [
+            {
+              "type": "box",
+              "props": {
+                "width": 2,
+                "flexShrink": 0
+              },
+              "children": [
+                {
+                  "type": "text",
+                  "props": {
+                    "color": "cyan",
+                    "aria-label": "User"
+                  },
+                  "children": [
+                    {
+                      "type": "raw",
+                      "value": "> "
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "box",
+              "props": {
+                "flexGrow": 1
+              },
+              "children": [
+                {
+                  "type": "text",
+                  "props": {
+                    "wrap": "wrap"
+                  },
+                  "children": [
+                    {
+                      "type": "raw",
+                      "value": "Run parity tests for project goldens"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "gemini-cli/checklist/expanded",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "project": "gemini-cli",
+    "sourceRepo": "google-gemini/gemini-cli",
+    "sourceFile": "packages/cli/src/ui/components/Checklist.tsx",
+    "node": {
+      "type": "box",
+      "props": {
+        "borderStyle": "single",
+        "borderBottom": false,
+        "borderLeft": false,
+        "borderRight": false,
+        "paddingX": 1
+      },
+      "children": [
+        {
+          "type": "box",
+          "props": {
+            "flexDirection": "column",
+            "rowGap": 1
+          },
+          "children": [
+            {
+              "type": "text",
+              "props": {
+                "bold": true
+              },
+              "children": [
+                {
+                  "type": "raw",
+                  "value": "Todo 2/3"
+                }
+              ]
+            },
+            {
+              "type": "box",
+              "props": {
+                "flexDirection": "row",
+                "columnGap": 1
+              },
+              "children": [
+                {
+                  "type": "text",
+                  "props": {
+                    "color": "green"
+                  },
+                  "children": [
+                    {
+                      "type": "raw",
+                      "value": "✓"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "children": [
+                    {
+                      "type": "raw",
+                      "value": "Capture upstream output"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "box",
+              "props": {
+                "flexDirection": "row",
+                "columnGap": 1
+              },
+              "children": [
+                {
+                  "type": "text",
+                  "props": {
+                    "color": "cyan"
+                  },
+                  "children": [
+                    {
+                      "type": "raw",
+                      "value": "»"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "props": {
+                    "color": "cyan"
+                  },
+                  "children": [
+                    {
+                      "type": "raw",
+                      "value": "Compare Go renderer"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "box",
+              "props": {
+                "flexDirection": "row",
+                "columnGap": 1
+              },
+              "children": [
+                {
+                  "type": "text",
+                  "props": {
+                    "color": "gray"
+                  },
+                  "children": [
+                    {
+                      "type": "raw",
+                      "value": " "
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "children": [
+                    {
+                      "type": "raw",
+                      "value": "Document result"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "gemini-cli/checklist/collapsed",
+    "columns": 100,
+    "screenReader": false,
+    "ansi": false,
+    "project": "gemini-cli",
+    "sourceRepo": "google-gemini/gemini-cli",
+    "sourceFile": "packages/cli/src/ui/components/Checklist.tsx",
+    "node": {
+      "type": "box",
+      "props": {
+        "borderStyle": "single",
+        "borderBottom": false,
+        "borderLeft": false,
+        "borderRight": false,
+        "paddingX": 1
+      },
+      "children": [
+        {
+          "type": "box",
+          "props": {
+            "flexDirection": "row",
+            "columnGap": 1,
+            "height": 1
+          },
+          "children": [
+            {
+              "type": "box",
+              "props": {
+                "flexShrink": 0,
+                "flexGrow": 0
+              },
+              "children": [
+                {
+                  "type": "text",
+                  "props": {
+                    "bold": true
+                  },
+                  "children": [
+                    {
+                      "type": "raw",
+                      "value": "Todo 2/3"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "box",
+              "props": {
+                "flexShrink": 1,
+                "flexGrow": 1
+              },
+              "children": [
+                {
+                  "type": "text",
+                  "props": {
+                    "color": "cyan",
+                    "wrap": "truncate-end"
+                  },
+                  "children": [
+                    {
+                      "type": "raw",
+                      "value": "» Compare Go renderer"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
     "name": "neovate-code/messages/static-header-and-dynamic-pending",
     "columns": 100,
     "screenReader": false,

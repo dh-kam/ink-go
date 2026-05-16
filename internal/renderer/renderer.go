@@ -80,6 +80,15 @@ type styledRune struct {
 	prefix string
 }
 
+type styledCluster struct {
+	runes  []styledRune
+	width  int
+	prefix string
+	suffix string
+	start  int
+	end    int
+}
+
 type ansiCanvas struct {
 	width  int
 	height int
@@ -300,23 +309,30 @@ func (c *ansiCanvas) setCell(x, y int, ch rune, style ansiStyle) {
 }
 
 func (c *ansiCanvas) setCellWithPrefix(x, y int, ch rune, style ansiStyle, prefix string) {
+	text := ""
+	if ch != 0 {
+		text = string(ch)
+	}
+	c.setCellTextWithPrefix(x, y, text, style, prefix, utils.RuneWidth(ch))
+}
+
+func (c *ansiCanvas) setCellTextWithPrefix(x, y int, text string, style ansiStyle, prefix string, width int) {
 	if c == nil || x < 0 || x >= c.width || y < 0 || y >= c.height {
 		return
 	}
 
-	width := utils.RuneWidth(ch)
 	if width == 0 {
 		if prefix != "" {
 			c.appendZeroWidthRaw(x, y, prefix)
 		}
-		if ch != 0 {
-			c.appendZeroWidth(x, y, ch)
+		if text != "" {
+			c.appendZeroWidthText(x, y, text)
 		}
 		return
 	}
 
 	c.cells[y][x] = ansiCell{
-		text:   string(ch),
+		text:   text,
 		style:  style,
 		prefix: prefix,
 	}
@@ -330,6 +346,10 @@ func (c *ansiCanvas) setCellWithPrefix(x, y int, ch rune, style ansiStyle, prefi
 }
 
 func (c *ansiCanvas) appendZeroWidth(x, y int, ch rune) {
+	c.appendZeroWidthText(x, y, string(ch))
+}
+
+func (c *ansiCanvas) appendZeroWidthText(x, y int, text string) {
 	if c == nil || y < 0 || y >= c.height || x <= 0 {
 		return
 	}
@@ -343,7 +363,7 @@ func (c *ansiCanvas) appendZeroWidth(x, y int, ch rune) {
 			continue
 		}
 
-		cell.text += string(ch)
+		cell.text += text
 		return
 	}
 }
@@ -2405,45 +2425,182 @@ func renderNestedStyledTextLikeNode(node *vdom.Node, inheritedStyle ansiStyle, i
 
 func styledRunesWidth(runes []styledRune) int {
 	width := 0
-	for _, r := range runes {
-		if r.ch == '\n' {
-			continue
-		}
-
-		width += utils.RuneWidth(r.ch)
+	for _, cluster := range styledRunesToClusters(runes) {
+		width += cluster.width
 	}
 
 	return width
 }
 
+func styledRunesText(runes []styledRune) string {
+	if len(runes) == 0 {
+		return ""
+	}
+
+	var builder strings.Builder
+	for _, r := range runes {
+		if r.ch != 0 {
+			builder.WriteRune(r.ch)
+		}
+	}
+
+	return builder.String()
+}
+
+func styledRunesToClusters(runes []styledRune) []styledCluster {
+	if len(runes) == 0 {
+		return nil
+	}
+
+	text := styledRunesText(runes)
+	graphemes := uniseg.NewGraphemes(text)
+	clusters := make([]styledCluster, 0, len(runes))
+	index := 0
+
+	for graphemes.Next() {
+		clusterText := graphemes.Str()
+		visibleRunes := utf8.RuneCountInString(clusterText)
+		if visibleRunes == 0 {
+			continue
+		}
+
+		cluster := styledCluster{start: index}
+		consumed := 0
+		for index < len(runes) && consumed < visibleRunes {
+			current := runes[index]
+			if current.ch == 0 {
+				if current.prefix != "" {
+					cluster.prefix += current.prefix
+				}
+				cluster.runes = append(cluster.runes, current)
+				index++
+				continue
+			}
+
+			if current.prefix != "" {
+				cluster.prefix += current.prefix
+			}
+			cluster.runes = append(cluster.runes, current)
+			consumed++
+			index++
+		}
+
+		cluster.end = index
+		cluster.width = utils.StringWidth(clusterText)
+		clusters = append(clusters, cluster)
+	}
+
+	for index < len(runes) {
+		current := runes[index]
+		if current.ch == 0 && current.prefix != "" && len(clusters) > 0 {
+			clusters[len(clusters)-1].suffix += current.prefix
+			clusters[len(clusters)-1].end = index + 1
+			index++
+			continue
+		}
+
+		cluster := styledCluster{
+			runes: []styledRune{current},
+			start: index,
+			end:   index + 1,
+		}
+		if current.ch == 0 {
+			cluster.prefix = current.prefix
+		} else {
+			cluster.prefix = current.prefix
+			cluster.width = utils.StringWidth(string(current.ch))
+		}
+		clusters = append(clusters, cluster)
+		index++
+	}
+
+	return clusters
+}
+
+func styledClusterText(cluster styledCluster) string {
+	var builder strings.Builder
+	for _, r := range cluster.runes {
+		if r.ch != 0 {
+			builder.WriteRune(r.ch)
+		}
+	}
+	builder.WriteString(cluster.suffix)
+	return builder.String()
+}
+
+func styledClusterStyle(cluster styledCluster) ansiStyle {
+	for _, r := range cluster.runes {
+		if r.ch != 0 {
+			return r.style
+		}
+	}
+
+	if len(cluster.runes) > 0 {
+		return cluster.runes[0].style
+	}
+
+	return ansiStyle{}
+}
+
+func firstStyledClusterEnd(runes []styledRune) int {
+	clusters := styledRunesToClusters(runes)
+	if len(clusters) == 0 {
+		return 0
+	}
+
+	return clusters[0].end
+}
+
 // fitStyledRunesToWidth returns the number of runes from the front of the
-// slice whose cumulative display width fits in maxWidth. NOTE: this walks
-// rune-by-rune so a multi-rune cluster (ZWJ emoji, combining marks) can
-// be split across the boundary. The styled-rune render path and width
-// calculation are also rune-based, so keeping the boundary aligned with
-// that model preserves end-to-end consistency. Cluster-aware wrapping in
-// the styled path requires also moving writeStyledLinesClipped onto
-// cluster-based column tracking — see deferred work in the wide-rune
-// task notes.
+// slice whose cumulative display width fits in maxWidth. The boundary is
+// grapheme-cluster based so ANSI rendering never splits ZWJ emoji, combining
+// marks, variation selectors, or other multi-rune clusters.
 func fitStyledRunesToWidth(runes []styledRune, maxWidth int) int {
 	if maxWidth <= 0 {
 		return 0
 	}
 
 	width := 0
-	for index, r := range runes {
-		runeWidth := utils.RuneWidth(r.ch)
-		if width+runeWidth > maxWidth {
-			if index == 0 {
-				return 1
-			}
-			return index
+	fit := 0
+	for _, cluster := range styledRunesToClusters(runes) {
+		if cluster.width == 0 {
+			fit = cluster.end
+			continue
+		}
+		if width+cluster.width > maxWidth {
+			return fit
 		}
 
-		width += runeWidth
+		width += cluster.width
+		fit = cluster.end
 	}
 
 	return len(runes)
+}
+
+func fitStyledRunesFromEndToWidth(runes []styledRune, maxWidth int) int {
+	if maxWidth <= 0 {
+		return len(runes)
+	}
+
+	clusters := styledRunesToClusters(runes)
+	width := 0
+	start := len(runes)
+	for index := len(clusters) - 1; index >= 0; index-- {
+		cluster := clusters[index]
+		if cluster.width == 0 {
+			start = cluster.start
+			continue
+		}
+		if width+cluster.width > maxWidth {
+			return start
+		}
+
+		width += cluster.width
+		start = cluster.start
+	}
+
+	return start
 }
 
 func trimLeftSpaceStyledRunes(runes []styledRune) []styledRune {
@@ -2495,6 +2652,12 @@ func wrapStyledLine(line []styledRune, maxWidth int) [][]styledRune {
 		}
 
 		fit := fitStyledRunesToWidth(runes, maxWidth)
+		if fit == 0 {
+			fit = firstStyledClusterEnd(runes)
+			if fit == 0 {
+				fit = 1
+			}
+		}
 		if fit < len(runes) && unicode.IsSpace(runes[fit].ch) {
 			segment := append([]styledRune(nil), runes[:fit]...)
 			lines = append(lines, segment)
@@ -2577,16 +2740,7 @@ func truncateStyledStart(line []styledRune, maxWidth int) []styledRune {
 	}
 
 	keepWidth := maxWidth - 1
-	start := len(line)
-	width := 0
-	for start > 0 {
-		runeWidth := utils.RuneWidth(line[start-1].ch)
-		if width+runeWidth > keepWidth {
-			break
-		}
-		start--
-		width += runeWidth
-	}
+	start := fitStyledRunesFromEndToWidth(line, keepWidth)
 
 	segment := append([]styledRune(nil), line[start:]...)
 	ellipsisStyle := ansiStyle{}
@@ -2615,16 +2769,7 @@ func truncateStyledMiddle(line []styledRune, maxWidth int) []styledRune {
 	leftEnd := fitStyledRunesToWidth(line, leftWidth)
 	left := append([]styledRune(nil), line[:leftEnd]...)
 
-	start := len(line)
-	width := 0
-	for start > 0 {
-		runeWidth := utils.RuneWidth(line[start-1].ch)
-		if width+runeWidth > rightWidth {
-			break
-		}
-		start--
-		width += runeWidth
-	}
+	start := fitStyledRunesFromEndToWidth(line, rightWidth)
 
 	right := append([]styledRune(nil), line[start:]...)
 	ellipsisStyle := ansiStyle{}
@@ -2697,27 +2842,29 @@ func writeStyledLinesClipped(canvas *ansiCanvas, x, y int, lines [][]styledRune,
 		}
 
 		column := x
-		for _, styled := range line {
-			runeWidth := utils.RuneWidth(styled.ch)
-			if runeWidth == 0 {
-				// Zero-width entry: combining mark, ZWJ joiner, or an
-				// OSC-only sentinel (ch == 0 with prefix). Land it on the
-				// preceding visible cell so the OSC bytes survive
-				// without affecting column accounting.
-				if styled.prefix != "" {
-					canvas.appendZeroWidthRaw(column, row, styled.prefix)
+		for _, cluster := range styledRunesToClusters(line) {
+			if cluster.width == 0 {
+				if cluster.prefix != "" {
+					canvas.appendZeroWidthRaw(column, row, cluster.prefix)
 				}
-				if styled.ch != 0 && column > clip.left && column <= clip.right {
-					canvas.setCell(column, row, styled.ch, styled.style)
+				if cluster.suffix != "" {
+					canvas.appendZeroWidthRaw(column, row, cluster.suffix)
 				}
 				continue
 			}
 
 			if column >= clip.left && column < clip.right {
-				canvas.setCellWithPrefix(column, row, styled.ch, styled.style, styled.prefix)
+				canvas.setCellTextWithPrefix(
+					column,
+					row,
+					styledClusterText(cluster),
+					styledClusterStyle(cluster),
+					cluster.prefix,
+					cluster.width,
+				)
 			}
 
-			column += runeWidth
+			column += cluster.width
 		}
 	}
 }

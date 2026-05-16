@@ -240,6 +240,53 @@ func TestErrorOverviewStackBlockRendered(t *testing.T) {
 	}
 }
 
+func TestErrorOverviewDisplaysCurrentWorkspacePathsRelatively(t *testing.T) {
+	cwd, err := os.Getwd()
+	if err != nil {
+		t.Fatalf("get cwd: %v", err)
+	}
+
+	path := filepath.Join(cwd, "fixture.go")
+	stack := fmt.Sprintf("goroutine 1 [running]:\nmain.boom()\n\t%s:7 +0x10\n", path)
+	node := components.ErrorOverview(components.ErrorOverviewProps{
+		Err:   errors.New("kaboom"),
+		Stack: stack,
+	})
+	out := collectText(node)
+
+	if !strings.Contains(out, "fixture.go:7") {
+		t.Fatalf("expected relative path in output: %q", out)
+	}
+	if strings.Contains(out, cwd) {
+		t.Fatalf("current workspace path should be stripped: %q", out)
+	}
+}
+
+func TestErrorOverviewSkipsBoundaryInternalsForOrigin(t *testing.T) {
+	stack := "goroutine 1 [running]:\n" +
+		"github.com/dh-kam/ink-go/pkg/components.captureStack()\n" +
+		"\t/work/pkg/components/error_boundary.go:112 +0x20\n" +
+		"github.com/dh-kam/ink-go/pkg/components.safeRender.func1()\n" +
+		"\t/work/pkg/components/error_boundary.go:83 +0x20\n" +
+		"panic({0x1, 0x2})\n" +
+		"\t/usr/local/go/src/runtime/panic.go:783 +0x20\n" +
+		"main.Test()\n" +
+		"\t/app/main.go:23 +0x20\n"
+
+	node := components.ErrorOverview(components.ErrorOverviewProps{
+		Err:   errors.New("Oh no"),
+		Stack: stack,
+	})
+	out := collectText(node)
+
+	if !strings.Contains(out, "/app/main.go:23") {
+		t.Fatalf("expected user panic origin, got %q", out)
+	}
+	if strings.Contains(out, "/work/pkg/components/error_boundary.go:112") {
+		t.Fatalf("boundary internals should not be used as origin: %q", out)
+	}
+}
+
 func TestErrorOverviewGroupRendersValidationAndRuntimeSections(t *testing.T) {
 	node := components.ErrorOverviewGroup(components.ErrorOverviewGroupProps{
 		Validation: []error{

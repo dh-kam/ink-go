@@ -7,6 +7,12 @@ import {
 	textValue,
 } from "./helpers.mjs";
 
+const geminiCliMeta = sourceFile => ({
+	project: "gemini-cli",
+	sourceRepo: "google-gemini/gemini-cli",
+	sourceFile,
+});
+
 const buildGeminiCliCases = () => [
 	namedCase(
 		"gemini-cli/checklist/completed-listitem",
@@ -159,6 +165,448 @@ const buildGeminiCliCases = () => [
 			sourceRepo: "google-gemini/gemini-cli",
 			sourceFile: "packages/cli/src/ui/components/LoadingIndicator.tsx",
 		},
+	),
+	namedCase(
+		"gemini-cli/layout/default-app-normal-composer",
+		box({flexDirection: "column", width: 72, height: 12, paddingBottom: 1}, [
+			box({flexDirection: "column", flexGrow: 1, overflow: "hidden"}, [
+				textValue("Gemini CLI"),
+				textValue("Static history item"),
+				textValue("Pending assistant response"),
+			]),
+			box({flexDirection: "column", width: 72}, [
+				box({flexDirection: "column", marginY: 1}, [
+					text([raw("⚠ "), raw("Sandbox is disabled for this session")], {color: "yellow"}),
+				]),
+				textValue("> Summarize the current workspace"),
+				text([raw("esc to cancel")], {dimColor: true}),
+			]),
+		]),
+		80,
+		false,
+		false,
+		geminiCliMeta("packages/cli/src/ui/layouts/DefaultAppLayout.tsx"),
+	),
+	namedCase(
+		"gemini-cli/layout/default-app-dialog-manager",
+		box({flexDirection: "column", width: 72, height: 10, paddingBottom: 1}, [
+			box({flexDirection: "column", flexGrow: 1, overflow: "hidden"}, [
+				textValue("MainContent"),
+				textValue("Last response"),
+			]),
+			box({flexDirection: "column", width: 72}, [
+				textValue("Notifications"),
+				box({borderStyle: "round", borderColor: "cyan", paddingX: 1}, [
+					textValue("DialogManager: approve tool call?"),
+				]),
+				text([raw("ctrl+c twice to exit")], {dimColor: true}),
+			]),
+		]),
+		80,
+		false,
+		false,
+		geminiCliMeta("packages/cli/src/ui/layouts/DefaultAppLayout.tsx"),
+	),
+	namedCase(
+		"gemini-cli/layout/screen-reader-shell",
+		box({flexDirection: "column", width: "90%", height: "100%"}, [
+			textValue("Notifications"),
+			textValue("Footer metadata"),
+			box({flexDirection: "column", flexGrow: 1, overflow: "hidden"}, [
+				textValue("MainContent"),
+				textValue("Scrollable transcript"),
+			]),
+			textValue("Composer"),
+			text([raw("Exit warning")], {dimColor: true}),
+		]),
+		80,
+		false,
+		false,
+		geminiCliMeta("packages/cli/src/ui/layouts/ScreenReaderAppLayout.tsx"),
+	),
+	namedCase(
+		"gemini-cli/header/wide-metadata-row",
+		box({flexDirection: "column"}, [
+			box({flexDirection: "row", marginTop: 1, marginBottom: 1, paddingLeft: 1}, [
+				box({flexShrink: 0}, [
+					text([raw("✦")], {color: "cyan", bold: true}),
+				]),
+				box({marginLeft: 2, flexDirection: "column"}, [
+					box({flexDirection: "row"}, [
+						text([raw("Gemini CLI")], {bold: true}),
+						textValue(" v0.1.0"),
+						box({marginLeft: 2}, [
+							text([raw("⠋ Updating")], {color: "gray"}),
+						]),
+					]),
+					text([raw("Signed in with Google: user@example.com")], {dimColor: true}),
+				]),
+			]),
+		]),
+		100,
+		false,
+		false,
+		geminiCliMeta("packages/cli/src/ui/components/AppHeader.tsx"),
+	),
+	namedCase(
+		"gemini-cli/header/narrow-wordmark-column",
+		box({flexDirection: "column"}, [
+			box({flexDirection: "column", marginTop: 1, marginBottom: 1, paddingLeft: 1}, [
+				box({flexDirection: "row"}, [
+					text([raw("✦")], {color: "cyan", bold: true}),
+					box({marginLeft: 3}, [
+						textValue("  ____                _       _\n / ___| ___ _ __ ___ (_)_ __ (_)")
+					]),
+				]),
+				box({marginTop: 1}, [
+					textValue("Gemini CLI v0.1.0"),
+				]),
+			]),
+		]),
+		48,
+		false,
+		false,
+		geminiCliMeta("packages/cli/src/ui/components/AppHeader.tsx"),
+	),
+	namedCase(
+		"gemini-cli/user-identity/google-auth-row",
+		box({flexDirection: "column"}, [
+			box({flexDirection: "row"}, [
+				text([
+					text([raw("Signed in with Google:")], {bold: true}),
+					raw(" user@example.com"),
+				], {wrap: "truncate-end"}),
+				text([raw(" /auth")], {dimColor: true}),
+			]),
+		]),
+		80,
+		false,
+		false,
+		geminiCliMeta("packages/cli/src/ui/components/UserIdentity.tsx"),
+	),
+	namedCase(
+		"gemini-cli/notifications/startup-warning-stack",
+		box({flexDirection: "column", marginY: 1}, [
+			box({flexDirection: "row"}, [
+				box({width: 3}, [text([raw("⚠ ")], {color: "yellow"})]),
+				box({flexGrow: 1}, [text([raw("MCP server alpha failed to start")], {color: "yellow"})]),
+			]),
+			box({flexDirection: "row"}, [
+				box({width: 3}, [text([raw("⚠ ")], {color: "yellow"})]),
+				box({flexGrow: 1}, [text([raw("Extension beta is disabled")], {color: "yellow"})]),
+			]),
+		]),
+		100,
+		false,
+		false,
+		geminiCliMeta("packages/cli/src/ui/components/Notifications.tsx"),
+	),
+	namedCase(
+		"gemini-cli/notifications/initialization-error-card",
+		box({borderStyle: "round", borderColor: "red", paddingX: 1, marginBottom: 1}, [
+			text([raw("Initialization Error: invalid API key")], {color: "red"}),
+			text([raw(" Please check API key and configuration.")], {color: "red"}),
+		]),
+		100,
+		false,
+		false,
+		geminiCliMeta("packages/cli/src/ui/components/Notifications.tsx"),
+	),
+	namedCase(
+		"gemini-cli/update-notification/warning-bar",
+		box({borderStyle: "round", borderColor: "yellow", paddingX: 1, marginY: 1}, [
+			text([raw("Update available: run npm install -g @google/gemini-cli")], {color: "yellow"}),
+		]),
+		100,
+		false,
+		false,
+		geminiCliMeta("packages/cli/src/ui/components/UpdateNotification.tsx"),
+	),
+	namedCase(
+		"gemini-cli/config-init/mcp-server-counts",
+		box({marginTop: 1}, [
+			text([
+				raw("⠙ "),
+				text([raw("Connecting to MCP servers: 2 connected, waiting for alpha")], {color: "white"}),
+			]),
+		]),
+		100,
+		false,
+		false,
+		geminiCliMeta("packages/cli/src/ui/components/ConfigInitDisplay.tsx"),
+	),
+	namedCase(
+		"gemini-cli/status-row/minimal-mode",
+		box({flexDirection: "column", width: "100%"}, [
+			box({flexDirection: "row", justifyContent: "space-between", minHeight: 1}, [
+				box({flexDirection: "row", flexGrow: 1, flexShrink: 1}, [
+					box({flexDirection: "row", columnGap: 1}, [
+						text([raw("⠋ Thinking")], {italic: true}),
+						box({}, [text([raw("● auto")], {color: "green"})]),
+					]),
+				]),
+				text([raw("gpt-5.4")], {dimColor: true}),
+			]),
+		]),
+		100,
+		false,
+		false,
+		geminiCliMeta("packages/cli/src/ui/components/StatusRow.tsx"),
+	),
+	namedCase(
+		"gemini-cli/status-row/interactive-shell-wait",
+		box({width: "100%", marginLeft: 1}, [
+			text([raw("Waiting for interactive shell to finish")], {color: "yellow"}),
+		]),
+		100,
+		false,
+		false,
+		geminiCliMeta("packages/cli/src/ui/components/StatusRow.tsx"),
+	),
+	namedCase(
+		"gemini-cli/background-task/output-panel-shell",
+		box({flexDirection: "column", height: 8, width: 70, borderStyle: "single", borderColor: "cyan"}, [
+			box({flexDirection: "row", justifyContent: "space-between", borderStyle: "single", borderTop: false, borderLeft: false, borderRight: false, paddingX: 1}, [
+				textValue("1 bash"),
+				text([raw("PID 4242 Focused")], {bold: true}),
+				text([raw("q close")], {dimColor: true}),
+			]),
+			box({flexGrow: 1, overflow: "hidden", paddingX: 1, flexDirection: "column"}, [
+				textValue("$ npm test"),
+				textValue("PASS tests/project_upstream"),
+			]),
+			box({paddingX: 1}, [
+				text([raw("Log: /tmp/gemini-cli/task.log")], {dimColor: true, wrap: "truncate-end"}),
+			]),
+		]),
+		100,
+		false,
+		false,
+		geminiCliMeta("packages/cli/src/ui/components/BackgroundTaskDisplay.tsx"),
+	),
+	namedCase(
+		"gemini-cli/background-task/process-selection-shell",
+		box({flexDirection: "column", height: 8, width: 70, borderStyle: "single"}, [
+			box({flexDirection: "row", justifyContent: "space-between", borderStyle: "single", borderTop: false, borderLeft: false, borderRight: false, paddingX: 1}, [
+				textValue("Background Shells"),
+				text([raw("enter view, x kill, esc cancel")], {dimColor: true}),
+			]),
+			box({flexGrow: 1, overflow: "hidden", paddingX: 1, flexDirection: "column"}, [
+				box({flexShrink: 0, marginBottom: 1, paddingTop: 1}, [
+					text([raw("Select a process")], {bold: true}),
+				]),
+				textValue("● 4242 npm test"),
+				textValue("○ 7777 git status"),
+			]),
+		]),
+		100,
+		false,
+		false,
+		geminiCliMeta("packages/cli/src/ui/components/BackgroundTaskDisplay.tsx"),
+	),
+	namedCase(
+		"gemini-cli/new-agents/review-card",
+		box({flexDirection: "column", width: "100%"}, [
+			box({flexDirection: "column", borderStyle: "round", borderColor: "yellow", padding: 1, marginX: 1}, [
+				box({flexDirection: "column", marginBottom: 1}, [
+					text([raw("New agents discovered")], {bold: true}),
+					textValue("Review these agents before enabling them."),
+				]),
+				box({flexDirection: "column", marginTop: 1, borderStyle: "single", padding: 1}, [
+					box({flexDirection: "row"}, [
+						box({flexShrink: 0}, [text([raw("- code-reviewer:")], {bold: true})]),
+						text([raw(" Reviews source changes")], {dimColor: true}),
+					]),
+					box({marginLeft: 2}, [
+						text([raw("MCP: github")], {dimColor: true}),
+					]),
+				]),
+				textValue("○ Enable all"),
+				textValue("● Review individually"),
+			]),
+		]),
+		100,
+		false,
+		false,
+		geminiCliMeta("packages/cli/src/ui/components/NewAgentsNotification.tsx"),
+	),
+	namedCase(
+		"gemini-cli/empty-wallet/quota-dialog",
+		box({flexDirection: "column", borderStyle: "round", padding: 1}, [
+			box({flexDirection: "column", marginBottom: 1}, [
+				text([raw("Daily quota exhausted")], {color: "yellow", bold: true}),
+				textValue("Use /stats to inspect usage."),
+				textValue("Use /model to switch models."),
+				textValue("Use /auth to change account."),
+			]),
+			box({marginBottom: 1}, [textValue("Purchase credits to continue immediately.")]),
+			box({marginBottom: 1}, [text([raw("Credit updates may be delayed.")], {dimColor: true})]),
+			textValue("Proceed?"),
+			box({marginTop: 1, marginBottom: 1, flexDirection: "column"}, [
+				textValue("● Continue with current model"),
+				textValue("○ Switch model"),
+			]),
+		]),
+		100,
+		false,
+		false,
+		geminiCliMeta("packages/cli/src/ui/components/EmptyWalletDialog.tsx"),
+	),
+	namedCase(
+		"gemini-cli/validation/default-action-dialog",
+		box({flexDirection: "column", borderStyle: "round", padding: 1}, [
+			box({marginBottom: 1}, [
+				textValue("Further action is required to validate this account."),
+			]),
+			box({marginTop: 1, marginBottom: 1, flexDirection: "column"}, [
+				textValue("● Open verification link"),
+				textValue("○ Paste verification URL"),
+			]),
+			box({marginTop: 1}, [
+				text([raw("Learn more: ")], {dimColor: true}),
+				text([raw("https://example.com/validation")], {color: "cyan"}),
+			]),
+		]),
+		100,
+		false,
+		false,
+		geminiCliMeta("packages/cli/src/ui/components/ValidationDialog.tsx"),
+	),
+	namedCase(
+		"gemini-cli/validation/waiting-panel",
+		box({flexDirection: "column", borderStyle: "round", padding: 1}, [
+			box({}, [
+				textValue("⠋"),
+				textValue(" Waiting for verification..."),
+			]),
+			box({marginTop: 1}, [textValue("https://example.com/device")]),
+			box({marginTop: 1}, [
+				text([raw("Press Enter when verification is complete.")], {dimColor: true}),
+			]),
+		]),
+		100,
+		false,
+		false,
+		geminiCliMeta("packages/cli/src/ui/components/ValidationDialog.tsx"),
+	),
+	namedCase(
+		"gemini-cli/ask-user/review-unanswered",
+		box({"aria-label": "Review", flexDirection: "column"}, [
+			box({flexDirection: "column"}, [
+				box({marginBottom: 1}, [text([raw("Review your answers:")], {bold: true})]),
+				box({marginBottom: 1}, [text([raw("1 unanswered question")], {color: "yellow"})]),
+				box({flexDirection: "column"}, [
+					box({}, [
+						text([raw("1. Path")], {dimColor: true}),
+						text([raw(" → ")], {dimColor: true}),
+						text([raw("src/app.tsx")]),
+					]),
+					box({}, [
+						text([raw("2. Reason")], {dimColor: true}),
+						text([raw(" → ")], {dimColor: true}),
+						text([raw("(not answered)")], {color: "yellow"}),
+					]),
+				]),
+				text([raw("Enter submit, tab edit next")], {dimColor: true}),
+			]),
+		]),
+		100,
+		false,
+		false,
+		geminiCliMeta("packages/cli/src/ui/components/AskUserDialog.tsx"),
+	),
+	namedCase(
+		"gemini-cli/searchable-list/shell",
+		box({flexDirection: "column", width: "100%", height: "100%", paddingX: 1}, [
+			box({marginBottom: 1}, [text([raw("Choose a command")], {bold: true})]),
+			box({borderStyle: "round", borderColor: "white", paddingX: 1, marginBottom: 1}, [
+				textValue("> git"),
+			]),
+			box({marginBottom: 1}, [text([raw("Recent commands")], {dimColor: true})]),
+			box({flexDirection: "column", flexGrow: 1}, [
+				textValue("▲"),
+				box({marginBottom: 1, marginX: 1}, [textValue("git status")]),
+				box({marginBottom: 1, marginX: 1}, [textValue("git diff")]),
+				textValue("▼"),
+			]),
+			text([raw("tab to change focus")], {dimColor: true}),
+		]),
+		100,
+		false,
+		false,
+		geminiCliMeta("packages/cli/src/ui/components/shared/SearchableList.tsx"),
+	),
+	namedCase(
+		"gemini-cli/messages/gemini-message",
+		box({flexDirection: "row"}, [
+			box({width: 2}, [text([raw("✦ ")], {color: "cyan", "aria-label": "Gemini"})]),
+			box({flexGrow: 1, flexDirection: "column"}, [
+				textValue("The workspace contains a Go port of Ink."),
+				textValue("Project-based goldens compare against upstream Ink."),
+			]),
+		]),
+		80,
+		false,
+		false,
+		geminiCliMeta("packages/cli/src/ui/components/messages/GeminiMessage.tsx"),
+	),
+	namedCase(
+		"gemini-cli/messages/user-message-background",
+		box({backgroundColor: "#222222", paddingX: 1}, [
+			box({flexDirection: "row", alignSelf: "flex-start", width: 70}, [
+				box({width: 2, flexShrink: 0}, [
+					text([raw("> ")], {color: "cyan", "aria-label": "User"}),
+				]),
+				box({flexGrow: 1}, [
+					text([raw("Run parity tests for project goldens")], {wrap: "wrap"}),
+				]),
+			]),
+		]),
+		80,
+		false,
+		false,
+		geminiCliMeta("packages/cli/src/ui/components/messages/UserMessage.tsx"),
+	),
+	namedCase(
+		"gemini-cli/checklist/expanded",
+		box({borderStyle: "single", borderBottom: false, borderLeft: false, borderRight: false, paddingX: 1}, [
+			box({flexDirection: "column", rowGap: 1}, [
+				text([raw("Todo 2/3")], {bold: true}),
+				box({flexDirection: "row", columnGap: 1}, [
+					text([raw("✓")], {color: "green"}),
+					textValue("Capture upstream output"),
+				]),
+				box({flexDirection: "row", columnGap: 1}, [
+					text([raw("»")], {color: "cyan"}),
+					text([raw("Compare Go renderer")], {color: "cyan"}),
+				]),
+				box({flexDirection: "row", columnGap: 1}, [
+					text([raw(" ")], {color: "gray"}),
+					textValue("Document result"),
+				]),
+			]),
+		]),
+		100,
+		false,
+		false,
+		geminiCliMeta("packages/cli/src/ui/components/Checklist.tsx"),
+	),
+	namedCase(
+		"gemini-cli/checklist/collapsed",
+		box({borderStyle: "single", borderBottom: false, borderLeft: false, borderRight: false, paddingX: 1}, [
+			box({flexDirection: "row", columnGap: 1, height: 1}, [
+				box({flexShrink: 0, flexGrow: 0}, [
+					text([raw("Todo 2/3")], {bold: true}),
+				]),
+				box({flexShrink: 1, flexGrow: 1}, [
+					text([raw("» Compare Go renderer")], {color: "cyan", wrap: "truncate-end"}),
+				]),
+			]),
+		]),
+		100,
+		false,
+		false,
+		geminiCliMeta("packages/cli/src/ui/components/Checklist.tsx"),
 	),
 ];
 

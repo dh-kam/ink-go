@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 
@@ -181,7 +182,7 @@ func ErrorOverview(props ErrorOverviewProps) *vdom.Node {
 }
 
 func errorOverviewHeader(err error) *vdom.Node {
-	header := styles.WrapWithANSI(" ERROR ", styles.Red.ToANSI(styles.Background), styles.White.ToANSI(styles.Foreground), styles.BoldCode())
+	header := styles.WrapWithANSI(" ERROR ", styles.Red.ToANSI(styles.Background), styles.White.ToANSI(styles.Foreground))
 
 	message := ""
 	if err != nil {
@@ -198,7 +199,7 @@ func errorOverviewHeader(err error) *vdom.Node {
 }
 
 func errorOverviewLocation(origin StackFrame) *vdom.Node {
-	location := fmt.Sprintf("%s:%d", origin.File, origin.Line)
+	location := fmt.Sprintf("%s:%d", cleanupErrorPath(origin.File), origin.Line)
 	return Box(vdom.Props{"marginTop": 1},
 		Text(styles.Dim(location)),
 	)
@@ -245,12 +246,17 @@ func errorOverviewStack(frames []StackFrame) *vdom.Node {
 
 	rows := make([]*vdom.Node, 0, len(frames))
 	for _, frame := range frames {
+		if isBoundaryInternalFrame(frame) {
+			continue
+		}
+
 		display := frame.Function
 		if frame.File != "" {
+			file := cleanupErrorPath(frame.File)
 			if display == "" {
-				display = fmt.Sprintf("(%s:%d)", frame.File, frame.Line)
+				display = fmt.Sprintf("(%s:%d)", file, frame.Line)
 			} else {
-				display = fmt.Sprintf("%s (%s:%d)", display, frame.File, frame.Line)
+				display = fmt.Sprintf("%s (%s:%d)", display, file, frame.Line)
 			}
 		}
 		if display == "" {
@@ -360,7 +366,8 @@ func isRuntimeFrame(frame StackFrame) bool {
 		strings.HasPrefix(fn, "runtime/"),
 		strings.HasPrefix(fn, "reflect."),
 		strings.HasPrefix(fn, "testing."),
-		strings.HasPrefix(fn, "panic"):
+		strings.HasPrefix(fn, "panic"),
+		isBoundaryInternalFrame(frame):
 		return true
 	}
 
@@ -373,6 +380,30 @@ func isRuntimeFrame(frame StackFrame) bool {
 		return true
 	}
 	return false
+}
+
+func isBoundaryInternalFrame(frame StackFrame) bool {
+	fn := frame.Function
+	return strings.HasPrefix(fn, "github.com/dh-kam/ink-go/pkg/components.captureStack") ||
+		strings.HasPrefix(fn, "github.com/dh-kam/ink-go/pkg/components.safeRender") ||
+		strings.HasPrefix(fn, "github.com/dh-kam/ink-go/pkg/components.ErrorBoundary")
+}
+
+func cleanupErrorPath(path string) string {
+	path = strings.TrimPrefix(path, "file://")
+	if path == "" {
+		return path
+	}
+
+	cwd, err := os.Getwd()
+	if err != nil {
+		return filepath.ToSlash(path)
+	}
+	rel, err := filepath.Rel(cwd, path)
+	if err != nil || rel == "." || strings.HasPrefix(rel, ".."+string(filepath.Separator)) || rel == ".." {
+		return filepath.ToSlash(path)
+	}
+	return filepath.ToSlash(rel)
 }
 
 func parseGoStackLocation(line string) (string, int, bool) {
